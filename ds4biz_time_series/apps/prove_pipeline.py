@@ -47,7 +47,21 @@ forecaster = TransformedTargetForecaster(
 print(forecaster.get_params())
 a = Deseasonalizer(model="multiplicative", sp=12)
 
-forecaster.fit(y_train)
 # y_pred = forecaster.predict(fh)
 # plot_series(y_train, y_test, y_pred, labels=["y_train", "y_test", "y_pred"])
 # mean_absolute_percentage_error(y_test, y_pred, symmetric=False)
+
+import joblib
+
+# save
+joblib.dump(forecaster, "model_forecast")
+
+idx = [1,2,5,8]
+fh = ForecastingHorizon(idx, is_relative=True)
+clf2 = joblib.load("model_forecast")
+print("===================")
+print(type(clf2))
+print("=====================")
+print(clf2.predict(fh))
+print("===================")
+print(forecaster.predict(fh))

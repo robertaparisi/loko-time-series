@@ -9,9 +9,9 @@ _, y = load_longley()
 
 y = y.drop(columns=["UNEMP", "ARMED", "POP"])
 y.reset_index(drop=False)
-
+print(y)
 forecaster = ARIMA()
-forecaster.fit(y, )
+forecaster.fit(y)
 print(forecaster.forecasters_)
 idx = (pd.to_datetime(["1963", "1964","1965","1966"], format='%Y-%m-%d'))
 print(y.index)
@@ -26,6 +26,7 @@ fh = ForecastingHorizon(idx, is_relative=False)
 print(fh)
 print(forecaster.predict(fh))
 print("===============opzione 2 ==============")
+sys.exit(0)
 
 #opzione 2
 #passo un singolo momento t da predire
@@ -42,6 +43,7 @@ idx = [1,2,5,8]
 fh = ForecastingHorizon(idx, is_relative=True)
 print(fh)
 print(forecaster.predict(fh))
+
 
 
 

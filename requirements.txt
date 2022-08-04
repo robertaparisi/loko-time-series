@@ -1,4 +1,7 @@
-pandas
-sktime
 autots
 ds4biz-commons
+pandas
+sanic
+sanic_cors
+sanic_openapi
+sktime
