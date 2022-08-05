@@ -1,4 +1,5 @@
 import re
+import shutil
 import traceback
 
 from sanic import Sanic, Blueprint
@@ -18,7 +19,8 @@ from sanic.exceptions import SanicException, NotFound
 
 import sanic
 
-from ds4biz_time_series.utils.serialization_utils import serialize
+from ds4biz_time_series.utils.serialization_utils import serialize, deserialize
+from ds4biz_time_series.utils.service_utils import get_all
 
 repo_path = Path(REPO_PATH)
 
@@ -37,44 +39,41 @@ app.config["API_TITLE"] = name
 CORS(app)
 
 
+
+
+### TRANSFORMERS ###
+
+@bp.get("/transformers")
+@doc.tag('transformers')
+@doc.summary("List objects in 'transformers'")
+async def list_transformers(request):
+    print("si")
+    res = get_all('transformers')
+    # save_defaults(repo='transformers')
+    return sanic.json(res)
+
+
 @bp.post("/transformers/<name>")
 @doc.tag('transformers')
 @doc.summary("Save an object in 'transformers'")
 @doc.description('''
     Examples
     --------
-    obj = {"__klass__": "ds4biz.ct", "transformers": {"text": {"__klass__": "sk.HashingVectorizer"}}}
-    obj = {
-          "__klass__": "ds4biz.ct",
-          "transformers": {
-            "text": {
-              "__klass__": "sk.TfidfVectorizer",
-              "ngram_range": [
-                1,
-                2
-              ],
-              "max_df": 0.9,
-              "min_df": 0.01
-            }
-          }
+    obj = {{
+      "__klass__": "skt.TransformerPipeline",
+      "steps": [
+        {
+          "__klass__": "skt.Deseasonalizer",
+          "model": "multiplicative",
+          "sp": 12
+        },
+         {
+          "__klass__": "skt.Deseasonalizer",
+          "model": "additive",
+          "sp": 3
         }
-    # "text" is the column name!
-
-    obj = {"__klass__": "sk.ColumnTransformer", 
-                "transformers": [["cat", {"__klass__": "sk.Pipeline",
-                            "steps": [["imputer", {"__klass__": "sk.SimpleImputer",
-                                                   "strategy": "most_frequent"}],
-                                      ["onehot", {"__klass__": "sk.OneHotEncoder",
-                                                  "handle_unknown": "ignore"}]]},
-                  ["contratto_presente", "tipologia_documento"]],
-                  ["text_0", {"__klass__": "sk.Pipeline",
-                             "steps": [["tfidf", {"__klass__": "sk.TfidfVectorizer",
-                                                  "max_features": 100}]]},
-                  "testo_breve"],
-                  ["num", {"__klass__": "sk.Pipeline",
-                          "steps": [["normalizer", {"__klass__": "sk.StandardScaler"}],
-                                    ["imputer", {"__klass__": "sk.KNNImputer"}]]},
-                  ["gross_value_computed", "net_price_computer", "quantity"]]]}
+      ]
+}
                   ''')
 @doc.consumes(doc.JsonBody({}), location="body")
 @doc.consumes(doc.String(name="name"), location="path", required=True)
@@ -84,11 +83,109 @@ async def create_transformer(request, name):
     if not re.search(r'(?i)^[a-z0-9]([a-z0-9_]*[a-z0-9])?$', name):
         raise SanicException('No special characters (except _ in the middle of name) and whitespaces allowed',
                              status_code=400)
+    path = repo_path / 'transformers' / name
+    path.mkdir(exist_ok=True, parents=True)
+    serialize(path, request.json)
+
+    return sanic.json(f"Transformer '{name}' saved")
+
+
+
+@bp.get("/transformers/<name>")
+@doc.tag('transformers')
+@doc.summary("Display object info from 'transformers'")
+@doc.consumes(doc.String(name="name"), location="path", required=True)
+async def transformers_info(request, name):
+    name = unquote(name)
 
     path = repo_path / 'transformers' / name
-    path.mkdir(exist_ok=True)
+    if not path.exists():
+        raise SanicException(f"Tranformer '{name}' does not exist!", status_code=400)
+    return sanic.json(deserialize(path))
+
+
+@bp.delete("/transformers/<name>")
+@doc.tag('transformers')
+@doc.summary("Delete an object from 'transformers'")
+@doc.consumes(doc.String(name="name"), location="path", required=True)
+async def delete_transformer(request, name):
+    name = unquote(name)
+    path = repo_path / 'transformers' / name
+    if not path.exists():
+        raise SanicException(f"Tranformer '{name}' does not exist!", status_code=400)
+    shutil.rmtree(path)
+    return sanic.json(f"Transformer '{name}' deleted")
+
+
+
+
+### MODELS ###
+
+@bp.get("/models")
+@doc.tag('models')
+@doc.summary("List objects in 'models'")
+async def list_models(request):
+    # save_defaults(repo='models')
+    return sanic.json(get_all('models'))
+
+
+@bp.post("/models/<name>")
+@doc.tag('models')
+@doc.summary("Save an object in 'models'")
+@doc.description('''
+    Examples
+    --------
+    obj = {"__klass__": "skt.ARIMA",
+          }
+    obj = {"__klass__": "skt.NaiveForecaster",
+            "strategy": "mean"
+            "window_lenght"=12
+            "sp"=3
+      }
+
+           ''')
+@doc.consumes(doc.JsonBody({}), location="body")
+@doc.consumes(doc.String(name="name"), location="path", required=True)
+async def create_model(request, name):
+    name = unquote(name)
+
+    if not re.search(r'(?i)^[a-z0-9]([a-z0-9_]*[a-z0-9])?$', name):
+        raise SanicException('No special characters (except _ in the middle of name) and whitespaces allowed',
+                             status_code=400)
+
+    path = repo_path / 'models' / name
+    path.mkdir(exist_ok=True, parents=True)
     serialize(path, request.json)
-    return sanic.json(f'Transformer "{name}" saved')
+    return sanic.json(f"Model '{name}' saved")
+
+
+@bp.get("/models/<name>")
+@doc.tag('models')
+@doc.summary("Display object info from 'models'")
+@doc.consumes(doc.String(name="name"), location="path", required=True)
+async def models_info(request, name):
+    name = unquote(name)
+
+    path = repo_path / 'models' / name
+    if not path.exists():
+        raise SanicException(f"Model '{name}' does not exist!", status_code=400)
+    return sanic.json(deserialize(path))
+
+
+@bp.delete("/models/<name>")
+@doc.tag('models')
+@doc.summary("Delete an object from 'models'")
+@doc.consumes(doc.String(name="name"), location="path", required=True)
+async def delete_model(request, name):
+    name = unquote(name)
+
+    path = repo_path / 'models' / name
+    if not path.exists():
+        raise SanicException(f"Model '{name}' does not exist!", status_code=400)
+    shutil.rmtree(path)
+    return sanic.json(f'Model "{name}" deleted')
+
+
 
 @app.post("/fit")
 @doc.summary('Fit an existing predictor')
@@ -113,7 +210,8 @@ async def manage_exception(request, exception):
         print(dict(error=str(exception)))
         return sanic.json(dict(error=str(exception)), status=exception.status_code)
 
-    e = dict(error=f'{exception.__class__.__name__}: {exception}')
+    e = dict(error=f"{exception.__class__.__name__}: {exception}")
+
     if isinstance(exception, NotFound):
         return sanic.json(e, status=404)
     status_code = exception.status_code or 500

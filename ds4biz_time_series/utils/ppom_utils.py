@@ -18,7 +18,8 @@ def strip_major_minor(version: str):
     return version.rsplit(".", 1)[0]
 
 def get_full_version():
-    ppom = json.load(open(find_file("ppom.json")))
+    with open(find_file("ppom.json")) as jf:
+        ppom = json.load(jf)
     return ppom['version']
 
 def get_pom_major_minor():
