@@ -13,6 +13,7 @@ from pathlib import Path
 # app = Sanic("res")
 # swagger_blueprint.url_prefix = "/api"
 # app.blueprint(swagger_blueprint)
+from ds4biz_time_series.business.training import training_pipeline
 from ds4biz_time_series.config.AppConfig import REPO_PATH
 from ds4biz_time_series.dao.fs_dao import JSONFSDAO
 from ds4biz_time_series.utils.logger_utils import logger
@@ -21,17 +22,19 @@ from sanic.exceptions import SanicException, NotFound
 
 import sanic
 
-from ds4biz_time_series.utils.service_utils import check_predictor_existence
+from ds4biz_time_series.utils.service_utils import check_predictor_existence, load_params, check_existence
 from ds4biz_time_series.utils.serialization_utils import serialize, deserialize
 from ds4biz_time_series.utils.service_utils import get_all
 
 repo_path = Path(REPO_PATH)
+
 
 def get_app(name):
     app = Sanic(name)
     swagger_blueprint.url_prefix = "/api"
     app.blueprint(swagger_blueprint)
     return app
+
 
 name = "time_series"
 app = get_app(name)
@@ -41,7 +44,18 @@ app.config["API_TITLE"] = name
 # app.config["REQUEST_MAX_SIZE"] = 20000000000 ## POI TOGLIERE!!
 CORS(app)
 
+@app.exception(Exception)
+async def manage_exception(request, exception):
+    if isinstance(exception, SanicException):
+        print(dict(error=str(exception)))
+        return sanic.json(dict(error=str(exception)), status=exception.status_code)
 
+    e = dict(error=f'{exception.__class__.__name__}: {exception}')
+    if isinstance(exception, NotFound):
+        return sanic.json(e, status=404)
+    status_code = exception.status_code or 500
+    logger.error('TracebackERROR: \n' + traceback.format_exc() + '\n\n', exc_info=True)
+    return sanic.json(e, status=status_code)
 
 
 ### TRANSFORMERS ###
@@ -93,7 +107,6 @@ async def create_transformer(request, name):
     return sanic.json(f"Transformer '{name}' saved")
 
 
-
 @bp.get("/transformers/<name>")
 @doc.tag('transformers')
 @doc.summary("Display object info from 'transformers'")
@@ -118,8 +131,6 @@ async def delete_transformer(request, name):
         raise SanicException(f"Tranformer '{name}' does not exist!", status_code=400)
     shutil.rmtree(path)
     return sanic.json(f"Transformer '{name}' deleted")
-
-
 
 
 ### MODELS ###
@@ -186,8 +197,6 @@ async def delete_model(request, name):
     return sanic.json(f'Model "{name}" deleted')
 
 
-
-
 ### PREDICTORS ###
 
 @bp.get("/predictors")
@@ -212,9 +221,7 @@ async def list_predictors(request):
         except:
             logger.debug('TracebackERROR: \n' + traceback.format_exc() + '\n\n')
 
-
     return sanic.json(res)
-
 
 
 @bp.post("/predictors/<name>")
@@ -224,7 +231,6 @@ async def list_predictors(request):
 <b>model_id:</b> choose one model (see <b>POST /models/{name}</b>) or <i>"auto"</i>
 <font color="#800000"><b>AUTOML parameters must be set in the previous service!</b></font>
 <b>transformer_id:</b> choose one transformer (see <b>POST /transformers/{name}</b>) or <i>"auto"</i> or <i>"none"</i> ''')
-@doc.consumes(doc.JsonBody({}), location="body")
 @doc.consumes(doc.String(name="transformer_id"), location="query")
 @doc.consumes(doc.String(name="model_id"), location="query")
 @doc.consumes(doc.String(name="description"), location="query")
@@ -249,9 +255,10 @@ async def create_predictor(request, name):
         raise NotImplementedError
     elif transformer_id == 'none':
         # transformer = {"__klass__": "ds4biz.ct", "transformers": {}, "remainder": "passthrough"}
-        raise NotImplementedError
+        raise SanicException("'none' transformer not yet implemented", status_code=501)
     else:
         tpath = repo_path / 'transformers' / transformer_id
+        check_existence(tpath, "transformer")
         transformer = deserialize(tpath)
     ### model ###
     if model_id == 'auto':
@@ -259,6 +266,7 @@ async def create_predictor(request, name):
         raise NotImplementedError
     else:
         mpath = repo_path / 'models' / model_id
+        check_existence(mpath, "Model")
         mod = deserialize(mpath)
     ### blueprint ###
     if blueprint:
@@ -277,8 +285,6 @@ async def create_predictor(request, name):
               steps=dict(transformer=transformer, model=mod))
     serialize(predictor_path, bp)
     return sanic.json(f"Predictor '{name}' saved")
-
-
 
 
 @bp.get("/predictors/<name>")
@@ -343,11 +349,68 @@ async def delete_predictor(request, name):
 
     return sanic.json(f"Predictor '{name}' deleted")
 
-@app.post("/fit")
+
+@bp.post("/predictors/<name>/fit")
+@doc.tag('predictors')
 @doc.summary('Fit an existing predictor')
-@doc.consumes(doc.Integer(name="forecasting_window"), location="path", required=True)
-async def fit(request):
-    return "fit"
+@doc.description('''
+    Examples
+    --------
+    data = {"data":[{"Date_Time": "01/03/2010 08:00:20" },
+           {"Date_Time": "01/10/2010"},
+           {"Date_Time": "01/17/2010  08:00:20"},
+           {"Date_Time": "01/24/2010  09:00:20"},
+           {"Date_Time": "01/31/2010  08:20:40"}],
+         "target":[1509634,1581344, 1614204, 1897725, 1759063]}
+    ...................
+               ''')
+# @doc.consumes(doc.String(name="fit_params"), location="query")
+@doc.consumes(doc.JsonBody({}), location="body")
+# @doc.consumes(doc.Boolean(name="report"), location="query")
+# @doc.consumes(doc.Integer(name="cv"), location="query")
+# @doc.consumes(doc.Boolean(name="partial"), location="query")
+@doc.consumes(doc.Float(name="test_size"), location="query")
+@doc.consumes(doc.String(name="task", choices=['classification', 'forecasting', 'none']), location="query")
+@doc.consumes(doc.Integer(name="forecasting_horizon"), location="query", required=False)
+@doc.consumes(doc.String(name="datetime_feature"), location="query", required=True)
+@doc.consumes(doc.String(name="name"), location="path", required=True)
+async def fit(request, name):
+    print("fitting")
+
+    name = unquote(name)
+    predictor_path = repo_path / 'predictors' / name
+    print("predictor: ", predictor_path)
+    predictor_blueprint = deserialize(predictor_path)
+    print("bp: ",predictor_blueprint)
+    dparams = dict(test_size=.2,
+                   forecasting_horizon=None,
+                   # partial=False,
+                   fit_params=dict(),
+                   # cv=0,
+                   # report=False, history_limit=0,
+                   task='none',
+                   # save_dataset=False
+                   )
+    params = {**dparams, **load_params(request.args)}
+    print("parameters::: ",params)
+    data = request.json
+    print("data", data)
+    try:
+        training_pipeline(predictor_blueprint=predictor_blueprint, data=data, **params)
+    except Exception as e:
+        print(e)
+        raise e
+    # data: Dict, task: str, test_size:Union[float, int], fit_params:Dict
+
+    # if params.get('partial'):
+    #     if predictor_path / 'development' not in list(predictor_path.glob('*')):
+    #         raise FitException(f'Predictor "{name}" is not fitted')
+    #     else:
+    #         if predictor_path / 'development' in list(predictor_path.glob('*')):
+    #             raise FitException(f'Predictor "{name}" already fitted')
+
+    return sanic.json(f"Predictor {name} correctly fitted")
+
 
 @app.post("/predict")
 @doc.summary('Use an existing predictor')
@@ -359,6 +422,7 @@ async def predict(request):
 @doc.summary('Evaluate existing predictors in history')
 async def evaluate(request):
     return "evaluate"
+
 
 @app.exception(Exception)
 async def manage_exception(request, exception):

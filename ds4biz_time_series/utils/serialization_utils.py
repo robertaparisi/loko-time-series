@@ -11,3 +11,4 @@ def deserialize(path):
     with open(os.path.join(path, "blueprint.json"), "r") as file:
         j = json.load(file)
     return j
+

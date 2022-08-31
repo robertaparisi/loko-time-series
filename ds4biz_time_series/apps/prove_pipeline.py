@@ -11,8 +11,11 @@ from sktime.transformations.series.detrend import Deseasonalizer
 from sktime.forecasting.arima import ARIMA
 
 # data loading for illustration (see section 1 for explanation)
+print("a")
 y = load_airline()
-y_train, y_test = temporal_train_test_split(y, test_size=36)
+y_train, y_test = temporal_train_test_split(y=y, test_size=36)
+print(y_test)
+print("qui")
 forecaster = PolynomialTrendForecaster(degree=1)
 transformer = Detrender(forecaster=forecaster)
 yt = transformer.fit_transform(y_train)
