@@ -10,14 +10,16 @@ from ds4biz_time_series.business.ts_pipeline import TSPipeline
 from ds4biz_time_series.config.AppConfig import REPO_PATH
 from ds4biz_time_series.config.factory_config import FACTORY
 from sktime.forecasting.model_selection import temporal_train_test_split
+# from ds4biz_predictor_core.utils.ml_utils import save_pipeline
 
 from ds4biz_time_series.dao.fs_dao import JSONFSDAO
+from ds4biz_time_series.utils.core_utils import save_pipeline
 from ds4biz_time_series.utils.logger_utils import logger
 
 repo_path = Path(REPO_PATH)
 
 
-def training_task(pred_id: str, data: Dict, datetime_feature:str, task: str, test_size: Union[float, int], ts_pipeline: TSPipeline,
+def training_task(pred_id: str, data: Dict, datetime_feature:str,  datetime_frequency:str, task: str, test_size: Union[float, int], ts_pipeline: TSPipeline,
                   forecasting_horizon: Union[int, list], fit_params: dict):
     logger.debug("Pipeline START")
     target = data['target'] if task != 'classification' else [str(el) for el in data['target']]
@@ -32,7 +34,9 @@ def training_task(pred_id: str, data: Dict, datetime_feature:str, task: str, tes
         print("solo una feature")
         df["target"] = target
         print("aggiornato ",df.columns)
-        df[datetime_feature]= pd.to_datetime(df[datetime_feature])
+
+        df[datetime_feature] = pd.PeriodIndex(df["Date_Time"], freq=datetime_frequency)
+        # df[datetime_feature]= pd.to_datetime(df[datetime_feature])
         df.set_index(datetime_feature, inplace=True)
         print("settato indice")
         y_train, y_test = temporal_train_test_split(y=df, test_size=test_size)
@@ -45,8 +49,10 @@ def training_task(pred_id: str, data: Dict, datetime_feature:str, task: str, tes
         print(X_train)
         logger.debug("Training model")
         res = ts_pipeline.fit(y_train, X_train, horizon=forecasting_horizon, **fit_params)
+
     ts_pipeline.date = fitting_time
-    # save_pipeline(pipeline, branch, history_limit, repo_path, dao)
+
+    save_pipeline(ts_pipeline, branch="development", history_limit=1, repo_path=repo_path)
     logger.debug("Model trained")
 
     tsum = dict(
@@ -59,7 +65,7 @@ def training_task(pred_id: str, data: Dict, datetime_feature:str, task: str, tes
     return res
 
 
-def training_pipeline(predictor_blueprint: Dict, data: Dict, datetime_feature:str, task: str, test_size: Union[float, int], fit_params: Dict,
+def training_pipeline(predictor_blueprint: Dict, data: Dict, datetime_feature:str, datetime_frequency:str, task: str, test_size: Union[float, int], fit_params: Dict,
                       forecasting_horizon: Union[int, list]):
     print("dentro")
     pred_id = predictor_blueprint["id"]
@@ -77,4 +83,4 @@ def training_pipeline(predictor_blueprint: Dict, data: Dict, datetime_feature:st
         print("agg....")
         ts_pipeline.add([k, FACTORY(v)])
     print("training task")
-    training_task(pred_id, data, datetime_feature, task, test_size, ts_pipeline, forecasting_horizon, fit_params)
+    training_task(pred_id, data, datetime_feature, datetime_frequency, task, test_size, ts_pipeline, forecasting_horizon, fit_params)

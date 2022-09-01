@@ -8,8 +8,9 @@ from sktime.transformations.compose import TransformerPipeline
 from sktime.forecasting.compose import TransformedTargetForecaster
 from sktime.transformations.series.detrend import Deseasonalizer
 from sktime.forecasting.model_selection import temporal_train_test_split
+from sktime.forecasting.arima import ARIMA
 
-ex_dict2 = {"data":[{"Date_Time": "01/03/2010  08:20:40" },
+ex_dict2 = {"data":[{"Date_Time": "03/2010 " },
        {"Date_Time": "01/10/2010  08:20:40"},
        {"Date_Time": "01/17/2010  08:20:40"},
        {"Date_Time": "01/24/2010  08:20:40"},
@@ -23,14 +24,32 @@ ex_dict2 = {"data":[{"Date_Time": "01/03/2010  08:20:40" },
       {"Date_Time": "03/21/2010  08:20:40"}],
      "target":[1509634,1581344, 1614204, 1897725, 1759063,1320022, 1559063, 1659063, 1859063, 1551083, 1819012, 1801029]}
 
+#
+#
+# ex_dict2 = {"data":[{"Date_Time": "01/03/2010" },
+#        {"Date_Time": "01/10/2010"},
+#        {"Date_Time": "01/17/2010"},
+#        {"Date_Time": "01/24/2010"},
+#        {"Date_Time": "01/31/2010"},
+#       {"Date_Time": "02/07/2010"},
+#       {"Date_Time": "02/14/2010"},
+#       {"Date_Time": "02/21/2010"},
+#       {"Date_Time": "02/28/2010"},
+#       {"Date_Time": "03/07/2010"},
+#       {"Date_Time": "03/14/2010"},
+#       {"Date_Time": "03/21/2010"}],
+#      "target":[1509634,1581344, 1614204, 1897725, 1759063,1320022, 1559063, 1659063, 1859063, 1551083, 1819012, 1801029]}
+#
 
 df = pd.DataFrame(ex_dict2["data"])
 df["target"] = ex_dict2["target"]
+df["Date_Time"] = pd.PeriodIndex(df["Date_Time"], freq='s')
 
-df["Date_Time"] = pd.to_datetime(df["Date_Time"])
+# print("!!!!!!!!!!!!!!!!!!!!!!!!", idx)
+
+# df["Date_Time"] = pd.to_datetime(df["Date_Time"])
 print(df)
 df.set_index("Date_Time", inplace=True)
-
 
 
 
@@ -45,6 +64,13 @@ transf = TransformerPipeline(steps=[ExponentTransformer(power=2)])
 y_train = transf.fit_transform(y_train)
 print("yyyy", y_train)
 
+forecaster = ARIMA()
+forecaster.fit(y_train)
+print("ok")
+fh = ForecastingHorizon([1,2,3], is_relative=True) #equivalente a [5]
+print(fh)
+a = forecaster.predict(fh=fh)
+print("--- \n",a)
 #
 # from sktime.datasets import load_longley
 #

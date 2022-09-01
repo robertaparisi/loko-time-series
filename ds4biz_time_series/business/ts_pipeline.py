@@ -15,7 +15,7 @@ class TSPipeline():
         self.steps = []
         self.fitted = False
         self.__dict__.update(kwargs)
-        print("tspipeline ",self.__dict__)
+        print("tspipeline ", self.__dict__)
 
     #
     # def _unpack_transformer(self, transformer: TimeSeriesTransformer):
@@ -31,7 +31,7 @@ class TSPipeline():
     #     self.pipeline = TransformedTargetForecaster(pipeline_steps)
 
     def fit(self, y, X=None, horizon: Union[int, list] = None, **kwargs):
-        print("================================== ",self.__dict__)
+        print("================================== ", self.__dict__)
         logger.info(f"fitting predictor {self.id}")
         logger.debug('y size: %s' % str(len(y)))
         # logger.debug("n. target: ", str(y.shape[1]))
@@ -42,7 +42,7 @@ class TSPipeline():
             logger.debug(f'Fitting {name}')
             if name == 'transformer':
                 logger.debug('TRANSFORMER: %s' % str(obj))
-                print("------::: ",y)
+                print("------::: ", y)
                 y = obj.fit_transform(y)
                 print("oki")
                 # y = y.astype(np.float)
@@ -50,7 +50,7 @@ class TSPipeline():
 
             if name == 'model':
                 logger.debug('MODEL: %s' % str(obj))
-                print("XXXXX ",X)
+                print("covariates data:  ", X)
                 # m = obj.fit(y = y, x=X, **kwargs)
                 if horizon:
                     if isinstance(horizon, int):
@@ -62,5 +62,37 @@ class TSPipeline():
                     if obj.get_tag("requires-fh-in-fit"):
                         raise Exception("You have to specify an horizon in order to fit this model..")
                     obj.fit(y=y, X=X, **kwargs)
-                print("1uiiiii")
+                print("end fitting - ts_pipeline")
 
+    def predict(self, X, horizon: Union[int, list] = None, **kwargs):
+
+        logger.debug('PREDICT')
+        # logger.debug('X size: %s' % str(X.shape))
+        for name, obj in self.steps:
+            if name == 'transformer':
+                logger.debug('TRANSFORMER: %s' % str(obj))
+                if X != None:
+                    X = obj.transform(X)
+                    X = X.astype(np.float)
+                    logger.debug('X transformed size: %s' % str(X.shape))
+            if name == 'model':
+
+                logger.debug('MODEL: %s' % str(obj))
+                if horizon:
+                    if isinstance(horizon, int):
+                        horizon = np.arange(1, horizon + 1)
+                else:
+                    horizon = 1
+                fh = ForecastingHorizon(horizon, is_relative=True)
+                # if include_probs:
+                #     if hasattr(obj, "predict_proba"):
+                #         classes = obj.classes_
+                #         try:
+                #             return [sorted(zip(classes, row), key=lambda x: x[1], reverse=True)
+                #                     for row in obj.predict_proba(X, **kwargs)]
+                #         except AttributeError:
+                #             raise PredictProbaException("%s has not predict_proba" % obj.__class__.__name__)
+                #     else:
+                #         raise PredictProbaException("%s has not predict_proba" % obj.__class__.__name__)
+                # else:
+                return obj.predict(fh=fh, X=X, **kwargs)

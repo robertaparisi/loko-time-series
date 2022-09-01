@@ -1,14 +1,18 @@
+import io
 import re
 import shutil
 import time
 import traceback
 
+import numpy as np
+import pandas as pd
 from sanic import Sanic, Blueprint
 from sanic_openapi import swagger_blueprint
 from sanic_openapi.openapi2 import doc
 from sanic_cors import CORS
 from urllib.parse import unquote
 from pathlib import Path
+from sanic.response import raw
 
 # app = Sanic("res")
 # swagger_blueprint.url_prefix = "/api"
@@ -16,6 +20,7 @@ from pathlib import Path
 from ds4biz_time_series.business.training import training_pipeline
 from ds4biz_time_series.config.AppConfig import REPO_PATH
 from ds4biz_time_series.dao.fs_dao import JSONFSDAO
+from ds4biz_time_series.utils.core_utils import load_pipeline
 from ds4biz_time_series.utils.logger_utils import logger
 from ds4biz_time_series.utils.ppom_utils import get_pom_major_minor
 from sanic.exceptions import SanicException, NotFound
@@ -25,6 +30,7 @@ import sanic
 from ds4biz_time_series.utils.service_utils import check_predictor_existence, load_params, check_existence
 from ds4biz_time_series.utils.serialization_utils import serialize, deserialize
 from ds4biz_time_series.utils.service_utils import get_all
+from ds4biz_time_series.utils.zip_utils import make_zipfile, import_zipfile
 
 repo_path = Path(REPO_PATH)
 
@@ -76,7 +82,19 @@ async def list_transformers(request):
 @doc.description('''
     Examples
     --------
-    obj = {{
+    Example 1: 
+    obj = {
+      "__klass__": "skt.TransformerPipeline",
+      "steps": [
+         {
+          "__klass__": "skt.ExponentTransformer",
+          "power":2
+        }
+      ]
+    }
+    ~~~~~~~~~
+    Example 2: 
+    obj = {
       "__klass__": "skt.TransformerPipeline",
       "steps": [
         {
@@ -90,7 +108,8 @@ async def list_transformers(request):
           "sp": 3
         }
       ]
-}
+    }
+    --------
                   ''')
 @doc.consumes(doc.JsonBody({}), location="body")
 @doc.consumes(doc.String(name="name"), location="path", required=True)
@@ -228,9 +247,8 @@ async def list_predictors(request):
 @doc.tag('predictors')
 @doc.summary("Save an object in 'predictors'")
 @doc.description('''
-<b>model_id:</b> choose one model (see <b>POST /models/{name}</b>) or <i>"auto"</i>
-<font color="#800000"><b>AUTOML parameters must be set in the previous service!</b></font>
-<b>transformer_id:</b> choose one transformer (see <b>POST /transformers/{name}</b>) or <i>"auto"</i> or <i>"none"</i> ''')
+<b>model_id:</b> choose one model (see <b>POST /models/{name}</b>)
+<b>transformer_id:</b> choose one transformer (see <b>POST /transformers/{name}</b>) or <i>"none"</i> ''')
 @doc.consumes(doc.String(name="transformer_id"), location="query")
 @doc.consumes(doc.String(name="model_id"), location="query")
 @doc.consumes(doc.String(name="description"), location="query")
@@ -356,16 +374,23 @@ async def delete_predictor(request, name):
 @doc.description('''
     Examples
     --------
-    data = {"data":[{"Date_Time": "01/03/2010 08:00:20" },
-           {"Date_Time": "01/10/2010"},
-           {"Date_Time": "01/17/2010  08:00:20"},
-           {"Date_Time": "01/24/2010  09:00:20"},
-           {"Date_Time": "01/31/2010  08:20:40"}],
-         "target":[1509634,1581344, 1614204, 1897725, 1759063]}
+    data = {"data":[{"Date_Time": "01/03/2010  08:20:40" },
+                    {"Date_Time": "01/10/2010  08:20:40"},
+                    {"Date_Time": "01/17/2010  08:20:40"},
+                    {"Date_Time": "01/24/2010  08:20:40"},
+                    {"Date_Time": "01/31/2010  08:20:40"},
+                    {"Date_Time": "02/07/2010  08:20:40"},
+                    {"Date_Time": "02/14/2010  08:20:40"},
+                    {"Date_Time": "02/21/2010  08:20:40"},
+                    {"Date_Time": "02/28/2010  08:20:40"},
+                    {"Date_Time": "03/07/2010  08:20:40"},
+                    {"Date_Time": "03/14/2010  08:20:40"},
+                    {"Date_Time": "03/21/2010  08:20:40"}],
+     "target":[1509634,1581344, 1614204, 1897725, 1759063,1320022, 1559063, 1659063, 1859063, 1551083, 1819012, 1801029]}
     ...................
                ''')
 # @doc.consumes(doc.String(name="fit_params"), location="query")
-@doc.consumes(doc.JsonBody({}), location="body")
+@doc.consumes(doc.JsonBody({}), location="body", required=True)
 # @doc.consumes(doc.Boolean(name="report"), location="query")
 # @doc.consumes(doc.Integer(name="cv"), location="query")
 # @doc.consumes(doc.Boolean(name="partial"), location="query")
@@ -373,6 +398,7 @@ async def delete_predictor(request, name):
 @doc.consumes(doc.String(name="task", choices=['classification', 'forecasting', 'none']), location="query")
 @doc.consumes(doc.Integer(name="forecasting_horizon"), location="query", required=False)
 @doc.consumes(doc.String(name="datetime_feature"), location="query", required=True)
+@doc.consumes(doc.String(name="datetime_frequency", choices=["Years", "Months", "Days", "hours", "minutes", "seconds"]))
 @doc.consumes(doc.String(name="name"), location="path", required=True)
 async def fit(request, name):
     print("fitting")
@@ -384,6 +410,7 @@ async def fit(request, name):
     print("bp: ",predictor_blueprint)
     dparams = dict(test_size=.2,
                    forecasting_horizon=None,
+                   datetime_frequency = "s",
                    # partial=False,
                    fit_params=dict(),
                    # cv=0,
@@ -392,6 +419,7 @@ async def fit(request, name):
                    # save_dataset=False
                    )
     params = {**dparams, **load_params(request.args)}
+    params["datetime_frequency"] = params["datetime_frequency"][0]
     print("parameters::: ",params)
     data = request.json
     print("data", data)
@@ -409,19 +437,75 @@ async def fit(request, name):
     #         if predictor_path / 'development' in list(predictor_path.glob('*')):
     #             raise FitException(f'Predictor "{name}" already fitted')
 
-    return sanic.json(f"Predictor {name} correctly fitted")
+    return sanic.json(f"Predictor '{name}' correctly fitted")
 
 
-@app.post("/predict")
-@doc.summary('Use an existing predictor')
-async def predict(request):
-    return "predict"
+@bp.post("/predictors/<name>/predict")
+@doc.tag('predictors')
+@doc.summary('Use an existing predictor to predict data')
+@doc.consumes(doc.JsonBody({}), location="body", required=False)
+@doc.consumes(doc.Integer(name="forecasting_horizon"), location="query", required=False)
+@doc.consumes(doc.String(name="name"), location="path", required=True)
+async def predict(request, name):
+    name = unquote(name)
+
+    ### check predictor exist ###
+    path = repo_path / 'predictors' / name
+    branch = "development"
+    params = {**load_params(request.args)}
+    if path / branch not in list(path.glob('*')):
+        raise SanicException(f'Predictor "{name}" is not fitted', status_code=400)
+    print("starting prediction..")
+    pipeline = load_pipeline(name, branch, repo_path=repo_path)
+
+    data = None#pd.DataFrame(request.json).fillna(np.nan)
+    try:
+        preds = pipeline.predict(X = data, horizon=params["forecasting_horizon"])#, include_probs=params['include_probs'])
+        # if params['include_probs']:
+        #     preds = [[[c,float(p)] for c,p in el] for el in preds]
+        # else:
+        #     preds = preds.tolist()
+    except Exception as e:
+        return sanic.json(str(e), status=400)
+
+    return sanic.json(preds)
 
 
-@app.post("/evaluate")
+@bp.post("/predictors/<name>/evaluate")
+@doc.tag('predictors')
 @doc.summary('Evaluate existing predictors in history')
 async def evaluate(request):
     return "evaluate"
+
+
+@bp.post("/predictors/import")
+@doc.tag('predictors')
+@doc.summary('Upload existing predictor')
+@doc.consumes(doc.File(name="f"), location="formData", content_type="multipart/form-data", required=True)
+async def import_predictor(request):
+    path = repo_path / 'predictors'
+    file = request.files.get('f')
+    if file.name.endswith('.zip'):
+        import_zipfile(file, path)
+    else:
+        raise Exception("Error")
+    return sanic.json('Predictor correctly imported')
+
+
+@bp.get("/predictors/<name>/export")
+@doc.tag('predictors')
+@doc.summary('Download existing predictor')
+@doc.consumes(doc.String(name="name"), location="path", required=True)
+async def export_predictor(request, name):
+    name = unquote(name)
+
+    file_name = name + '.zip'
+    path = repo_path / 'predictors' / name
+    buffer = io.BytesIO()
+    make_zipfile(buffer, path)
+    buffer.seek(0)
+    headers = {'Content-Disposition': 'attachment; filename="{}"'.format(file_name)}
+    return raw(buffer.getvalue(), headers=headers)
 
 
 @app.exception(Exception)
