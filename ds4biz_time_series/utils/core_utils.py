@@ -75,7 +75,7 @@ class FileSystemVC(VersionControl):
 
     def __init__(self, path: Path, history_limit=0, save_date=True):
         self.path = path
-        self.branch = 'master'
+        self.branch = 'development'
         print("si")
         try:
             print(self.path / self.branch)
@@ -295,6 +295,7 @@ def load_pipeline(model_id,
 
     logger.debug('MODEL IS FITTED')
     fsvc = FileSystemVC(path) if not dao else dao(path)
+    print(f"branch:: {branch}")
     fsvc.checkout(branch)
     for el in ['transformer', 'model']:
         print(el)
@@ -303,4 +304,5 @@ def load_pipeline(model_id,
     ### se non lo ha ancora in memoria, lo carica
     if im_dao:
         im_dao.load(model_id, pipeline)
+    print("pipeline loaded")
     return pipeline

@@ -395,10 +395,10 @@ async def delete_predictor(request, name):
 # @doc.consumes(doc.Integer(name="cv"), location="query")
 # @doc.consumes(doc.Boolean(name="partial"), location="query")
 @doc.consumes(doc.Float(name="test_size"), location="query")
-@doc.consumes(doc.String(name="task", choices=['classification', 'forecasting', 'none']), location="query")
+@doc.consumes(doc.String(name="task", choices=['classification', 'forecasting', 'none']), location="query", required=True)
 @doc.consumes(doc.Integer(name="forecasting_horizon"), location="query", required=False)
 @doc.consumes(doc.String(name="datetime_feature"), location="query", required=True)
-@doc.consumes(doc.String(name="datetime_frequency", choices=["Years", "Months", "Days", "hours", "minutes", "seconds"]))
+@doc.consumes(doc.String(name="datetime_frequency", choices=["Years", "Months", "Days", "hours", "minutes", "seconds"]), required=True)
 @doc.consumes(doc.String(name="name"), location="path", required=True)
 async def fit(request, name):
     print("fitting")
@@ -420,6 +420,7 @@ async def fit(request, name):
                    )
     params = {**dparams, **load_params(request.args)}
     params["datetime_frequency"] = params["datetime_frequency"][0]
+
     print("parameters::: ",params)
     data = request.json
     print("data", data)
@@ -451,23 +452,25 @@ async def predict(request, name):
 
     ### check predictor exist ###
     path = repo_path / 'predictors' / name
-    branch = "development"
+    branch = "development" #todo: aggiungere a fit e predict parametro branch
     params = {**load_params(request.args)}
     if path / branch not in list(path.glob('*')):
         raise SanicException(f'Predictor "{name}" is not fitted', status_code=400)
     print("starting prediction..")
     pipeline = load_pipeline(name, branch, repo_path=repo_path)
-
+    print("qui")
     data = None#pd.DataFrame(request.json).fillna(np.nan)
     try:
+        print("nel try")
         preds = pipeline.predict(X = data, horizon=params["forecasting_horizon"])#, include_probs=params['include_probs'])
         # if params['include_probs']:
         #     preds = [[[c,float(p)] for c,p in el] for el in preds]
         # else:
         #     preds = preds.tolist()
     except Exception as e:
+        print("exxxxxxx")
         return sanic.json(str(e), status=400)
-
+    print(preds)
     return sanic.json(preds)
 
 

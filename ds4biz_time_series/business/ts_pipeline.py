@@ -95,4 +95,6 @@ class TSPipeline():
                 #     else:
                 #         raise PredictProbaException("%s has not predict_proba" % obj.__class__.__name__)
                 # else:
-                return obj.predict(fh=fh, X=X, **kwargs)
+                preds = obj.predict(fh=fh, X=X, **kwargs)
+                preds = preds.to_dict()
+                return preds
