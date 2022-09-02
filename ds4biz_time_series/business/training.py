@@ -13,7 +13,7 @@ from sktime.forecasting.model_selection import temporal_train_test_split
 # from ds4biz_predictor_core.utils.ml_utils import save_pipeline
 
 from ds4biz_time_series.dao.fs_dao import JSONFSDAO
-from ds4biz_time_series.utils.core_utils import save_pipeline
+from ds4biz_time_series.utils.core_utils import save_pipeline, to_dataframe
 from ds4biz_time_series.utils.logger_utils import logger
 
 repo_path = Path(REPO_PATH)
@@ -26,9 +26,9 @@ def training_task(pred_id: str, data: Dict, datetime_feature:str,  datetime_freq
     data = data.get("data", None)
     fitting_time = datetime.now()
     logger.debug(f"Splitting data, test size: {test_size}")
-    df = pd.DataFrame(data)
+    df = to_dataframe(data)
     if not datetime_feature in df.columns:
-            raise Exception("The datetime_feature specified doesn't match any features in your data, please check.")
+            raise Exception("The datetime_feature specified doesn't match any features in your data, please check again.")
 
     if len(df.columns)==1:
         print("solo una feature")

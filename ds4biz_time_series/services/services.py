@@ -3,6 +3,7 @@ import re
 import shutil
 import time
 import traceback
+from http.cookiejar import request_path
 
 import numpy as np
 import pandas as pd
@@ -19,8 +20,10 @@ from sanic.response import raw
 # app.blueprint(swagger_blueprint)
 from ds4biz_time_series.business.training import training_pipeline
 from ds4biz_time_series.config.AppConfig import REPO_PATH
+from ds4biz_time_series.config.factory_config import FACTORY
 from ds4biz_time_series.dao.fs_dao import JSONFSDAO
-from ds4biz_time_series.utils.core_utils import load_pipeline
+from ds4biz_time_series.utils.core_utils import load_pipeline, to_dataframe
+from ds4biz_time_series.utils.data_utils import preprocessing_data
 from ds4biz_time_series.utils.logger_utils import logger
 from ds4biz_time_series.utils.ppom_utils import get_pom_major_minor
 from sanic.exceptions import SanicException, NotFound
@@ -390,12 +393,12 @@ async def delete_predictor(request, name):
     ...................
                ''')
 # @doc.consumes(doc.String(name="fit_params"), location="query")
-@doc.consumes(doc.JsonBody({}), location="body", required=True)
+@doc.consumes(doc.JsonBody({'data': doc.List(doc.Dictionary), 'target': doc.List()}), location="body", required=True)
 # @doc.consumes(doc.Boolean(name="report"), location="query")
 # @doc.consumes(doc.Integer(name="cv"), location="query")
 # @doc.consumes(doc.Boolean(name="partial"), location="query")
 @doc.consumes(doc.Float(name="test_size"), location="query")
-@doc.consumes(doc.String(name="task", choices=['classification', 'forecasting', 'none']), location="query", required=True)
+@doc.consumes(doc.String(name="task", choices=[ 'forecasting']), location="query", required=True)#'classification', 'none'
 @doc.consumes(doc.Integer(name="forecasting_horizon"), location="query", required=False)
 @doc.consumes(doc.String(name="datetime_feature"), location="query", required=True)
 @doc.consumes(doc.String(name="datetime_frequency", choices=["Years", "Months", "Days", "hours", "minutes", "seconds"]), required=True)
@@ -415,7 +418,7 @@ async def fit(request, name):
                    fit_params=dict(),
                    # cv=0,
                    # report=False, history_limit=0,
-                   task='none',
+                   task='forecasting',
                    # save_dataset=False
                    )
     params = {**dparams, **load_params(request.args)}
@@ -459,7 +462,8 @@ async def predict(request, name):
     print("starting prediction..")
     pipeline = load_pipeline(name, branch, repo_path=repo_path)
     print("qui")
-    data = None#pd.DataFrame(request.json).fillna(np.nan)
+    data = request.json
+    data = to_dataframe(data) if data else None #pd.DataFrame(request.json).fillna(np.nan)
     try:
         print("nel try")
         preds = pipeline.predict(X = data, horizon=params["forecasting_horizon"])#, include_probs=params['include_probs'])
@@ -477,8 +481,33 @@ async def predict(request, name):
 @bp.post("/predictors/<name>/evaluate")
 @doc.tag('predictors')
 @doc.summary('Evaluate existing predictors in history')
-async def evaluate(request):
-    return "evaluate"
+@doc.consumes(doc.JsonBody({'data': doc.List(doc.Dictionary), 'target': doc.List()}), location="body")
+# @doc.consumes(doc.JsonBody({}), location="body", required=False)
+@doc.consumes(doc.Integer(name="forecasting_horizon"), location="query", required=False)
+@doc.consumes(doc.String(name="name"), location="path", required=True)
+async def evaluate(request, name):
+    branch = "development"
+    params = {**load_params(request.args)}
+    params["branch"] = branch
+    name = unquote(name)
+    body = request.json
+
+    # y = FACTORY(body['target'])
+    try:
+        data = preprocessing_data(body, datetime_feature="dt", datetime_frequency="M")
+    except Exception as e:
+        print("WWWWWWWWWWWWWWWWWWWWWWWWWWWWW")
+        print(e)
+    print("data preprocessed")
+    y = data["y"]
+    X = data["X"]
+    pipeline = load_pipeline(name, params['branch'], repo_path=repo_path)
+    datetime = pipeline.date.strftime('%Y-%m-%d %H:%M:%S.%f')
+    print("computing report forecast")
+    report = pipeline.get_forecast_report(y=y, X=X)
+    res = [{"report_test":  report, "datetime": datetime,
+            "task": "forecast"}]
+    return sanic.json(res)
 
 
 @bp.post("/predictors/import")

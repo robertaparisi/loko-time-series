@@ -1,4 +1,5 @@
 import os
+import urllib
 from abc import ABC
 from collections import defaultdict
 import time
@@ -6,8 +7,14 @@ from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
 import hashlib
+from tempfile import NamedTemporaryFile
 from typing import List
+from urllib.parse import urlparse
+
 import joblib
+import numpy as np
+import pandas as pd
+from sklearn.ensemble._gradient_boosting import csr_matrix
 
 from ds4biz_time_series.business.ts_pipeline import TSPipeline
 from ds4biz_time_series.utils.history_utils import History
@@ -306,3 +313,40 @@ def load_pipeline(model_id,
         im_dao.load(model_id, pipeline)
     print("pipeline loaded")
     return pipeline
+
+def is_url(object):
+    if not isinstance(object, str):
+        return False
+    try:
+        result = urlparse(object)
+        return all([result.scheme, result.netloc])
+    except ValueError:
+        return False
+
+def to_dataframe(data, **kwargs):
+    """Transforms different kinds of data in a pandas DataFrame"""
+
+    if is_url(data):
+        with NamedTemporaryFile() as o:
+            urllib.request.urlretrieve(data, o.name)
+            return pd.read_csv(o, **kwargs)
+
+    if isinstance(data, pd.DataFrame):
+        return data
+
+    if isinstance(data, csr_matrix):
+        return pd.DataFrame(data.toarray(), **kwargs)
+
+    # if isinstance(data, list) and isinstance(data[0], dict):
+        # temp = defaultdict(list)
+        # columns = set()
+        # for el in data:
+        #     columns.update(el.keys())
+        # columns = sorted(list(columns))
+        # for el in data:
+        #     for k in columns:
+        #         temp[k].append(el.get(k))
+        # return pd.DataFrame(temp, columns=columns, **kwargs)
+    return pd.DataFrame(data, **kwargs).fillna(np.nan)
+
+
