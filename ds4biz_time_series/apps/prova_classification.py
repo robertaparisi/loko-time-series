@@ -6,3 +6,8 @@ X, y = load_arrow_head(return_X_y=True)
 # print(pd.MultiIndex.from_(X))
 
 #{"target": ['0' '1' '2' '0' '1' '2' '0' '1' '2' '0']}
+
+from sktime.forecasting.base import ForecastingHorizon
+idx = pd.PeriodIndex(['2010-03', '2010-04'], dtype='period[M]', name='Date_Time')
+fh = ForecastingHorizon(idx, is_relative =False)
+print(fh)

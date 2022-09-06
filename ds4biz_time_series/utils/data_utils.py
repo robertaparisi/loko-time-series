@@ -6,15 +6,10 @@ from ds4biz_time_series.utils.logger_utils import logger
 
 def preprocessing_data(data, datetime_feature, datetime_frequency, task="forecasting"):
 
-    data = data.get("data", None)
-    print(data)
+    eval_data = data.get("data", None)
     target = data['target'] if task != 'classification' else [str(el) for el in data['target']]
-    print(target)
-    df = to_dataframe(data)
+    df = to_dataframe(eval_data)
 
-    print(df)
-    print(target)
-    print("data divided")
     if not datetime_feature in df.columns:
         raise Exception("The datetime_feature specified doesn't match any features in your data, please check again.")
     if len(df.columns)==1:

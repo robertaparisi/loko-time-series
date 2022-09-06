@@ -1,6 +1,8 @@
+from types import NoneType
 from typing import List, Union
 
 import numpy as np
+import pandas as pd
 from sktime.forecasting.compose import TransformedTargetForecaster
 
 from ds4biz_time_series.model.transformer_model import TimeSeriesTransformer
@@ -8,7 +10,6 @@ from sktime.forecasting.base import ForecastingHorizon
 
 from ds4biz_time_series.utils.logger_utils import logger
 from sktime.performance_metrics.forecasting import mean_squared_error, mean_absolute_error, MeanAbsolutePercentageError
-
 
 
 class TSPipeline():
@@ -33,7 +34,6 @@ class TSPipeline():
     #     self.pipeline = TransformedTargetForecaster(pipeline_steps)
 
     def fit(self, y, X=None, horizon: Union[int, list] = None, **kwargs):
-        print("================================== ", self.__dict__)
         logger.info(f"fitting predictor {self.id}")
         logger.debug('y size: %s' % str(len(y)))
         # logger.debug("n. target: ", str(y.shape[1]))
@@ -44,15 +44,12 @@ class TSPipeline():
             logger.debug(f'Fitting {name}')
             if name == 'transformer':
                 logger.debug('TRANSFORMER: %s' % str(obj))
-                print("------::: ", y)
                 y = obj.fit_transform(y)
-                print("oki")
                 # y = y.astype(np.float)
                 # logger.debug('X transformed size: %s' % str(X.shape))
 
             if name == 'model':
                 logger.debug('MODEL: %s' % str(obj))
-                print("covariates data:  ", X)
                 # m = obj.fit(y = y, x=X, **kwargs)
                 if horizon:
                     if isinstance(horizon, int):
@@ -64,10 +61,8 @@ class TSPipeline():
                     if obj.get_tag("requires-fh-in-fit"):
                         raise Exception("You have to specify an horizon in order to fit this model..")
                     obj.fit(y=y, X=X, **kwargs)
-                print("end fitting - ts_pipeline")
 
-    def predict(self, X=None, horizon: Union[int, list] = None, **kwargs):
-
+    def predict(self, X=None, horizon: Union[int, list, pd.PeriodIndex] = None, **kwargs):
         logger.debug('PREDICT')
         # logger.debug('X size: %s' % str(X.shape))
         for name, obj in self.steps:
@@ -80,12 +75,17 @@ class TSPipeline():
             if name == 'model':
 
                 logger.debug('MODEL: %s' % str(obj))
-                if horizon:
+                is_relative = True
+                if not isinstance(horizon, NoneType):
                     if isinstance(horizon, int):
                         horizon = np.arange(1, horizon + 1)
+                    if isinstance(horizon, pd.PeriodIndex):
+                        is_relative = False
                 else:
+                    logger.debug("no forecasting horizon specified, predicting the next available occurrence...")
                     horizon = [1]
-                fh = ForecastingHorizon(horizon, is_relative=True)
+
+                fh = ForecastingHorizon(horizon, is_relative=is_relative)
                 # if include_probs:
                 #     if hasattr(obj, "predict_proba"):
                 #         classes = obj.classes_
@@ -103,25 +103,41 @@ class TSPipeline():
 
     def get_forecast_report(self, y, X=None):
         # horizon =
-        print(X)
-        y_pred = self.predict(X=X)
+        if not X:
+            horizon = y.index
+        y_pred = self.predict(X=X, horizon=horizon)
+        y_pred = pd.DataFrame(y_pred)
+        logger.debug("computing metrics")
+        mape = MeanAbsolutePercentageError()
+        mape = mape.evaluate(y, y_pred)
+
+        smape = MeanAbsolutePercentageError(symmetric=True)
+        smape = smape.evaluate(y, y_pred)
+
+        mse = mean_squared_error(y, y_pred)
+        rmse = mean_squared_error(y, y_pred, squared=False)
+        mae = mean_absolute_error(y, y_pred)
+        # R2 = r2_score(y, y_pred),
+        # EXPLAINED_VARIANCE = explained_variance_score(y, y_pred),
+        perc_error = mae * 100.0 / (max(y.values.flatten()) - min(y.values.flatten()))
+        perc_error_recomputed = (abs(np.array(y_pred) - np.array(y)) / (np.array(y) + 1)).mean()
+        scatter = dict(y_true=y.values.flatten().tolist(), y_pred=y_pred.values.flatten().tolist())
 
         report = dict(
-                    MAPE = MeanAbsolutePercentageError(y, y_pred),
-                    SMAPE = MeanAbsolutePercentageError(y, y_pred),
-
-                    MSE = mean_squared_error(y, y_pred),
-                    RMSE = mean_squared_error(y, y_pred, squared=False),
-                    MAE = mean_absolute_error(y, y_pred),
-
-                    # R2 = r2_score(y, y_pred),
-                    # EXPLAINED_VARIANCE = explained_variance_score(y, y_pred),
-                    PERC_ERROR = mean_absolute_error(y, y_pred) * 100.0 / (max(y) - min(y)),
-                    PERC_ERROR_RECOMPUTED = (abs(np.array(y_pred) - np.array(y)) / (np.array(y) + 1)).mean(),
-                    scatter = dict(y_true=y, y_pred=y_pred.tolist()))
+            MAPE=mape,
+            SMAPE=smape,
+            MSE=mse,
+            RMSE=rmse,
+            MAE=mae,
+            # R2 = r2_score(y, y_pred),
+            # EXPLAINED_VARIANCE = explained_variance_score(y, y_pred),
+            PERC_ERROR=perc_error,
+            PERC_ERROR_RECOMPUTED=perc_error_recomputed,
+            scatter=scatter)
         logger.debug('MSE SCORE: %s' % str(report['MSE']))
-        logger.debug('R2: %s' % str(report['R2']))
+        # logger.debug('R2: %s' % str(report['R2']))
         return report
+
 
     # def partial_fit(self, df, update_params=False):
     #     """
@@ -131,7 +147,7 @@ class TSPipeline():
     #     :param update_params: If True, the model parameters are updated. If False, the model parameters are not updated,
     #     defaults to False (optional)
     #     """
-        # self.model.update(df, update_params=update_params)
+    # self.model.update(df, update_params=update_params)
 
     # def get_params(self):
     #     """

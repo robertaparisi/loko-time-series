@@ -325,7 +325,6 @@ def is_url(object):
 
 def to_dataframe(data, **kwargs):
     """Transforms different kinds of data in a pandas DataFrame"""
-
     if is_url(data):
         with NamedTemporaryFile() as o:
             urllib.request.urlretrieve(data, o.name)

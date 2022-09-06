@@ -483,31 +483,35 @@ async def predict(request, name):
 @doc.summary('Evaluate existing predictors in history')
 @doc.consumes(doc.JsonBody({'data': doc.List(doc.Dictionary), 'target': doc.List()}), location="body")
 # @doc.consumes(doc.JsonBody({}), location="body", required=False)
-@doc.consumes(doc.Integer(name="forecasting_horizon"), location="query", required=False)
+# @doc.consumes(doc.Integer(name="forecasting_horizon"), location="query", required=False)
 @doc.consumes(doc.String(name="name"), location="path", required=True)
 async def evaluate(request, name):
     branch = "development"
-    params = {**load_params(request.args)}
+    # params = {**load_params(request.args)}
+    params = dict()
     params["branch"] = branch
     name = unquote(name)
     body = request.json
 
-    # y = FACTORY(body['target'])
-    try:
-        data = preprocessing_data(body, datetime_feature="dt", datetime_frequency="M")
-    except Exception as e:
-        print("WWWWWWWWWWWWWWWWWWWWWWWWWWWWW")
-        print(e)
-    print("data preprocessed")
-    y = data["y"]
-    X = data["X"]
+    logger.debug("loading predictor pipeline...")
     pipeline = load_pipeline(name, params['branch'], repo_path=repo_path)
     datetime = pipeline.date.strftime('%Y-%m-%d %H:%M:%S.%f')
-    print("computing report forecast")
+
+    logger.debug("pre-processing evaluation data...")
+    # y = FACTORY(body['target'])
+    data = preprocessing_data(body, datetime_feature="Date_Time", datetime_frequency="M")
+
+    y = data["y"]
+    X = data["X"]
+
+    logger.debug("computing forecast report")
     report = pipeline.get_forecast_report(y=y, X=X)
+    logger.debug(f"report: {report}")
     res = [{"report_test":  report, "datetime": datetime,
             "task": "forecast"}]
+    print("res:::",res)
     return sanic.json(res)
+
 
 
 @bp.post("/predictors/import")
