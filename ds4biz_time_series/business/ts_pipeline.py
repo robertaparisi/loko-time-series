@@ -98,6 +98,10 @@ class TSPipeline():
                 #         raise PredictProbaException("%s has not predict_proba" % obj.__class__.__name__)
                 # else:
                 preds = obj.predict(fh=fh, X=X, **kwargs)
+                for name, obj in self.steps:
+                    if name == "transformer":
+                        preds = obj.inverse_transform(preds)
+                        break
                 preds = preds.to_dict()
                 return preds
 

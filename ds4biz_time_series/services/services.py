@@ -459,22 +459,16 @@ async def predict(request, name):
     params = {**load_params(request.args)}
     if path / branch not in list(path.glob('*')):
         raise SanicException(f'Predictor "{name}" is not fitted', status_code=400)
-    print("starting prediction..")
     pipeline = load_pipeline(name, branch, repo_path=repo_path)
-    print("qui")
     data = request.json
     data = to_dataframe(data) if data else None #pd.DataFrame(request.json).fillna(np.nan)
-    try:
-        print("nel try")
-        preds = pipeline.predict(X = data, horizon=params["forecasting_horizon"])#, include_probs=params['include_probs'])
-        # if params['include_probs']:
-        #     preds = [[[c,float(p)] for c,p in el] for el in preds]
-        # else:
-        #     preds = preds.tolist()
-    except Exception as e:
-        print("exxxxxxx")
-        return sanic.json(str(e), status=400)
-    print(preds)
+
+    preds = pipeline.predict(X = data, horizon=params["forecasting_horizon"])#, include_probs=params['include_probs'])
+    # if params['include_probs']:
+    #     preds = [[[c,float(p)] for c,p in el] for el in preds]
+    # else:
+    #     preds = preds.tolist()
+
     return sanic.json(preds)
 
 
