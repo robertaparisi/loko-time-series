@@ -3,7 +3,6 @@ import re
 import shutil
 import time
 import traceback
-from http.cookiejar import request_path
 
 import numpy as np
 import pandas as pd
@@ -394,18 +393,16 @@ async def delete_predictor(request, name):
                ''')
 # @doc.consumes(doc.String(name="fit_params"), location="query")
 @doc.consumes(doc.JsonBody({'data': doc.List(doc.Dictionary), 'target': doc.List()}), location="body", required=True)
-# @doc.consumes(doc.Boolean(name="report"), location="query")
 # @doc.consumes(doc.Integer(name="cv"), location="query")
 # @doc.consumes(doc.Boolean(name="partial"), location="query")
 @doc.consumes(doc.Float(name="test_size"), location="query")
+@doc.consumes(doc.Boolean(name="report"), location="query")
 @doc.consumes(doc.String(name="task", choices=[ 'forecasting']), location="query", required=True)#'classification', 'none'
 @doc.consumes(doc.Integer(name="forecasting_horizon"), location="query", required=False)
 @doc.consumes(doc.String(name="datetime_feature"), location="query", required=True)
 @doc.consumes(doc.String(name="datetime_frequency", choices=["Years", "Months", "Days", "hours", "minutes", "seconds"]), required=True)
 @doc.consumes(doc.String(name="name"), location="path", required=True)
 async def fit(request, name):
-    print("fitting")
-
     name = unquote(name)
     predictor_path = repo_path / 'predictors' / name
     print("predictor: ", predictor_path)
@@ -417,7 +414,8 @@ async def fit(request, name):
                    # partial=False,
                    fit_params=dict(),
                    # cv=0,
-                   # report=False, history_limit=0,
+                   report=False,
+                   # history_limit=0,
                    task='forecasting',
                    # save_dataset=False
                    )

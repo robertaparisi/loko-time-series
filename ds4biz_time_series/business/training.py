@@ -19,7 +19,8 @@ from ds4biz_time_series.utils.logger_utils import logger
 repo_path = Path(REPO_PATH)
 
 
-def training_task(pred_id: str, data: Dict, datetime_feature:str,  datetime_frequency:str, task: str, test_size: Union[float, int], ts_pipeline: TSPipeline,
+def training_task(pred_id: str, data: Dict, datetime_feature: str, datetime_frequency: str, task: str, report: bool,
+                  test_size: Union[float, int], ts_pipeline: TSPipeline,
                   forecasting_horizon: Union[int, list], fit_params: dict):
     logger.debug("Pipeline START")
     target = data['target'] if task != 'classification' else [str(el) for el in data['target']]
@@ -28,25 +29,30 @@ def training_task(pred_id: str, data: Dict, datetime_feature:str,  datetime_freq
     logger.debug(f"Splitting data, test size: {test_size}")
     df = to_dataframe(data)
     if not datetime_feature in df.columns:
-            raise Exception("The datetime_feature specified doesn't match any features in your data, please check again.")
+        raise Exception("The datetime_feature specified doesn't match any features in your data, please check again.")
 
-    if len(df.columns)==1:
+    if len(df.columns) == 1:
         print("solo una feature")
         df["target"] = target
-        print("aggiornato ",df.columns)
+        print("aggiornato ", df.columns)
 
         df[datetime_feature] = pd.PeriodIndex(df["Date_Time"], freq=datetime_frequency)
         # df[datetime_feature]= pd.to_datetime(df[datetime_feature])
         df.set_index(datetime_feature, inplace=True)
-        print("settato indice")
-        y_train, y_test = temporal_train_test_split(y=df, test_size=test_size)
+        if report:
+            y_train, y_test = temporal_train_test_split(y=df, test_size=test_size)
+        else:
+            y_train = df
         logger.debug("Training model")
         res = ts_pipeline.fit(y_train, horizon=forecasting_horizon, **fit_params)
     else:
         df.set_index(datetime_feature, inplace=True)
-        X_train, X_test, y_train, y_test = temporal_train_test_split(y=target, X=df, test_size=test_size)
+        if report:
+            X_train, X_test, y_train, y_test = temporal_train_test_split(y=target, X=df, test_size=test_size)
+        else:
+            X_train = df
+            y_train = target
         X_train = pd.DataFrame(X_train).fillna(np.nan)
-        print(X_train)
         logger.debug("Training model")
         res = ts_pipeline.fit(y_train, X_train, horizon=forecasting_horizon, **fit_params)
 
@@ -55,8 +61,17 @@ def training_task(pred_id: str, data: Dict, datetime_feature:str,  datetime_freq
     save_pipeline(ts_pipeline, branch="development", history_limit=1, repo_path=repo_path)
     logger.debug("Model trained")
 
+    res_report_train = None
+    res_report_test = None
+    if report:
+        logger.debug("Computing Metrics")
+        X_test = to_dataframe(X_test)
+        res_report_train = ts_pipeline.get_forecast_report(y=y_train, X=X_train)
+        res_report_test = ts_pipeline.get_forecast_report(y=y_test, X=X_test)
+
     tsum = dict(
-        # tdist=distro, cv_scores=scores, report_training=res_report_train, report_test=res_report_test,
+        # tdist=distro, cv_scores=scores,
+        report_training=res_report_train, report_test=res_report_test,
         task=task, test_size=test_size)  # if report else None
     dao = JSONFSDAO(repo_path / "predictors" / pred_id / "history", history=True, date=fitting_time)
     dao.save(tsum, "train_summary.json")
@@ -65,7 +80,8 @@ def training_task(pred_id: str, data: Dict, datetime_feature:str,  datetime_freq
     return res
 
 
-def training_pipeline(predictor_blueprint: Dict, data: Dict, datetime_feature:str, datetime_frequency:str, task: str, test_size: Union[float, int], fit_params: Dict,
+def training_pipeline(predictor_blueprint: Dict, data: Dict, datetime_feature: str, datetime_frequency: str, task: str,
+                      report: bool, test_size: Union[float, int], fit_params: Dict,
                       forecasting_horizon: Union[int, list]):
     print("dentro")
     pred_id = predictor_blueprint["id"]
@@ -83,4 +99,5 @@ def training_pipeline(predictor_blueprint: Dict, data: Dict, datetime_feature:st
         print("agg....")
         ts_pipeline.add([k, FACTORY(v)])
     print("training task")
-    training_task(pred_id, data, datetime_feature, datetime_frequency, task, test_size, ts_pipeline, forecasting_horizon, fit_params)
+    training_task(pred_id, data, datetime_feature, datetime_frequency, task, report, test_size, ts_pipeline,
+                  forecasting_horizon, fit_params)
