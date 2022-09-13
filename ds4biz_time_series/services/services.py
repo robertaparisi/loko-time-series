@@ -52,6 +52,7 @@ app.config["API_TITLE"] = name
 # app.config["REQUEST_MAX_SIZE"] = 20000000000 ## POI TOGLIERE!!
 CORS(app)
 
+
 @app.exception(Exception)
 async def manage_exception(request, exception):
     if isinstance(exception, SanicException):
@@ -298,12 +299,12 @@ async def create_predictor(request, name):
             # check_blueprint(mod, step='model')
 
     predictor_path.mkdir(exist_ok=True, parents=True)
-    bp = dict(id=name,
-              description=request.args.get('description', ''),
-              created_on=time.time() * 1000,
-              # img=request.args.get('img', 'predictor_base'),
-              steps=dict(transformer=transformer, model=mod))
-    serialize(predictor_path, bp)
+    predictor_blueprint = dict(id=name,
+                               description=request.args.get('description', ''),
+                               created_on=time.time() * 1000,
+                               # img=request.args.get('img', 'predictor_base'),
+                               steps=dict(transformer=transformer, model=mod))
+    serialize(predictor_path, predictor_blueprint)
     return sanic.json(f"Predictor '{name}' saved")
 
 
@@ -397,20 +398,24 @@ async def delete_predictor(request, name):
 # @doc.consumes(doc.Boolean(name="partial"), location="query")
 @doc.consumes(doc.Float(name="test_size"), location="query")
 @doc.consumes(doc.Boolean(name="report"), location="query")
-@doc.consumes(doc.String(name="task", choices=[ 'forecasting']), location="query", required=True)#'classification', 'none'
+@doc.consumes(doc.String(name="task", choices=['forecasting']), location="query",
+              required=True)  # 'classification', 'none'
 @doc.consumes(doc.Integer(name="forecasting_horizon"), location="query", required=False)
 @doc.consumes(doc.String(name="datetime_feature"), location="query", required=True)
-@doc.consumes(doc.String(name="datetime_frequency", choices=["Years", "Months", "Days", "hours", "minutes", "seconds"]), required=True)
+@doc.consumes(doc.String(name="datetime_frequency", choices=["Years", "Months", "Days", "hours", "minutes", "seconds"]),
+              required=True)
 @doc.consumes(doc.String(name="name"), location="path", required=True)
 async def fit(request, name):
     name = unquote(name)
     predictor_path = repo_path / 'predictors' / name
     print("predictor: ", predictor_path)
     predictor_blueprint = deserialize(predictor_path)
-    print("bp: ",predictor_blueprint)
+    # if not partial:
+
+    print("bp: ", predictor_blueprint)
     dparams = dict(test_size=.2,
                    forecasting_horizon=None,
-                   datetime_frequency = "s",
+                   datetime_frequency="s",
                    # partial=False,
                    fit_params=dict(),
                    # cv=0,
@@ -421,8 +426,11 @@ async def fit(request, name):
                    )
     params = {**dparams, **load_params(request.args)}
     params["datetime_frequency"] = params["datetime_frequency"][0]
+    predictor_blueprint["datetime_feature"] = params["datetime_feature"]
+    predictor_blueprint["datetime_frequency"] = params["datetime_frequency"]
+    serialize(predictor_path, predictor_blueprint)
 
-    print("parameters::: ",params)
+    print("parameters::: ", params)
     data = request.json
     print("data", data)
     try:
@@ -445,7 +453,7 @@ async def fit(request, name):
 @bp.post("/predictors/<name>/predict")
 @doc.tag('predictors')
 @doc.summary('Use an existing predictor to predict data')
-@doc.consumes(doc.JsonBody({}), location="body", required=False)
+@doc.consumes(doc.JsonBody({'data': doc.List(doc.Dictionary)}), location="body", required=False)
 @doc.consumes(doc.Integer(name="forecasting_horizon"), location="query", required=False)
 @doc.consumes(doc.String(name="name"), location="path", required=True)
 async def predict(request, name):
@@ -453,15 +461,21 @@ async def predict(request, name):
 
     ### check predictor exist ###
     path = repo_path / 'predictors' / name
-    branch = "development" #todo: aggiungere a fit e predict parametro branch
+    branch = "development"  # todo: aggiungere a fit e predict parametro branch
     params = {**load_params(request.args)}
     if path / branch not in list(path.glob('*')):
         raise SanicException(f'Predictor "{name}" is not fitted', status_code=400)
     pipeline = load_pipeline(name, branch, repo_path=repo_path)
-    data = request.json
-    data = to_dataframe(data) if data else None #pd.DataFrame(request.json).fillna(np.nan)
+    body = request.json
+    data = preprocessing_data(body, datetime_feature=pipeline.datetime_feature,
+                              datetime_frequency=pipeline.datetime_frequency, get_only_X=True)
 
-    preds = pipeline.predict(X = data, horizon=params["forecasting_horizon"])#, include_probs=params['include_probs'])
+
+    try:
+        preds = pipeline.predict(X=data["X"],
+                                 horizon=params["forecasting_horizon"])  # , include_probs=params['include_probs'])
+    except Exception as e:
+        print("eeeee", e)
     # if params['include_probs']:
     #     preds = [[[c,float(p)] for c,p in el] for el in preds]
     # else:
@@ -491,19 +505,21 @@ async def evaluate(request, name):
 
     logger.debug("pre-processing evaluation data...")
     # y = FACTORY(body['target'])
-    data = preprocessing_data(body, datetime_feature="Date_Time", datetime_frequency="M")
-
+    try:
+        data = preprocessing_data(body, datetime_feature=pipeline.datetime_feature,
+                                  datetime_frequency=pipeline.datetime_frequency)
+    except Exception as e:
+        print(f'----------------------{e}')
     y = data["y"]
     X = data["X"]
 
     logger.debug("computing forecast report")
     report = pipeline.get_forecast_report(y=y, X=X)
     logger.debug(f"report: {report}")
-    res = [{"report_test":  report, "datetime": datetime,
+    res = [{"report_test": report, "datetime": datetime,
             "task": "forecast"}]
-    print("res:::",res)
+    print("res:::", res)
     return sanic.json(res)
-
 
 
 @bp.post("/predictors/import")

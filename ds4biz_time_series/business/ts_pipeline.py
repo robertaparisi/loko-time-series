@@ -17,6 +17,8 @@ class TSPipeline():
         self.id = "Unknown"
         self.steps = []
         self.fitted = False
+        self.datetime_feature = None
+        self.datetime_frequency = None
         self.__dict__.update(kwargs)
         print("tspipeline ", self.__dict__)
 
@@ -36,15 +38,20 @@ class TSPipeline():
     def fit(self, y, X=None, horizon: Union[int, list] = None, **kwargs):
         logger.info(f"fitting predictor {self.id}")
         logger.debug('y size: %s' % str(len(y)))
+        logger.debug('y shape %s' % str(y.shape))
         # logger.debug("n. target: ", str(y.shape[1]))
-        if X:
+        if isinstance(X, pd.DataFrame):
             logger.debug('X size: %s' % str(X.shape))
         for i in range(len(self.steps)):
             name, obj = self.steps[i]
             logger.debug(f'Fitting {name}')
             if name == 'transformer':
                 logger.debug('TRANSFORMER: %s' % str(obj))
-                y = obj.fit_transform(y)
+                if isinstance(X, pd.DataFrame):
+                    obj.fit(X=y, y=X)
+                    y = obj.transform(X=y, y=X) #andiamo ad applicare la trasformazione su y, tenendo conto dei valori di X
+                else:
+                    y = obj.fit_transform(y)
                 # y = y.astype(np.float)
                 # logger.debug('X transformed size: %s' % str(X.shape))
 
@@ -62,30 +69,30 @@ class TSPipeline():
                         raise Exception("You have to specify an horizon in order to fit this model..")
                     obj.fit(y=y, X=X, **kwargs)
 
-    def predict(self, X=None, horizon: Union[int, list, pd.PeriodIndex] = None, **kwargs):
+    def predict(self, X=None, horizon: Union[int, list, pd.PeriodIndex] = None, h_is_relative: bool=True, **kwargs):
         logger.debug('PREDICT')
         # logger.debug('X size: %s' % str(X.shape))
         for name, obj in self.steps:
             if name == 'transformer':
                 logger.debug('TRANSFORMER: %s' % str(obj))
-                if X != None:
-                    X = obj.transform(X)
-                    X = X.astype(np.float)
-                    logger.debug('X transformed size: %s' % str(X.shape))
+                #todo: decidere se applicare transformer all'interno o all'esterno
+                # if isinstance(X, pd.DataFrame):
+                #     X = obj.transform(X)
+                #     X = X.astype(np.float)
+                #     logger.debug('X transformed size: %s' % str(X.shape))
             if name == 'model':
 
                 logger.debug('MODEL: %s' % str(obj))
-                is_relative = True
                 if not isinstance(horizon, NoneType):
                     if isinstance(horizon, int):
                         horizon = np.arange(1, horizon + 1)
                     if isinstance(horizon, pd.PeriodIndex):
-                        is_relative = False
+                        h_is_relative = False
                 else:
                     logger.debug("no forecasting horizon specified, predicting the next available occurrence...")
                     horizon = [1]
 
-                fh = ForecastingHorizon(horizon, is_relative=is_relative)
+                fh = ForecastingHorizon(horizon, is_relative=h_is_relative)
                 # if include_probs:
                 #     if hasattr(obj, "predict_proba"):
                 #         classes = obj.classes_
@@ -100,7 +107,7 @@ class TSPipeline():
                 preds = obj.predict(fh=fh, X=X, **kwargs)
                 for name, obj in self.steps:
                     if name == "transformer":
-                        preds = obj.inverse_transform(preds)
+                        preds = obj.inverse_transform(preds, X=X)
                         break
                 preds = preds.to_dict()
                 return preds
@@ -109,7 +116,10 @@ class TSPipeline():
         # horizon =
         if not X:
             horizon = y.index
-        y_pred = self.predict(X=X, horizon=horizon)
+        else:
+            horizon = X.index
+
+        y_pred = self.predict(X=X, horizon=horizon, h_is_relative=False)
         y_pred = pd.DataFrame(y_pred)
         logger.debug("computing metrics")
         mape = MeanAbsolutePercentageError()
@@ -141,7 +151,6 @@ class TSPipeline():
         logger.debug('MSE SCORE: %s' % str(report['MSE']))
         # logger.debug('R2: %s' % str(report['R2']))
         return report
-
 
     # def partial_fit(self, df, update_params=False):
     #     """
