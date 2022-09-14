@@ -46,11 +46,31 @@ def get_app(name):
 
 name = "time_series"
 app = get_app(name)
-bp = Blueprint("default", url_prefix=f"ds4biz/time_series/{get_pom_major_minor()}")
+# url_prefix=f"ds4biz/time_series/{get_pom_major_minor()}")
+bp = Blueprint("default")
 app.config["API_VERSION"] = get_pom_major_minor()
 app.config["API_TITLE"] = name
 # app.config["REQUEST_MAX_SIZE"] = 20000000000 ## POI TOGLIERE!!
 CORS(app)
+
+
+
+@bp.post("/")
+def test(request):
+    print("ciao")
+    args = request.json.get('args')
+    print("ARGS",args)
+    json = request.json.get("value")
+    print("JSON",json)
+    return sanic.json(dict(msg="Hello extensions!"))
+
+
+@bp.post("/files")
+def test2(request):
+    file = request.files['file']
+    fname = file.filename
+    print("You have uploaded a file called:",fname)
+    return sanic.json(dict(msg=f"Hello extensions, you have uploaded the file: {fname}!"))
 
 
 @app.exception(Exception)
@@ -569,4 +589,4 @@ async def manage_exception(request, exception):
 
 app.blueprint(bp)
 
-app.run("0.0.0.0", port=8080, auto_reload=True)
+app.run("0.0.0.0", port=8080, auto_reload=False)
