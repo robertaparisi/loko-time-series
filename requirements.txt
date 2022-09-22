@@ -1,5 +1,6 @@
 autots
 ds4biz-commons
+loko-extensions
 pandas
 sanic
 sanic_cors

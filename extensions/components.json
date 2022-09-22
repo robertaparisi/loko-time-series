@@ -1,49 +1,130 @@
 [
-  {
-    "name": "Extensions",
-    "events": null,
-    "group": "Custom",
-    "description": "",
-    "inputs": [
-      {
-        "id": "input",
-        "label": "input",
-        "service": "",
-        "to": "output"
-      },
-      {
-        "id": "file_input",
-        "label": "file_input",
-        "service": "files",
-        "to": "file_output"
-      }
-    ],
-    "outputs": [
-      {
-        "id": "output",
-        "label": "output"
-      },
-      {
-        "id": "file_output",
-        "label": "file_output"
-      }
-    ],
-    "configured": true,
-    "options": {
-      "group": "Custom",
-      "args": [
-        {
-          "name": "param_example",
-          "type": "text",
-          "label": "Param Example",
-          "helper": "just an example"
-        }
-      ],
-      "click": null,
-      "icon": "RiTyphoonFill",
-      "values": {
-      }
+ {
+  "name": "time-series",
+  "description": "TimeSeries components",
+  "configured": false,
+  "inputs": [
+   {
+    "id": "fit",
+    "label": "fit",
+    "service": "loko-services/predictors/fit",
+    "to": "fit"
+   },
+   {
+    "id": "predict",
+    "label": "predict",
+    "service": "loko-services/predictors/predict",
+    "to": "predict"
+   },
+   {
+    "id": "evaluate",
+    "label": "evaluate",
+    "service": "loko-services/predictors/evaluate",
+    "to": "evaluate"
+   }
+  ],
+  "outputs": [
+   {
+    "id": "fit",
+    "label": "fit"
+   },
+   {
+    "id": "predict",
+    "label": "predict"
+   },
+   {
+    "id": "evaluate",
+    "label": "evaluate"
+   }
+  ],
+  "options": {
+   "group": "Custom",
+   "icon": "RiTyphoonFill",
+   "click": null,
+   "values": {
+    "forecasting_horizon": 1,
+    "report": "false",
+    "test_size": 30,
+    "save_eval_report": "false"
+   },
+   "args": [
+    {
+     "name": "predictor_name",
+     "type": "asyncSelect",
+     "url": "http://ds4biz-time-series:8080/predictors",
+     "label": "Predictor Name",
+     "helper": "Digit the name of the predictor you want to use",
+     "group": "",
+     "value": null,
+     "description": ""
     },
-    "disabled": false
+    {
+     "name": "datetime_feature",
+     "type": "text",
+     "label": "Datetime Feature",
+     "helper": "Name of the feature to use as date-time reference",
+     "group": "fit",
+     "value": null,
+     "description": ""
+    },
+    {
+     "name": "datetime_frequency",
+     "type": "text",
+     "label": "Datetime Frequency",
+     "helper": "Time frequence required for the model ",
+     "group": "fit",
+     "value": null,
+     "description": ""
+    },
+    {
+     "name": "forecasting_horizon",
+     "type": "number",
+     "label": "Forecasting Horizon",
+     "helper": "",
+     "group": "fit",
+     "value": 1,
+     "description": ""
+    },
+    {
+     "name": "report",
+     "type": "boolean",
+     "label": "Compute metrics report",
+     "helper": "",
+     "group": "fit",
+     "value": "false",
+     "description": ""
+    },
+    {
+     "name": "test_size",
+     "type": "dynamic",
+     "label": "Test Size",
+     "helper": "",
+     "group": "fit",
+     "value": 30,
+     "description": "",
+     "parent": "report",
+     "condition": "{parent}===true",
+     "dynamicType": "number"
+    },
+    {
+     "name": "forecasting_horizon",
+     "type": "numeric",
+     "label": "Forecasting Horizon",
+     "helper": "",
+     "group": "predict",
+     "value": 1,
+     "description": ""
+    },
+    {
+     "name": "save_eval_report",
+     "type": "boolean",
+     "label": "Save metrics report",
+     "helper": "",
+     "group": "evaluate",
+     "value": "false",
+     "description": ""
+    }
+   ]
   }
+ }
 ]

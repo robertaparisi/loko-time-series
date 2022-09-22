@@ -28,6 +28,8 @@ def preprocessing_data(data, datetime_feature, datetime_frequency, task="forecas
     if len(df.columns)==1:
         logger.debug("only datetime feature available - no other covariates")
         df.set_index(datetime_feature, inplace=True)
+        target = df.copy()
+        df = None
         if get_only_X:
             return dict(X=df)
         else:

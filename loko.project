@@ -3,97 +3,15 @@
   "id": "ds4biz-time-series",
   "description": "",
   "created_on": "14/09/2022, 12:18:07",
-  "last_modify": "14/09/2022, 12:36:58",
+  "last_modify": "21/09/2022, 14:04:04",
   "graphs": {
     "main": {
       "nodes": [
         {
-          "id": "52f0b1ce-1c2a-4504-b1dd-9e3bb683bf28",
+          "id": "0bca8ca4-b3e6-4caf-9cf4-63a9c7e98c87",
           "position": {
-            "x": 701,
-            "y": 221
-          },
-          "type": "custom",
-          "dragHandle": "#nodeHandle",
-          "sourcePosition": "right",
-          "targetPosition": "left",
-          "width": 150,
-          "height": 56,
-          "selected": false,
-          "dragging": false,
-          "data": {
-            "name": "Extensions",
-            "events": null,
-            "description": "",
-            "inputs": [
-              {
-                "id": "input",
-                "label": "input",
-                "service": "",
-                "to": "output"
-              },
-              {
-                "id": "file_input",
-                "label": "file_input",
-                "service": "files",
-                "to": "file_output"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "output",
-                "label": "output"
-              },
-              {
-                "id": "file_output",
-                "label": "file_output"
-              }
-            ],
-            "configured": true,
-            "options": {
-              "group": "Custom",
-              "args": [
-                {
-                  "name": "comment",
-                  "type": "area",
-                  "label": "Node comment",
-                  "helper": "Use it to explain the usage of this node"
-                },
-                {
-                  "name": "alias",
-                  "type": "text",
-                  "label": "Name",
-                  "helper": "Use this name as an alias"
-                },
-                {
-                  "name": "debug",
-                  "type": "boolean",
-                  "label": "Debug to Console",
-                  "divider": true
-                },
-                {
-                  "name": "param_example",
-                  "type": "text",
-                  "label": "Param Example",
-                  "helper": "just an example"
-                }
-              ],
-              "click": null,
-              "icon": null,
-              "values": {
-                "debug": true
-              }
-            }
-          },
-          "selectable": true,
-          "draggable": true,
-          "__class__": "Node"
-        },
-        {
-          "id": "7f4f832e-1691-43d3-b088-615d2bac28e0",
-          "position": {
-            "x": 418,
-            "y": 163
+            "x": 406.0188948219426,
+            "y": 100.4902087028936
           },
           "type": "custom",
           "dragHandle": "#nodeHandle",
@@ -169,10 +87,320 @@
               "click": "Send message",
               "icon": "RiPlayFill",
               "values": {
-                "type": "String",
-                "value": "Hello world!"
+                "comment": "",
+                "alias": "",
+                "debug": true,
+                "type": "Object",
+                "value": "{\"data\":[{\"Date_Time\": \"01/03/2010  08:00:20\", \"f1\":\"a\", },\n{\"Date_Time\": \"01/03/2010  08:00:20\", \"f1\":\"b\" },\n\n       {\"Date_Time\": \"01/10/2010  08:00:20\", \"f1\":\"b\"},\n       {\"Date_Time\": \"01/10/2010  08:00:20\", \"f1\":\"a\"},\n\n       {\"Date_Time\": \"01/17/2010  08:00:20\", \"f1\":\"a\"},\n       {\"Date_Time\": \"01/17/2010  08:00:20\", \"f1\":\"b\"},\n\n       {\"Date_Time\": \"01/24/2010  09:00:20\", \"f1\": \"a\"},\n       {\"Date_Time\": \"01/24/2010  09:00:20\", \"f1\": \"b\"},\n\n       {\"Date_Time\": \"01/31/2010  08:20:40\", \"f1\":  \"b\"},\n       {\"Date_Time\": \"01/31/2010  08:20:40\", \"f1\":  \"a\"},\n\n      {\"Date_Time\": \"02/07/2010  08:20:40\", \"f1\": \"a\"},\n      {\"Date_Time\": \"02/07/2010  08:20:40\", \"f1\": \"b\"},\n\n      {\"Date_Time\": \"02/14/2010  08:20:40\", \"f1\": \"b\"},\n      {\"Date_Time\": \"02/14/2010  08:20:40\", \"f1\": \"a\"},\n\n      {\"Date_Time\": \"02/21/2010  08:20:40\", \"f1\": \"a\"},\n      {\"Date_Time\": \"02/21/2010  08:20:40\", \"f1\": \"b\"},\n\n      {\"Date_Time\": \"02/28/2010  08:20:40\", \"f1\":\"a\"},\n      {\"Date_Time\": \"02/28/2010  08:20:40\", \"f1\":\"b\"},\n\n      {\"Date_Time\": \"03/07/2010  08:20:40\", \"f1\":\"a\"},\n      {\"Date_Time\": \"03/07/2010  08:20:40\", \"f1\":\"b\"},\n\n      {\"Date_Time\": \"03/14/2010  08:20:40\", \"f1\":\"a\"},\n      {\"Date_Time\": \"03/14/2010  08:20:40\", \"f1\":\"b\"},\n\n      {\"Date_Time\": \"03/21/2010  08:20:40\", \"f1\": \"b\"},\n      {\"Date_Time\": \"03/21/2010  08:20:40\", \"f1\": \"a\"}\n      ],\n     \"target\":[1509634,1581344,\n      1614204, 1897725, \n      1759063,1320022, \n      1559063, 1659063, \n      1859063, 1551083,\n       1819012, 1801029,\n       1509634,1581344,\n      1614204, 1897725, \n      1759063,1320022, \n      1559063, 1659063, \n      1859063, 1551083,\n       1819012, 1801029,\n       ]}\n"
               }
-            }
+            },
+            "locked": null
+          },
+          "selectable": true,
+          "draggable": true,
+          "positionAbsolute": {
+            "x": 406.0188948219426,
+            "y": 100.4902087028936
+          },
+          "__class__": "Node"
+        },
+        {
+          "id": "5794fa93-5f6d-4fc2-a0f7-7d3c3ddf54fd",
+          "position": {
+            "x": 719,
+            "y": 128
+          },
+          "type": "custom",
+          "dragHandle": "#nodeHandle",
+          "sourcePosition": "right",
+          "targetPosition": "left",
+          "width": 156,
+          "height": 60,
+          "selected": false,
+          "dragging": false,
+          "data": {
+            "name": "time-series",
+            "events": null,
+            "description": "TimeSeries components",
+            "inputs": [
+              {
+                "id": "fit",
+                "label": "fit",
+                "service": "loko-services/predictors/fit",
+                "to": "fit"
+              },
+              {
+                "id": "predict",
+                "label": "predict",
+                "service": "loko-services/predictors/predict",
+                "to": "predict"
+              },
+              {
+                "id": "evaluate",
+                "label": "evaluate",
+                "service": "loko-services/predictors/evaluate",
+                "to": "evaluate"
+              }
+            ],
+            "outputs": [
+              {
+                "id": "fit",
+                "label": "fit"
+              },
+              {
+                "id": "predict",
+                "label": "predict"
+              },
+              {
+                "id": "evaluate",
+                "label": "evaluate"
+              }
+            ],
+            "configured": true,
+            "options": {
+              "group": null,
+              "args": [
+                {
+                  "name": "comment",
+                  "type": "area",
+                  "label": "Node comment",
+                  "helper": "Use it to explain the usage of this node"
+                },
+                {
+                  "name": "alias",
+                  "type": "text",
+                  "label": "Name",
+                  "helper": "Use this name as an alias"
+                },
+                {
+                  "name": "debug",
+                  "type": "boolean",
+                  "label": "Debug to Console",
+                  "divider": true
+                },
+                {
+                  "name": "predictor_name",
+                  "type": "text",
+                  "label": "Predictor Name",
+                  "helper": "Digit the name of the predictor you want to use",
+                  "group": "",
+                  "value": null,
+                  "description": ""
+                },
+                {
+                  "name": "datetime_feature",
+                  "type": "text",
+                  "label": "Datetime Feature",
+                  "helper": "Name of the feature to use as date-time reference",
+                  "group": "fit",
+                  "value": null,
+                  "description": ""
+                },
+                {
+                  "name": "datetime_frequency",
+                  "type": "text",
+                  "label": "Datetime Frequency",
+                  "helper": "Time frequence required for the model ",
+                  "group": "fit",
+                  "value": null,
+                  "description": ""
+                },
+                {
+                  "name": "forecasting_horizon",
+                  "type": "number",
+                  "label": "Forecasting Horizon",
+                  "helper": "",
+                  "group": "fit",
+                  "value": 1,
+                  "description": ""
+                },
+                {
+                  "name": "report",
+                  "type": "boolean",
+                  "label": "Compute metrics report",
+                  "helper": "",
+                  "group": "fit",
+                  "value": "false",
+                  "description": ""
+                },
+                {
+                  "name": "test_size",
+                  "type": "dynamic",
+                  "label": "Test Size",
+                  "helper": "",
+                  "group": "fit",
+                  "value": 30,
+                  "description": "",
+                  "parent": "report",
+                  "condition": "{parent}===true",
+                  "dynamicType": "number"
+                },
+                {
+                  "name": "forecasting_horizon",
+                  "type": "numeric",
+                  "label": "Forecasting Horizon",
+                  "helper": "",
+                  "group": "predict",
+                  "value": 1,
+                  "description": ""
+                },
+                {
+                  "name": "save_eval_report",
+                  "type": "boolean",
+                  "label": "Save metrics report",
+                  "helper": "",
+                  "group": "evaluate",
+                  "value": "false",
+                  "description": ""
+                }
+              ],
+              "click": null,
+              "icon": null,
+              "values": {
+                "comment": "",
+                "alias": "",
+                "debug": true,
+                "predictor_name": "pred_day",
+                "datetime_feature": "Date_Time",
+                "datetime_frequency": "7D",
+                "forecasting_horizon": "1",
+                "report": true,
+                "save_eval_report": true,
+                "test_size": "0.2"
+              }
+            },
+            "locked": null
+          },
+          "selectable": true,
+          "draggable": true,
+          "positionAbsolute": {
+            "x": 719,
+            "y": 128
+          },
+          "__class__": "Node"
+        },
+        {
+          "id": "9645dd6c-a2cb-4871-84e0-8b86fdb4992c",
+          "position": {
+            "x": 628.5248674571206,
+            "y": 459.9785715608124
+          },
+          "type": "custom",
+          "dragHandle": "#nodeHandle",
+          "sourcePosition": "right",
+          "targetPosition": "left",
+          "width": 150,
+          "height": 56,
+          "selected": false,
+          "dragging": false,
+          "data": {
+            "name": "HTTP Request",
+            "events": null,
+            "description": "### Description\nThe HTTP REQUEST component is used to make HTTP requests in the web to microservices external to the LOKO AI platform.\n\n### Input\nInput is only required for HTTP methods that have or require a body (PUT/PATCH/POST). In this case there is no predefined input format.\n\n### Output\nIn this case there is no fixed output format.",
+            "inputs": [
+              {
+                "id": "input",
+                "label": "input"
+              }
+            ],
+            "outputs": [
+              {
+                "id": "output",
+                "label": "output"
+              }
+            ],
+            "configured": true,
+            "options": {
+              "group": "HTTP",
+              "args": [
+                {
+                  "name": "comment",
+                  "type": "area",
+                  "label": "Node comment",
+                  "helper": "Use it to explain the usage of this node"
+                },
+                {
+                  "name": "alias",
+                  "type": "text",
+                  "label": "Name",
+                  "helper": "Use this name as an alias"
+                },
+                {
+                  "name": "debug",
+                  "type": "boolean",
+                  "label": "Debug to Console",
+                  "divider": true
+                },
+                {
+                  "type": "text",
+                  "name": "url",
+                  "label": "URL",
+                  "validation": {
+                    "required": "Required field"
+                  }
+                },
+                {
+                  "name": "method",
+                  "label": "Method",
+                  "type": "select",
+                  "options": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "PATCH"
+                  ],
+                  "validation": {
+                    "required": "Required field"
+                  }
+                },
+                {
+                  "name": "accept",
+                  "label": "Accept",
+                  "type": "select",
+                  "options": [
+                    "text",
+                    "json",
+                    "file"
+                  ],
+                  "validation": {
+                    "required": "Required field"
+                  }
+                },
+                {
+                  "name": "query",
+                  "label": "Query params",
+                  "type": "multiKeyValue",
+                  "fields": [
+                    {
+                      "name": "key",
+                      "placeholder": "Key",
+                      "validation": {
+                        "required": "Required field"
+                      }
+                    },
+                    {
+                      "name": "value",
+                      "placeholder": "Value",
+                      "validation": {
+                        "required": "Required field"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "click": "Launch request",
+              "icon": "RiUploadCloud2Fill",
+              "values": {
+                "comment": "",
+                "alias": "",
+                "debug": true,
+                "url": "http://ds4biz-time-series:8080/predictors",
+                "method": "GET",
+                "accept": "json"
+              }
+            },
+            "locked": null
           },
           "selectable": true,
           "draggable": true,
@@ -181,11 +409,11 @@
       ],
       "edges": [
         {
-          "id": "reactflow__edge-7f4f832e-1691-43d3-b088-615d2bac28e0output-52f0b1ce-1c2a-4504-b1dd-9e3bb683bf28input",
-          "source": "7f4f832e-1691-43d3-b088-615d2bac28e0",
+          "id": "reactflow__edge-0bca8ca4-b3e6-4caf-9cf4-63a9c7e98c87output-5794fa93-5f6d-4fc2-a0f7-7d3c3ddf54fdfit",
+          "source": "0bca8ca4-b3e6-4caf-9cf4-63a9c7e98c87",
           "sourceHandle": "output",
-          "target": "52f0b1ce-1c2a-4504-b1dd-9e3bb683bf28",
-          "targetHandle": "input",
+          "target": "5794fa93-5f6d-4fc2-a0f7-7d3c3ddf54fd",
+          "targetHandle": "fit",
           "data": {
             "startColor": "#D770AD",
             "stopColor": "#888"

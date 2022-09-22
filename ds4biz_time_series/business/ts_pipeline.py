@@ -59,15 +59,24 @@ class TSPipeline():
                 logger.debug('MODEL: %s' % str(obj))
                 # m = obj.fit(y = y, x=X, **kwargs)
                 if horizon:
+                    logger.debug(f"horizon: {horizon}")
                     if isinstance(horizon, int):
                         horizon = np.arange(1, horizon + 1)
                     fh = ForecastingHorizon(horizon, is_relative=True)
-
-                    obj.fit(y=y, X=X, fh=fh)
+                    logger.debug("fittingaaaaaaaa")
+                    try:
+                        obj.fit(y=y, X=X, fh=fh)
+                    except Exception as e:
+                        logger.error(f"eeeeeeeeeeeeeeerrrr{e}")
+                        raise e
+                    logger.debug("done fitaaaaaaaaaa")
                 else:
                     if obj.get_tag("requires-fh-in-fit"):
                         raise Exception("You have to specify an horizon in order to fit this model..")
+                    logger.debug("fittingaaaaaaaaaaaa")
                     obj.fit(y=y, X=X, **kwargs)
+                    logger.debug("done fitaaaaaaaaaa")
+
 
     def predict(self, X=None, horizon: Union[int, list, pd.PeriodIndex] = None, h_is_relative: bool=True, **kwargs):
         logger.debug('PREDICT')

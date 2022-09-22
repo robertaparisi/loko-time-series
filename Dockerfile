@@ -1,6 +1,7 @@
 FROM python:3.10-slim
 ARG user
 ARG password
+EXPOSE 8080
 ADD ./requirements.lock /
 RUN pip install --upgrade --extra-index-url https://piplivetech:pip2018@distribution.livetech.site -r /requirements.lock
 ARG GATEWAY

@@ -17,10 +17,12 @@ from sanic.response import raw
 # app = Sanic("res")
 # swagger_blueprint.url_prefix = "/api"
 # app.blueprint(swagger_blueprint)
+from ds4biz_time_series.business.components import fit_service
 from ds4biz_time_series.business.training import training_pipeline
 from ds4biz_time_series.config.AppConfig import REPO_PATH
 from ds4biz_time_series.config.factory_config import FACTORY
 from ds4biz_time_series.dao.fs_dao import JSONFSDAO
+from ds4biz_time_series.model.services_model import FitServiceArgs, PredictServiceArgs
 from ds4biz_time_series.utils.core_utils import load_pipeline, to_dataframe
 from ds4biz_time_series.utils.data_utils import preprocessing_data
 from ds4biz_time_series.utils.logger_utils import logger
@@ -29,10 +31,13 @@ from sanic.exceptions import SanicException, NotFound
 
 import sanic
 
-from ds4biz_time_series.utils.service_utils import check_predictor_existence, load_params, check_existence
+from ds4biz_time_series.utils.service_utils import check_predictor_existence, load_params, check_existence, train_model, \
+    get_prediction
 from ds4biz_time_series.utils.serialization_utils import serialize, deserialize
 from ds4biz_time_series.utils.service_utils import get_all
 from ds4biz_time_series.utils.zip_utils import make_zipfile, import_zipfile
+
+from loko_extensions.business.decorators import extract_value_args
 
 repo_path = Path(REPO_PATH)
 
@@ -54,23 +59,23 @@ app.config["API_TITLE"] = name
 CORS(app)
 
 
-
-@bp.post("/")
-def test(request):
-    print("ciao")
-    args = request.json.get('args')
-    print("ARGS",args)
-    json = request.json.get("value")
-    print("JSON",json)
-    return sanic.json(dict(msg="Hello extensions!"))
-
-
-@bp.post("/files")
-def test2(request):
-    file = request.files['file']
-    fname = file.filename
-    print("You have uploaded a file called:",fname)
-    return sanic.json(dict(msg=f"Hello extensions, you have uploaded the file: {fname}!"))
+#
+# @bp.post("/")
+# def test(request):
+#     print("ciao")
+#     args = request.json.get('args')
+#     print("ARGS",args)
+#     json = request.json.get("value")
+#     print("JSON",json)
+#     return sanic.json(dict(msg="Hello extensions!"))
+#
+#
+# @bp.post("/files")
+# def test2(request):
+#     file = request.files['file']
+#     fname = file.filename
+#     print("You have uploaded a file called:",fname)
+#     return sanic.json(dict(msg=f"Hello extensions, you have uploaded the file: {fname}!"))
 
 
 @app.exception(Exception)
@@ -422,52 +427,21 @@ async def delete_predictor(request, name):
               required=True)  # 'classification', 'none'
 @doc.consumes(doc.Integer(name="forecasting_horizon"), location="query", required=False)
 @doc.consumes(doc.String(name="datetime_feature"), location="query", required=True)
-@doc.consumes(doc.String(name="datetime_frequency", choices=["Years", "Months", "Days", "hours", "minutes", "seconds"]),
+# @doc.consumes(doc.String(name="datetime_frequency", choices=["Years", "Months", "Days", "hours", "minutes", "seconds"]),
+#               required=True)
+@doc.consumes(doc.String(name="datetime_frequency"),
               required=True)
-@doc.consumes(doc.String(name="name"), location="path", required=True)
+@doc.consumes(doc.String(name="predictor_name"), location="path", required=True)
 async def fit(request, name):
-    name = unquote(name)
-    predictor_path = repo_path / 'predictors' / name
-    print("predictor: ", predictor_path)
-    predictor_blueprint = deserialize(predictor_path)
-    # if not partial:
-
-    print("bp: ", predictor_blueprint)
-    dparams = dict(test_size=.2,
-                   forecasting_horizon=None,
-                   datetime_frequency="s",
-                   # partial=False,
-                   fit_params=dict(),
-                   # cv=0,
-                   report=False,
-                   # history_limit=0,
-                   task='forecasting',
-                   # save_dataset=False
-                   )
-    params = {**dparams, **load_params(request.args)}
-    params["datetime_frequency"] = params["datetime_frequency"][0]
-    predictor_blueprint["datetime_feature"] = params["datetime_feature"]
-    predictor_blueprint["datetime_frequency"] = params["datetime_frequency"]
-    serialize(predictor_path, predictor_blueprint)
-
-    print("parameters::: ", params)
+    predictor_name = unquote(name)
+    fit_params = request.args
     data = request.json
-    print("data", data)
     try:
-        training_pipeline(predictor_blueprint=predictor_blueprint, data=data, **params)
+        train_model(predictor_name, fit_params=fit_params, data=data)
     except Exception as e:
-        print(e)
+        print("Error::::::: ", e)
         raise e
-    # data: Dict, task: str, test_size:Union[float, int], fit_params:Dict
-
-    # if params.get('partial'):
-    #     if predictor_path / 'development' not in list(predictor_path.glob('*')):
-    #         raise FitException(f'Predictor "{name}" is not fitted')
-    #     else:
-    #         if predictor_path / 'development' in list(predictor_path.glob('*')):
-    #             raise FitException(f'Predictor "{name}" already fitted')
-
-    return sanic.json(f"Predictor '{name}' correctly fitted")
+    return sanic.json(f"Predictor '{predictor_name}' correctly fitted")
 
 
 @bp.post("/predictors/<name>/predict")
@@ -477,30 +451,11 @@ async def fit(request, name):
 @doc.consumes(doc.Integer(name="forecasting_horizon"), location="query", required=False)
 @doc.consumes(doc.String(name="name"), location="path", required=True)
 async def predict(request, name):
-    name = unquote(name)
-
-    ### check predictor exist ###
-    path = repo_path / 'predictors' / name
+    predictor_name = unquote(name)
     branch = "development"  # todo: aggiungere a fit e predict parametro branch
-    params = {**load_params(request.args)}
-    if path / branch not in list(path.glob('*')):
-        raise SanicException(f'Predictor "{name}" is not fitted', status_code=400)
-    pipeline = load_pipeline(name, branch, repo_path=repo_path)
-    body = request.json
-    data = preprocessing_data(body, datetime_feature=pipeline.datetime_feature,
-                              datetime_frequency=pipeline.datetime_frequency, get_only_X=True)
-
-
-    try:
-        preds = pipeline.predict(X=data["X"],
-                                 horizon=params["forecasting_horizon"])  # , include_probs=params['include_probs'])
-    except Exception as e:
-        print("eeeee", e)
-    # if params['include_probs']:
-    #     preds = [[[c,float(p)] for c,p in el] for el in preds]
-    # else:
-    #     preds = preds.tolist()
-
+    predict_params = {**load_params(request.args)}
+    data = request.json
+    preds = get_prediction(predictor_name=predictor_name, predict_params=predict_params, branch=branch, data=data)
     return sanic.json(preds)
 
 
@@ -570,6 +525,75 @@ async def export_predictor(request, name):
     buffer.seek(0)
     headers = {'Content-Disposition': 'attachment; filename="{}"'.format(file_name)}
     return raw(buffer.getvalue(), headers=headers)
+
+
+##### LOKO SERVICES ########
+
+
+@bp.post("/loko-services/predictors/fit")
+@doc.tag('loko-services')
+@doc.summary("...")
+@doc.consumes(doc.JsonBody({}), location="body")
+@extract_value_args(file=False)
+async def loko_fit_service(value, args):
+    print("print vakue", value)
+    print("args", args)
+    print("fit")
+    logger.debug(f"fit::: value: {value}  \n \n args: {args}")
+
+    predictor_name = args["predictor_name"]
+    logger.debug(f"pred: {predictor_name}")
+    try:
+        fit_params = FitServiceArgs(**args).to_dict()
+    except Exception as e:
+        print("PRINT errrrrrrrrrrrr===================", e)
+        logger.error("LOG errrrrrrrrrrrr=================== %s" % e)
+        raise e
+    logger.debug("-------------------------------------" * 109)
+    try:
+        train_model(predictor_name, fit_params=fit_params, data=value)
+    except Exception as e:
+        print("Error::::::: ", e)
+        raise e
+    res = "Predictor '{predictor_name}' correctly fitted"
+    # res = get_all('transformers')
+    # save_defaults(repo='transformers')
+    return sanic.json(res)
+
+
+@bp.post("/loko-services/predictors/predict")
+@doc.tag('loko-services')
+@doc.summary("Use an existing predictor to predict data")
+@extract_value_args(file=False)
+async def loko_predict_service(value, args):
+    logger.debug(f"predict::: value: {value}  \n \n args: {args}")
+    branch = "development"
+    predictor_name = args["predictor_name"]
+    logger.debug(f"pred: {predictor_name}")
+    try:
+        predict_params = PredictServiceArgs(**args).to_dict()
+    except Exception as e:
+        print("PRINT errrrrrrrrrrrr===================", e)
+        logger.error("LOG errrrrrrrrrrrr=================== %s" % e)
+        raise e
+    # print("si")
+    # res = get_all('transformers')
+    # save_defaults(repo='transformers')
+    res = get_prediction(predictor_name, predict_params, branch=branch, data=value)
+    return sanic.json(res)
+
+
+@bp.post("/loko-services/predictors/evaluate")
+@doc.tag('loko-services')
+@doc.summary("...")
+@doc.consumes(doc.JsonBody({}), location="body")
+@extract_value_args(file=False)
+async def loko_evaluate_service(value, args):
+    # print("si")
+    res = "eval"
+    # res = get_all('transformers')
+    # save_defaults(repo='transformers')
+    return sanic.json(res)
 
 
 @app.exception(Exception)

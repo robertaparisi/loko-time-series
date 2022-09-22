@@ -26,10 +26,22 @@ def training_task(pred_id: str, data: Dict, datetime_feature: str, datetime_freq
     target = data['target'] if task != 'classification' else [str(el) for el in data['target']]
     data = data.get("data", None)
     fitting_time = datetime.now()
-    logger.debug(f"Splitting data, test size: {test_size}")
+    logger.debug(f"transforming data into pandas df{data}")
+    logger.debug("type of data %s" %str(type(data)))
+    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    df = pd.DataFrame(data)
+    logger.debug("coosi e' ok")
     df = to_dataframe(data)
-    df[datetime_feature] = pd.PeriodIndex(df[datetime_feature], freq=datetime_frequency)
+    logger.debug("qui si")
+    logger.debug("shape %s" %str(df.shape))
+    logger.debug("col %s" %str(df.columns))
+    logger.debug("len %s" %str(len(df.columns)))
 
+    logger.debug(f"dt f {datetime_feature}")
+    logger.debug(f"dt freq {datetime_frequency}")
+    dt = pd.PeriodIndex(df[datetime_feature], freq=datetime_frequency)
+    logger.debug(f"oki{dt}")
+    df[datetime_feature] = dt
     if not datetime_feature in df.columns:
         raise Exception("The datetime_feature specified doesn't match any features in your data, please check again.")
 
@@ -38,19 +50,25 @@ def training_task(pred_id: str, data: Dict, datetime_feature: str, datetime_freq
         df["target"] = target
         # df[datetime_feature]= pd.to_datetime(df[datetime_feature])
         df.set_index(datetime_feature, inplace=True)
+
         if report:
+            logger.debug(f"Splitting data, test size: {test_size}")
             y_train, y_test = temporal_train_test_split(y=df, test_size=test_size)
         else:
             y_train = df
         X_train = None
         X_test = None
     else:
+        logger.debug("using covariate to train models")
         df.set_index(datetime_feature, inplace=True)
+        print("ciao")
         target = pd.DataFrame(target)
         target[datetime_feature] = df.index
         target.set_index(datetime_feature, inplace=True)
-
+        logger.debug("sono dopo index")
         if report:
+            logger.debug(f"Splitting data, test size: {test_size}")
+
             y_train, y_test, X_train, X_test  = temporal_train_test_split(y=target, X=df, test_size=test_size)
         else:
             X_train = df

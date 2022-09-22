@@ -40,6 +40,7 @@ kiwisolver==1.4.4
 korean-lunar-calendar==0.2.1
 libclang==14.0.6
 llvmlite==0.39.1
+loko-extensions==0.0.1.dev3
 LunarCalendar==0.0.9
 Markdown==3.4.1
 MarkupSafe==2.1.1
