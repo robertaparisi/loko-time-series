@@ -17,6 +17,7 @@ import pandas as pd
 from sklearn.ensemble._gradient_boosting import csr_matrix
 
 from ds4biz_time_series.business.ts_pipeline import TSPipeline
+from ds4biz_time_series.utils.factory_utils import get_factory
 from ds4biz_time_series.utils.history_utils import History
 from ds4biz_time_series.utils.logger_utils import logger
 from ds4biz_time_series.utils.serialization_utils import deserialize
@@ -179,15 +180,10 @@ class FileSystemVC(VersionControl):
                 print("saving date")
                 ### remove last obj ###
                 old_fname = [f for f in p.glob(f'{obj.fname}*')]
-                print('old name', old_fname)
                 if old_fname:
                     old_fname = old_fname[0]
-                    print(old_fname)
-                    print(os.listdir("/home/roberta/Documents/repo/predictors/new_historic_model/development"))
-
                     os.remove(old_fname)
-                    print("removed old fname")
-                    print(os.listdir("/home/roberta/Documents/repo/predictors/new_historic_model/development"))
+
                 fname = h.historify(base_path)
             else:
                 fname = base_path
@@ -278,19 +274,25 @@ def load_pipeline(model_id,
                   repo_path=None,
                   factory=None,
                   dao=None):
-    print("loading pipeline")
+    logger.debug(f"loading pipeline {model_id}")
     path = repo_path / "predictors" / model_id
+    logger.debug(f"path:: {path}")
     bp = deserialize(repo_path / 'predictors' / model_id)
+    logger.debug(f"bp:: {bp}")
     steps = bp.pop('steps')
     pipeline = TSPipeline(**bp)
-    print("pipeline ok::: ", pipeline)
+    logger.debug(f"pipeline ok::: {pipeline}")
     if load_from_blueprint:
         for k, v in steps.items():
-            pipeline.add([k, factory(v)])
+            logger.debug("core_utils....")
+            step_eval = get_factory(v)
+            logger.debug(f"value {v} step eval:: {step_eval.__dict__}")
+            pipeline.add([k, factory(step_eval)])
         logger.debug('MODEL IS NOT FITTED')
         return pipeline
 
     if im_dao and model_id in im_dao.objs:
+        logger.debug("dentro if")
         pipeline = im_dao.get_by_id(model_id)
         ### CHECK!! ###
         objs = [obj for name,obj in pipeline.steps if obj]
@@ -302,7 +304,7 @@ def load_pipeline(model_id,
 
     logger.debug('MODEL IS FITTED')
     fsvc = FileSystemVC(path) if not dao else dao(path)
-    print(f"branch:: {branch}")
+    logger.debug(f"branch:: {branch}")
     fsvc.checkout(branch)
     for el in ['transformer', 'model']:
         print(el)

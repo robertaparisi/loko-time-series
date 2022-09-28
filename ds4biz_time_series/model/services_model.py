@@ -1,7 +1,7 @@
 class FitServiceArgs():
-    def __init__(self, datetime_feature, datetime_frequency, task="forecasting", forecasting_horizon=None, report=False, test_size=0.2, **kwargs):
+    def __init__(self, datetime_feature, datetime_frequency, task="forecasting", forecasting_horizon_fit=None, report=False, test_size=0.2, **kwargs):
         self.task = task
-        self.forecasting_horizon = forecasting_horizon
+        self.forecasting_horizon = forecasting_horizon_fit
         self.report = report
         self.test_size = test_size
         self.datetime_feature = datetime_feature

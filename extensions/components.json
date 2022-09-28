@@ -42,16 +42,15 @@
    "icon": "RiTyphoonFill",
    "click": null,
    "values": {
-    "forecasting_horizon": 1,
     "report": "false",
     "test_size": 30,
+    "forecasting_horizon": 1,
     "save_eval_report": "false"
    },
    "args": [
     {
      "name": "predictor_name",
-     "type": "asyncSelect",
-     "url": "http://ds4biz-time-series:8080/predictors",
+     "type": "text",
      "label": "Predictor Name",
      "helper": "Digit the name of the predictor you want to use",
      "group": "",
@@ -77,12 +76,12 @@
      "description": ""
     },
     {
-     "name": "forecasting_horizon",
+     "name": "forecasting_horizon_fit",
      "type": "number",
      "label": "Forecasting Horizon",
      "helper": "",
      "group": "fit",
-     "value": 1,
+     "value": null,
      "description": ""
     },
     {
@@ -108,7 +107,7 @@
     },
     {
      "name": "forecasting_horizon",
-     "type": "numeric",
+     "type": "number",
      "label": "Forecasting Horizon",
      "helper": "",
      "group": "predict",

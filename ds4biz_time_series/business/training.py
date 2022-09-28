@@ -8,12 +8,12 @@ import pandas as pd
 
 from ds4biz_time_series.business.ts_pipeline import TSPipeline
 from ds4biz_time_series.config.AppConfig import REPO_PATH
-from ds4biz_time_series.config.factory_config import FACTORY
 from sktime.forecasting.model_selection import temporal_train_test_split
 # from ds4biz_predictor_core.utils.ml_utils import save_pipeline
 
 from ds4biz_time_series.dao.fs_dao import JSONFSDAO
 from ds4biz_time_series.utils.core_utils import save_pipeline, to_dataframe
+from ds4biz_time_series.utils.factory_utils import get_factory
 from ds4biz_time_series.utils.logger_utils import logger
 
 repo_path = Path(REPO_PATH)
@@ -91,9 +91,12 @@ def training_task(pred_id: str, data: Dict, datetime_feature: str, datetime_freq
     res_report_test = None
     if report:
         logger.debug("Computing Metrics")
+        logger.debug(f"y_train {y_train}")
+        logger.debug(f"X_train {X_train}")
         res_report_train = ts_pipeline.get_forecast_report(y=y_train, X=X_train)
+        logger.debug("test metrics")
         res_report_test = ts_pipeline.get_forecast_report(y=y_test, X=X_test)
-
+    logger.debug("metrics computed... creating summary report")
     tsum = dict(
         # tdist=distro, cv_scores=scores,
         report_training=res_report_train,
@@ -123,7 +126,10 @@ def training_pipeline(predictor_blueprint: Dict, data: Dict, datetime_feature: s
     # if steps["model"]=="auto":
     for k, v in steps.items():
         logger.debug(f"step added....{k}")
-        ts_pipeline.add([k, FACTORY(v)])
+        logger.debug(f"{v}")
+        step_eval = get_factory(v)
+        logger.debug(f"value {v} step eval:: {step_eval.__dict__}")
+        ts_pipeline.add([k, step_eval])
     logger.debug("training task starts")
     training_task(pred_id, data, datetime_feature, datetime_frequency, task, report, test_size, ts_pipeline,
                   forecasting_horizon, fit_params)

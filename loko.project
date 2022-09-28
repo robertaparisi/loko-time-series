@@ -3,7 +3,7 @@
   "id": "ds4biz-time-series",
   "description": "",
   "created_on": "14/09/2022, 12:18:07",
-  "last_modify": "21/09/2022, 14:04:04",
+  "last_modify": "28/09/2022, 10:37:22",
   "graphs": {
     "main": {
       "nodes": [
@@ -91,7 +91,7 @@
                 "alias": "",
                 "debug": true,
                 "type": "Object",
-                "value": "{\"data\":[{\"Date_Time\": \"01/03/2010  08:00:20\", \"f1\":\"a\", },\n{\"Date_Time\": \"01/03/2010  08:00:20\", \"f1\":\"b\" },\n\n       {\"Date_Time\": \"01/10/2010  08:00:20\", \"f1\":\"b\"},\n       {\"Date_Time\": \"01/10/2010  08:00:20\", \"f1\":\"a\"},\n\n       {\"Date_Time\": \"01/17/2010  08:00:20\", \"f1\":\"a\"},\n       {\"Date_Time\": \"01/17/2010  08:00:20\", \"f1\":\"b\"},\n\n       {\"Date_Time\": \"01/24/2010  09:00:20\", \"f1\": \"a\"},\n       {\"Date_Time\": \"01/24/2010  09:00:20\", \"f1\": \"b\"},\n\n       {\"Date_Time\": \"01/31/2010  08:20:40\", \"f1\":  \"b\"},\n       {\"Date_Time\": \"01/31/2010  08:20:40\", \"f1\":  \"a\"},\n\n      {\"Date_Time\": \"02/07/2010  08:20:40\", \"f1\": \"a\"},\n      {\"Date_Time\": \"02/07/2010  08:20:40\", \"f1\": \"b\"},\n\n      {\"Date_Time\": \"02/14/2010  08:20:40\", \"f1\": \"b\"},\n      {\"Date_Time\": \"02/14/2010  08:20:40\", \"f1\": \"a\"},\n\n      {\"Date_Time\": \"02/21/2010  08:20:40\", \"f1\": \"a\"},\n      {\"Date_Time\": \"02/21/2010  08:20:40\", \"f1\": \"b\"},\n\n      {\"Date_Time\": \"02/28/2010  08:20:40\", \"f1\":\"a\"},\n      {\"Date_Time\": \"02/28/2010  08:20:40\", \"f1\":\"b\"},\n\n      {\"Date_Time\": \"03/07/2010  08:20:40\", \"f1\":\"a\"},\n      {\"Date_Time\": \"03/07/2010  08:20:40\", \"f1\":\"b\"},\n\n      {\"Date_Time\": \"03/14/2010  08:20:40\", \"f1\":\"a\"},\n      {\"Date_Time\": \"03/14/2010  08:20:40\", \"f1\":\"b\"},\n\n      {\"Date_Time\": \"03/21/2010  08:20:40\", \"f1\": \"b\"},\n      {\"Date_Time\": \"03/21/2010  08:20:40\", \"f1\": \"a\"}\n      ],\n     \"target\":[1509634,1581344,\n      1614204, 1897725, \n      1759063,1320022, \n      1559063, 1659063, \n      1859063, 1551083,\n       1819012, 1801029,\n       1509634,1581344,\n      1614204, 1897725, \n      1759063,1320022, \n      1559063, 1659063, \n      1859063, 1551083,\n       1819012, 1801029,\n       ]}\n"
+                "value": "\n\n{\"data\":[{\"Date_Time\": \"01/03/2010  08:20:40\" },\n                {\"Date_Time\": \"01/10/2010  08:20:40\"},\n                {\"Date_Time\": \"01/17/2010  08:20:40\"},\n                {\"Date_Time\": \"01/24/2010  08:20:40\"},\n                {\"Date_Time\": \"01/31/2010  08:20:40\"},\n                {\"Date_Time\": \"02/07/2010  08:20:40\"},\n                {\"Date_Time\": \"02/14/2010  08:20:40\"},\n                {\"Date_Time\": \"02/21/2010  08:20:40\"},\n                {\"Date_Time\": \"02/28/2010  08:20:40\"},\n                {\"Date_Time\": \"03/07/2010  08:20:40\"},\n                {\"Date_Time\": \"03/14/2010  08:20:40\"},\n                {\"Date_Time\": \"03/21/2010  08:20:40\"}],\n \"target\":[1509634,1581344, 1614204, 1897725, 1759063,1320022, 1559063, 1659063, 1859063, 1551083, 1819012, 1801029]}\n"
               }
             },
             "locked": null
@@ -405,6 +405,272 @@
           "selectable": true,
           "draggable": true,
           "__class__": "Node"
+        },
+        {
+          "id": "91686445-c9f3-494c-89a6-2398581b74de",
+          "position": {
+            "x": 326,
+            "y": 256.8155935381549
+          },
+          "type": "custom",
+          "dragHandle": "#nodeHandle",
+          "sourcePosition": "right",
+          "targetPosition": "left",
+          "width": 150,
+          "height": 56,
+          "selected": false,
+          "dragging": false,
+          "data": {
+            "name": "Trigger",
+            "events": null,
+            "description": "### Description\nThe TRIGGER component is used to start streams.\n\n### Output\nThe parameter Type can be set as a **String** or an **Object**. The parameter Value, on the other hand, defines the actual output of the component.",
+            "inputs": [],
+            "outputs": [
+              {
+                "id": "output",
+                "label": "output"
+              }
+            ],
+            "configured": true,
+            "options": {
+              "group": "Common",
+              "args": [
+                {
+                  "name": "comment",
+                  "type": "area",
+                  "label": "Node comment",
+                  "helper": "Use it to explain the usage of this node"
+                },
+                {
+                  "name": "alias",
+                  "type": "text",
+                  "label": "Name",
+                  "helper": "Use this name as an alias"
+                },
+                {
+                  "name": "debug",
+                  "type": "boolean",
+                  "label": "Debug to Console",
+                  "divider": true
+                },
+                {
+                  "name": "type",
+                  "type": "select",
+                  "description": "The type of data",
+                  "label": "Type",
+                  "validation": {
+                    "required": "Required field"
+                  },
+                  "fragment": null,
+                  "advanced": false,
+                  "options": [
+                    "String",
+                    "Object"
+                  ],
+                  "value": null
+                },
+                {
+                  "name": "value",
+                  "type": "dynamic",
+                  "dynamicType": {
+                    "String": "area",
+                    "Object": "code"
+                  },
+                  "parent": "type",
+                  "label": "Value",
+                  "validation": {
+                    "required": "Required field"
+                  }
+                }
+              ],
+              "click": "Send message",
+              "icon": "RiPlayFill",
+              "values": {
+                "type": "String",
+                "value": "Hello world!"
+              }
+            },
+            "locked": null
+          },
+          "selectable": true,
+          "draggable": true,
+          "positionAbsolute": {
+            "x": 326,
+            "y": 256.8155935381549
+          },
+          "__class__": "Node"
+        },
+        {
+          "id": "a058d9fe-ece9-4fb4-840a-f77dd877c8cb",
+          "position": {
+            "x": 649,
+            "y": 286
+          },
+          "type": "custom",
+          "dragHandle": "#nodeHandle",
+          "sourcePosition": "right",
+          "targetPosition": "left",
+          "width": 150,
+          "height": 56,
+          "selected": false,
+          "dragging": false,
+          "data": {
+            "name": "time-series",
+            "events": null,
+            "description": "TimeSeries components",
+            "inputs": [
+              {
+                "id": "fit",
+                "label": "fit",
+                "service": "loko-services/predictors/fit",
+                "to": "fit"
+              },
+              {
+                "id": "predict",
+                "label": "predict",
+                "service": "loko-services/predictors/predict",
+                "to": "predict"
+              },
+              {
+                "id": "evaluate",
+                "label": "evaluate",
+                "service": "loko-services/predictors/evaluate",
+                "to": "evaluate"
+              }
+            ],
+            "outputs": [
+              {
+                "id": "fit",
+                "label": "fit"
+              },
+              {
+                "id": "predict",
+                "label": "predict"
+              },
+              {
+                "id": "evaluate",
+                "label": "evaluate"
+              }
+            ],
+            "configured": true,
+            "options": {
+              "group": null,
+              "args": [
+                {
+                  "name": "comment",
+                  "type": "area",
+                  "label": "Node comment",
+                  "helper": "Use it to explain the usage of this node"
+                },
+                {
+                  "name": "alias",
+                  "type": "text",
+                  "label": "Name",
+                  "helper": "Use this name as an alias"
+                },
+                {
+                  "name": "debug",
+                  "type": "boolean",
+                  "label": "Debug to Console",
+                  "divider": true
+                },
+                {
+                  "name": "predictor_name",
+                  "type": "text",
+                  "label": "Predictor Name",
+                  "helper": "Digit the name of the predictor you want to use",
+                  "group": "",
+                  "value": null,
+                  "description": ""
+                },
+                {
+                  "name": "datetime_feature",
+                  "type": "text",
+                  "label": "Datetime Feature",
+                  "helper": "Name of the feature to use as date-time reference",
+                  "group": "fit",
+                  "value": null,
+                  "description": ""
+                },
+                {
+                  "name": "datetime_frequency",
+                  "type": "text",
+                  "label": "Datetime Frequency",
+                  "helper": "Time frequence required for the model ",
+                  "group": "fit",
+                  "value": null,
+                  "description": ""
+                },
+                {
+                  "name": "forecasting_horizon_fit",
+                  "type": "number",
+                  "label": "Forecasting Horizon",
+                  "helper": "",
+                  "group": "fit",
+                  "value": null,
+                  "description": ""
+                },
+                {
+                  "name": "report",
+                  "type": "boolean",
+                  "label": "Compute metrics report",
+                  "helper": "",
+                  "group": "fit",
+                  "value": "false",
+                  "description": ""
+                },
+                {
+                  "name": "test_size",
+                  "type": "dynamic",
+                  "label": "Test Size",
+                  "helper": "",
+                  "group": "fit",
+                  "value": 30,
+                  "description": "",
+                  "parent": "report",
+                  "condition": "{parent}===true",
+                  "dynamicType": "number"
+                },
+                {
+                  "name": "forecasting_horizon",
+                  "type": "number",
+                  "label": "Forecasting Horizon",
+                  "helper": "",
+                  "group": "predict",
+                  "value": 1,
+                  "description": ""
+                },
+                {
+                  "name": "save_eval_report",
+                  "type": "boolean",
+                  "label": "Save metrics report",
+                  "helper": "",
+                  "group": "evaluate",
+                  "value": "false",
+                  "description": ""
+                }
+              ],
+              "click": null,
+              "icon": null,
+              "values": {
+                "comment": "",
+                "alias": "",
+                "debug": true,
+                "predictor_name": "pred_day",
+                "datetime_feature": "",
+                "datetime_frequency": "",
+                "forecasting_horizon_fit": "",
+                "report": true,
+                "forecasting_horizon": "3",
+                "save_eval_report": true,
+                "test_size": "30"
+              }
+            },
+            "locked": null
+          },
+          "selectable": true,
+          "draggable": true,
+          "__class__": "Node"
         }
       ],
       "edges": [
@@ -414,6 +680,20 @@
           "sourceHandle": "output",
           "target": "5794fa93-5f6d-4fc2-a0f7-7d3c3ddf54fd",
           "targetHandle": "fit",
+          "data": {
+            "startColor": "#D770AD",
+            "stopColor": "#888"
+          },
+          "selected": false,
+          "dragging": false,
+          "__class__": "Edge"
+        },
+        {
+          "id": "reactflow__edge-91686445-c9f3-494c-89a6-2398581b74deoutput-a058d9fe-ece9-4fb4-840a-f77dd877c8cbpredict",
+          "source": "91686445-c9f3-494c-89a6-2398581b74de",
+          "sourceHandle": "output",
+          "target": "a058d9fe-ece9-4fb4-840a-f77dd877c8cb",
+          "targetHandle": "predict",
           "data": {
             "startColor": "#D770AD",
             "stopColor": "#888"

@@ -12,7 +12,7 @@ pred_name = Arg(name="predictor_name", label="Predictor Name", type="text",
 
 # task = Select(name="task", label="Task", options=["Forecasting","Classification"], group="fit")
 
-fh = Arg(name="forecasting_horizon", label="Forecasting Horizon", type="number", group="fit", value=1)
+fh = Arg(name="forecasting_horizon_fit", label="Forecasting Horizon", type="number", group="fit")
 dt_feature = Arg(name="datetime_feature", label="Datetime Feature", type="text",
                  helper="Name of the feature to use as date-time reference", group="fit")
 dt_frequency = Arg(name="datetime_frequency", label="Datetime Frequency", type="text",
@@ -24,7 +24,7 @@ test_size = Dynamic(name="test_size", label="Test Size", parent="report", condit
 fit_args = [dt_feature, dt_frequency, fh, report, test_size]
 #### PREDICT ARGS
 
-fh_pred = Arg(name="forecasting_horizon", label="Forecasting Horizon", type="numeric", group="predict", value=1)
+fh_pred = Arg(name="forecasting_horizon", label="Forecasting Horizon", type="number", group="predict", value=1)
 
 # Arg(name= , label= , type= , group= "predict" )
 

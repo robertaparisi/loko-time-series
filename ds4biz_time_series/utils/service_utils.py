@@ -6,7 +6,6 @@ from sanic.exceptions import SanicException
 
 from ds4biz_time_series.business.training import training_pipeline
 from ds4biz_time_series.config.AppConfig import REPO_PATH
-from ds4biz_time_series.config.factory_config import name
 from ds4biz_time_series.dao.fs_dao import FileSystemDAO
 from ds4biz_time_series.utils.core_utils import load_pipeline
 from ds4biz_time_series.utils.data_utils import preprocessing_data
@@ -74,11 +73,23 @@ def train_model(predictor_name, fit_params:dict, data:dict):
     logger.debug("training done...")
 
 def get_prediction(predictor_name, predict_params:dict, branch:str="development",  data:dict=None):
-    path = repo_path / 'predictors' / name
+    """
+    It loads the pipeline, preprocesses the data, and then predicts
 
+    :param predictor_name: the name of the predictor you want to use
+    :param predict_params: a dictionary with the following keys:
+    :type predict_params: dict
+    :param branch: The branch of the predictor you want to use, defaults to development
+    :type branch: str (optional)
+    :param data: the data to be predicted
+    :type data: dict
+    :return: The prediction is being returned.
+    """
+    path = repo_path / 'predictors' / predictor_name
+    logger.debug(f"name: {predictor_name}")
     if path / branch not in list(path.glob('*')):
-        raise SanicException(f'Predictor "{name}" is not fitted', status_code=400)
-    pipeline = load_pipeline(name, branch, repo_path=repo_path)
+        raise Exception(f'Predictor "{predictor_name}" is not fitted')
+    pipeline = load_pipeline(predictor_name, branch, repo_path=repo_path)
     data = preprocessing_data(data, datetime_feature=pipeline.datetime_feature,
                               datetime_frequency=pipeline.datetime_frequency, get_only_X=True)
 

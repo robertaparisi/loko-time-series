@@ -20,7 +20,6 @@ from sanic.response import raw
 from ds4biz_time_series.business.components import fit_service
 from ds4biz_time_series.business.training import training_pipeline
 from ds4biz_time_series.config.AppConfig import REPO_PATH
-from ds4biz_time_series.config.factory_config import FACTORY
 from ds4biz_time_series.dao.fs_dao import JSONFSDAO
 from ds4biz_time_series.model.services_model import FitServiceArgs, PredictServiceArgs
 from ds4biz_time_series.utils.core_utils import load_pipeline, to_dataframe
@@ -112,10 +111,10 @@ async def list_transformers(request):
     --------
     Example 1: 
     obj = {
-      "__klass__": "skt.TransformerPipeline",
+      "__klass__": "sktime.transformations.compose.TransformerPipeline",
       "steps": [
          {
-          "__klass__": "skt.ExponentTransformer",
+          "__klass__": "sktime.transformations.series.exponent.ExponentTransformer",
           "power":2
         }
       ]
@@ -123,15 +122,15 @@ async def list_transformers(request):
     ~~~~~~~~~
     Example 2: 
     obj = {
-      "__klass__": "skt.TransformerPipeline",
+      "__klass__": "sktime.transformations.compose.TransformerPipeline",
       "steps": [
         {
-          "__klass__": "skt.Deseasonalizer",
+          "__klass__": "sktime.transformations.series.detrend.Deseasonalizer",
           "model": "multiplicative",
           "sp": 12
         },
          {
-          "__klass__": "skt.Deseasonalizer",
+          "__klass__": "sktime.transformations.series.detrend.Deseasonalizer",
           "model": "additive",
           "sp": 3
         }
@@ -543,19 +542,15 @@ async def loko_fit_service(value, args):
 
     predictor_name = args["predictor_name"]
     logger.debug(f"pred: {predictor_name}")
-    try:
-        fit_params = FitServiceArgs(**args).to_dict()
-    except Exception as e:
-        print("PRINT errrrrrrrrrrrr===================", e)
-        logger.error("LOG errrrrrrrrrrrr=================== %s" % e)
-        raise e
-    logger.debug("-------------------------------------" * 109)
+    fit_params = FitServiceArgs(**args).to_dict()
+
+    logger.debug("-------------------------------------")
     try:
         train_model(predictor_name, fit_params=fit_params, data=value)
     except Exception as e:
         print("Error::::::: ", e)
-        raise e
-    res = "Predictor '{predictor_name}' correctly fitted"
+        raise SanicException(e)
+    res = f"Predictor '{predictor_name}' correctly fitted"
     # res = get_all('transformers')
     # save_defaults(repo='transformers')
     return sanic.json(res)
@@ -567,6 +562,8 @@ async def loko_fit_service(value, args):
 @extract_value_args(file=False)
 async def loko_predict_service(value, args):
     logger.debug(f"predict::: value: {value}  \n \n args: {args}")
+    if isinstance(value, str):
+        value=None
     branch = "development"
     predictor_name = args["predictor_name"]
     logger.debug(f"pred: {predictor_name}")
@@ -576,6 +573,7 @@ async def loko_predict_service(value, args):
         print("PRINT errrrrrrrrrrrr===================", e)
         logger.error("LOG errrrrrrrrrrrr=================== %s" % e)
         raise e
+    logger.debug(f"predict_params: {predict_params}")
     # print("si")
     # res = get_all('transformers')
     # save_defaults(repo='transformers')
