@@ -277,7 +277,7 @@ def load_pipeline(model_id,
     logger.debug(f"loading pipeline {model_id}")
     path = repo_path / "predictors" / model_id
     logger.debug(f"path:: {path}")
-    bp = deserialize(repo_path / 'predictors' / model_id)
+    bp = deserialize(path)
     logger.debug(f"bp:: {bp}")
     steps = bp.pop('steps')
     pipeline = TSPipeline(**bp)

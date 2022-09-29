@@ -97,11 +97,14 @@ class TSPipeline():
                         horizon = np.arange(1, horizon + 1)
                     if isinstance(horizon, pd.PeriodIndex):
                         h_is_relative = False
+
                 else:
                     logger.debug("no forecasting horizon specified, predicting the next available occurrence...")
                     horizon = [1]
-
+                logger.debug(f"before fh-horizon:::: {horizon}")
                 fh = ForecastingHorizon(horizon, is_relative=h_is_relative)
+                logger.debug(f"before fh:::: {fh}")
+
                 # if include_probs:
                 #     if hasattr(obj, "predict_proba"):
                 #         classes = obj.classes_
@@ -114,6 +117,7 @@ class TSPipeline():
                 #         raise PredictProbaException("%s has not predict_proba" % obj.__class__.__name__)
                 # else:
                 preds = obj.predict(fh=fh, X=X, **kwargs)
+                logger.debug(f"prediction: {preds}")
                 for name, obj in self.steps:
                     if name == "transformer":
                         preds = obj.inverse_transform(X=preds, y=X)
@@ -123,10 +127,14 @@ class TSPipeline():
 
     def get_forecast_report(self, y, X=None):
         # horizon =
+        logger.debug("dentro forecast")
         if not X:
+            logger.debug("no x:::")
+            logger.debug(f"y {y}")
             horizon = y.index
         else:
             horizon = X.index
+        logger.debug(f"horizon:: {horizon}")
 
         y_pred = self.predict(X=X, horizon=horizon, h_is_relative=False)
         y_pred = pd.DataFrame(y_pred)

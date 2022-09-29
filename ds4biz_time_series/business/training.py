@@ -125,10 +125,8 @@ def training_pipeline(predictor_blueprint: Dict, data: Dict, datetime_feature: s
     # if steps["transformer"]=="auto":
     # if steps["model"]=="auto":
     for k, v in steps.items():
-        logger.debug(f"step added....{k}")
-        logger.debug(f"{v}")
+        logger.debug(f"step added....{k} value: {v}")
         step_eval = get_factory(v)
-        logger.debug(f"value {v} step eval:: {step_eval.__dict__}")
         ts_pipeline.add([k, step_eval])
     logger.debug("training task starts")
     training_task(pred_id, data, datetime_feature, datetime_frequency, task, report, test_size, ts_pipeline,

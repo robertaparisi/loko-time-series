@@ -3,7 +3,7 @@
   "id": "ds4biz-time-series",
   "description": "",
   "created_on": "14/09/2022, 12:18:07",
-  "last_modify": "28/09/2022, 10:37:22",
+  "last_modify": "29/09/2022, 09:06:00",
   "graphs": {
     "main": {
       "nodes": [
@@ -105,308 +105,6 @@
           "__class__": "Node"
         },
         {
-          "id": "5794fa93-5f6d-4fc2-a0f7-7d3c3ddf54fd",
-          "position": {
-            "x": 719,
-            "y": 128
-          },
-          "type": "custom",
-          "dragHandle": "#nodeHandle",
-          "sourcePosition": "right",
-          "targetPosition": "left",
-          "width": 156,
-          "height": 60,
-          "selected": false,
-          "dragging": false,
-          "data": {
-            "name": "time-series",
-            "events": null,
-            "description": "TimeSeries components",
-            "inputs": [
-              {
-                "id": "fit",
-                "label": "fit",
-                "service": "loko-services/predictors/fit",
-                "to": "fit"
-              },
-              {
-                "id": "predict",
-                "label": "predict",
-                "service": "loko-services/predictors/predict",
-                "to": "predict"
-              },
-              {
-                "id": "evaluate",
-                "label": "evaluate",
-                "service": "loko-services/predictors/evaluate",
-                "to": "evaluate"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "fit",
-                "label": "fit"
-              },
-              {
-                "id": "predict",
-                "label": "predict"
-              },
-              {
-                "id": "evaluate",
-                "label": "evaluate"
-              }
-            ],
-            "configured": true,
-            "options": {
-              "group": null,
-              "args": [
-                {
-                  "name": "comment",
-                  "type": "area",
-                  "label": "Node comment",
-                  "helper": "Use it to explain the usage of this node"
-                },
-                {
-                  "name": "alias",
-                  "type": "text",
-                  "label": "Name",
-                  "helper": "Use this name as an alias"
-                },
-                {
-                  "name": "debug",
-                  "type": "boolean",
-                  "label": "Debug to Console",
-                  "divider": true
-                },
-                {
-                  "name": "predictor_name",
-                  "type": "text",
-                  "label": "Predictor Name",
-                  "helper": "Digit the name of the predictor you want to use",
-                  "group": "",
-                  "value": null,
-                  "description": ""
-                },
-                {
-                  "name": "datetime_feature",
-                  "type": "text",
-                  "label": "Datetime Feature",
-                  "helper": "Name of the feature to use as date-time reference",
-                  "group": "fit",
-                  "value": null,
-                  "description": ""
-                },
-                {
-                  "name": "datetime_frequency",
-                  "type": "text",
-                  "label": "Datetime Frequency",
-                  "helper": "Time frequence required for the model ",
-                  "group": "fit",
-                  "value": null,
-                  "description": ""
-                },
-                {
-                  "name": "forecasting_horizon",
-                  "type": "number",
-                  "label": "Forecasting Horizon",
-                  "helper": "",
-                  "group": "fit",
-                  "value": 1,
-                  "description": ""
-                },
-                {
-                  "name": "report",
-                  "type": "boolean",
-                  "label": "Compute metrics report",
-                  "helper": "",
-                  "group": "fit",
-                  "value": "false",
-                  "description": ""
-                },
-                {
-                  "name": "test_size",
-                  "type": "dynamic",
-                  "label": "Test Size",
-                  "helper": "",
-                  "group": "fit",
-                  "value": 30,
-                  "description": "",
-                  "parent": "report",
-                  "condition": "{parent}===true",
-                  "dynamicType": "number"
-                },
-                {
-                  "name": "forecasting_horizon",
-                  "type": "numeric",
-                  "label": "Forecasting Horizon",
-                  "helper": "",
-                  "group": "predict",
-                  "value": 1,
-                  "description": ""
-                },
-                {
-                  "name": "save_eval_report",
-                  "type": "boolean",
-                  "label": "Save metrics report",
-                  "helper": "",
-                  "group": "evaluate",
-                  "value": "false",
-                  "description": ""
-                }
-              ],
-              "click": null,
-              "icon": null,
-              "values": {
-                "comment": "",
-                "alias": "",
-                "debug": true,
-                "predictor_name": "pred_day",
-                "datetime_feature": "Date_Time",
-                "datetime_frequency": "7D",
-                "forecasting_horizon": "1",
-                "report": true,
-                "save_eval_report": true,
-                "test_size": "0.2"
-              }
-            },
-            "locked": null
-          },
-          "selectable": true,
-          "draggable": true,
-          "positionAbsolute": {
-            "x": 719,
-            "y": 128
-          },
-          "__class__": "Node"
-        },
-        {
-          "id": "9645dd6c-a2cb-4871-84e0-8b86fdb4992c",
-          "position": {
-            "x": 628.5248674571206,
-            "y": 459.9785715608124
-          },
-          "type": "custom",
-          "dragHandle": "#nodeHandle",
-          "sourcePosition": "right",
-          "targetPosition": "left",
-          "width": 150,
-          "height": 56,
-          "selected": false,
-          "dragging": false,
-          "data": {
-            "name": "HTTP Request",
-            "events": null,
-            "description": "### Description\nThe HTTP REQUEST component is used to make HTTP requests in the web to microservices external to the LOKO AI platform.\n\n### Input\nInput is only required for HTTP methods that have or require a body (PUT/PATCH/POST). In this case there is no predefined input format.\n\n### Output\nIn this case there is no fixed output format.",
-            "inputs": [
-              {
-                "id": "input",
-                "label": "input"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "output",
-                "label": "output"
-              }
-            ],
-            "configured": true,
-            "options": {
-              "group": "HTTP",
-              "args": [
-                {
-                  "name": "comment",
-                  "type": "area",
-                  "label": "Node comment",
-                  "helper": "Use it to explain the usage of this node"
-                },
-                {
-                  "name": "alias",
-                  "type": "text",
-                  "label": "Name",
-                  "helper": "Use this name as an alias"
-                },
-                {
-                  "name": "debug",
-                  "type": "boolean",
-                  "label": "Debug to Console",
-                  "divider": true
-                },
-                {
-                  "type": "text",
-                  "name": "url",
-                  "label": "URL",
-                  "validation": {
-                    "required": "Required field"
-                  }
-                },
-                {
-                  "name": "method",
-                  "label": "Method",
-                  "type": "select",
-                  "options": [
-                    "GET",
-                    "POST",
-                    "PUT",
-                    "DELETE",
-                    "PATCH"
-                  ],
-                  "validation": {
-                    "required": "Required field"
-                  }
-                },
-                {
-                  "name": "accept",
-                  "label": "Accept",
-                  "type": "select",
-                  "options": [
-                    "text",
-                    "json",
-                    "file"
-                  ],
-                  "validation": {
-                    "required": "Required field"
-                  }
-                },
-                {
-                  "name": "query",
-                  "label": "Query params",
-                  "type": "multiKeyValue",
-                  "fields": [
-                    {
-                      "name": "key",
-                      "placeholder": "Key",
-                      "validation": {
-                        "required": "Required field"
-                      }
-                    },
-                    {
-                      "name": "value",
-                      "placeholder": "Value",
-                      "validation": {
-                        "required": "Required field"
-                      }
-                    }
-                  ]
-                }
-              ],
-              "click": "Launch request",
-              "icon": "RiUploadCloud2Fill",
-              "values": {
-                "comment": "",
-                "alias": "",
-                "debug": true,
-                "url": "http://ds4biz-time-series:8080/predictors",
-                "method": "GET",
-                "accept": "json"
-              }
-            },
-            "locked": null
-          },
-          "selectable": true,
-          "draggable": true,
-          "__class__": "Node"
-        },
-        {
           "id": "91686445-c9f3-494c-89a6-2398581b74de",
           "position": {
             "x": 326,
@@ -501,10 +199,107 @@
           "__class__": "Node"
         },
         {
-          "id": "a058d9fe-ece9-4fb4-840a-f77dd877c8cb",
+          "id": "ad26db46-19a2-4bb2-96bd-6d3b47f04bed",
           "position": {
-            "x": 649,
-            "y": 286
+            "x": 345.6007087964208,
+            "y": 356.4486196363259
+          },
+          "type": "custom",
+          "dragHandle": "#nodeHandle",
+          "sourcePosition": "right",
+          "targetPosition": "left",
+          "width": 150,
+          "height": 56,
+          "selected": false,
+          "dragging": false,
+          "data": {
+            "name": "Trigger",
+            "events": null,
+            "description": "### Description\nThe TRIGGER component is used to start streams.\n\n### Output\nThe parameter Type can be set as a **String** or an **Object**. The parameter Value, on the other hand, defines the actual output of the component.",
+            "inputs": [],
+            "outputs": [
+              {
+                "id": "output",
+                "label": "output"
+              }
+            ],
+            "configured": true,
+            "options": {
+              "group": "Common",
+              "args": [
+                {
+                  "name": "comment",
+                  "type": "area",
+                  "label": "Node comment",
+                  "helper": "Use it to explain the usage of this node"
+                },
+                {
+                  "name": "alias",
+                  "type": "text",
+                  "label": "Name",
+                  "helper": "Use this name as an alias"
+                },
+                {
+                  "name": "debug",
+                  "type": "boolean",
+                  "label": "Debug to Console",
+                  "divider": true
+                },
+                {
+                  "name": "type",
+                  "type": "select",
+                  "description": "The type of data",
+                  "label": "Type",
+                  "validation": {
+                    "required": "Required field"
+                  },
+                  "fragment": null,
+                  "advanced": false,
+                  "options": [
+                    "String",
+                    "Object"
+                  ],
+                  "value": null
+                },
+                {
+                  "name": "value",
+                  "type": "dynamic",
+                  "dynamicType": {
+                    "String": "area",
+                    "Object": "code"
+                  },
+                  "parent": "type",
+                  "label": "Value",
+                  "validation": {
+                    "required": "Required field"
+                  }
+                }
+              ],
+              "click": "Send message",
+              "icon": "RiPlayFill",
+              "values": {
+                "comment": "",
+                "alias": "",
+                "debug": false,
+                "type": "Object",
+                "value": "{\n  \"data\": [\n    {\"Date_Time\": \"03/28/2010\"},\n    {\"Date_Time\": \"04/04/2010\"}\n  ],\n  \"target\": [\n     2815023522910.2686,\n     2733936048292.9297\n  ]\n}"
+              }
+            },
+            "locked": null
+          },
+          "selectable": true,
+          "draggable": true,
+          "positionAbsolute": {
+            "x": 345.6007087964208,
+            "y": 356.4486196363259
+          },
+          "__class__": "Node"
+        },
+        {
+          "id": "7a822999-91ea-4c2b-9755-36ca10fac7b8",
+          "position": {
+            "x": 683,
+            "y": 203
           },
           "type": "custom",
           "dragHandle": "#nodeHandle",
@@ -588,7 +383,7 @@
                   "type": "text",
                   "label": "Datetime Feature",
                   "helper": "Name of the feature to use as date-time reference",
-                  "group": "fit",
+                  "group": "Fit Parameters",
                   "value": null,
                   "description": ""
                 },
@@ -597,7 +392,7 @@
                   "type": "text",
                   "label": "Datetime Frequency",
                   "helper": "Time frequence required for the model ",
-                  "group": "fit",
+                  "group": "Fit Parameters",
                   "value": null,
                   "description": ""
                 },
@@ -606,7 +401,7 @@
                   "type": "number",
                   "label": "Forecasting Horizon",
                   "helper": "",
-                  "group": "fit",
+                  "group": "Fit Parameters",
                   "value": null,
                   "description": ""
                 },
@@ -615,7 +410,7 @@
                   "type": "boolean",
                   "label": "Compute metrics report",
                   "helper": "",
-                  "group": "fit",
+                  "group": "Fit Parameters",
                   "value": "false",
                   "description": ""
                 },
@@ -624,7 +419,7 @@
                   "type": "dynamic",
                   "label": "Test Size",
                   "helper": "",
-                  "group": "fit",
+                  "group": "Fit Parameters",
                   "value": 30,
                   "description": "",
                   "parent": "report",
@@ -636,7 +431,7 @@
                   "type": "number",
                   "label": "Forecasting Horizon",
                   "helper": "",
-                  "group": "predict",
+                  "group": "Predict Parameters",
                   "value": 1,
                   "description": ""
                 },
@@ -645,9 +440,21 @@
                   "type": "boolean",
                   "label": "Save metrics report",
                   "helper": "",
-                  "group": "evaluate",
-                  "value": "false",
+                  "group": "Evaluate parameters",
+                  "value": false,
                   "description": ""
+                },
+                {
+                  "name": "eval_fname",
+                  "type": "dynamic",
+                  "label": "Evaluation file name",
+                  "helper": "",
+                  "group": "Evaluate parameters",
+                  "value": null,
+                  "description": "",
+                  "parent": "save_eval_report",
+                  "condition": "{parent}===true",
+                  "dynamicType": "text"
                 }
               ],
               "click": null,
@@ -658,27 +465,46 @@
                 "debug": true,
                 "predictor_name": "pred_day",
                 "datetime_feature": "",
-                "datetime_frequency": "",
+                "datetime_frequency": "7d",
                 "forecasting_horizon_fit": "",
                 "report": true,
-                "forecasting_horizon": "3",
+                "forecasting_horizon": "1",
                 "save_eval_report": true,
-                "test_size": "30"
+                "test_size": "0.1",
+                "eval_fname": "ts_evaluation1"
               }
             },
             "locked": null
           },
           "selectable": true,
           "draggable": true,
+          "positionAbsolute": {
+            "x": 683,
+            "y": 203
+          },
           "__class__": "Node"
         }
       ],
       "edges": [
         {
-          "id": "reactflow__edge-0bca8ca4-b3e6-4caf-9cf4-63a9c7e98c87output-5794fa93-5f6d-4fc2-a0f7-7d3c3ddf54fdfit",
+          "id": "reactflow__edge-ad26db46-19a2-4bb2-96bd-6d3b47f04bedoutput-7a822999-91ea-4c2b-9755-36ca10fac7b8evaluate",
+          "source": "ad26db46-19a2-4bb2-96bd-6d3b47f04bed",
+          "sourceHandle": "output",
+          "target": "7a822999-91ea-4c2b-9755-36ca10fac7b8",
+          "targetHandle": "evaluate",
+          "data": {
+            "startColor": "#D770AD",
+            "stopColor": "#888"
+          },
+          "selected": false,
+          "dragging": false,
+          "__class__": "Edge"
+        },
+        {
+          "id": "reactflow__edge-0bca8ca4-b3e6-4caf-9cf4-63a9c7e98c87output-7a822999-91ea-4c2b-9755-36ca10fac7b8fit",
           "source": "0bca8ca4-b3e6-4caf-9cf4-63a9c7e98c87",
           "sourceHandle": "output",
-          "target": "5794fa93-5f6d-4fc2-a0f7-7d3c3ddf54fd",
+          "target": "7a822999-91ea-4c2b-9755-36ca10fac7b8",
           "targetHandle": "fit",
           "data": {
             "startColor": "#D770AD",
@@ -689,10 +515,10 @@
           "__class__": "Edge"
         },
         {
-          "id": "reactflow__edge-91686445-c9f3-494c-89a6-2398581b74deoutput-a058d9fe-ece9-4fb4-840a-f77dd877c8cbpredict",
+          "id": "reactflow__edge-91686445-c9f3-494c-89a6-2398581b74deoutput-7a822999-91ea-4c2b-9755-36ca10fac7b8predict",
           "source": "91686445-c9f3-494c-89a6-2398581b74de",
           "sourceHandle": "output",
-          "target": "a058d9fe-ece9-4fb4-840a-f77dd877c8cb",
+          "target": "7a822999-91ea-4c2b-9755-36ca10fac7b8",
           "targetHandle": "predict",
           "data": {
             "startColor": "#D770AD",

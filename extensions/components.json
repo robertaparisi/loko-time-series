@@ -44,8 +44,7 @@
    "values": {
     "report": "false",
     "test_size": 30,
-    "forecasting_horizon": 1,
-    "save_eval_report": "false"
+    "forecasting_horizon": 1
    },
    "args": [
     {
@@ -62,7 +61,7 @@
      "type": "text",
      "label": "Datetime Feature",
      "helper": "Name of the feature to use as date-time reference",
-     "group": "fit",
+     "group": "Fit Parameters",
      "value": null,
      "description": ""
     },
@@ -71,7 +70,7 @@
      "type": "text",
      "label": "Datetime Frequency",
      "helper": "Time frequence required for the model ",
-     "group": "fit",
+     "group": "Fit Parameters",
      "value": null,
      "description": ""
     },
@@ -80,7 +79,7 @@
      "type": "number",
      "label": "Forecasting Horizon",
      "helper": "",
-     "group": "fit",
+     "group": "Fit Parameters",
      "value": null,
      "description": ""
     },
@@ -89,7 +88,7 @@
      "type": "boolean",
      "label": "Compute metrics report",
      "helper": "",
-     "group": "fit",
+     "group": "Fit Parameters",
      "value": "false",
      "description": ""
     },
@@ -98,7 +97,7 @@
      "type": "dynamic",
      "label": "Test Size",
      "helper": "",
-     "group": "fit",
+     "group": "Fit Parameters",
      "value": 30,
      "description": "",
      "parent": "report",
@@ -110,7 +109,7 @@
      "type": "number",
      "label": "Forecasting Horizon",
      "helper": "",
-     "group": "predict",
+     "group": "Predict Parameters",
      "value": 1,
      "description": ""
     },
@@ -119,9 +118,21 @@
      "type": "boolean",
      "label": "Save metrics report",
      "helper": "",
-     "group": "evaluate",
-     "value": "false",
+     "group": "Evaluate parameters",
+     "value": false,
      "description": ""
+    },
+    {
+     "name": "eval_fname",
+     "type": "dynamic",
+     "label": "Evaluation file name",
+     "helper": "",
+     "group": "Evaluate parameters",
+     "value": null,
+     "description": "",
+     "parent": "save_eval_report",
+     "condition": "{parent}===true",
+     "dynamicType": "text"
     }
    ]
   }

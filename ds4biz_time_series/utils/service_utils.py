@@ -22,12 +22,17 @@ def get_all(repo: str) -> List[str]:
 
 def check_predictor_existence(path:Path):
     if path.exists():
-        raise SanicException(f"Predictor '{path.name}' already exists!", status_code=409)
+        return True
+    else:
+        return False
 
-def check_existence(path:Path, obj_type:str):
-    if not path.exists():
-        print("qui")
-        raise SanicException(f"{obj_type.capitalize()} '{path.name}' doesn't exists!", status_code=404)
+def check_existence(path:Path):
+    if path.exists():
+        return True
+    else:
+        return False
+
+
 
 
 def load_params(params):
@@ -87,13 +92,17 @@ def get_prediction(predictor_name, predict_params:dict, branch:str="development"
     """
     path = repo_path / 'predictors' / predictor_name
     logger.debug(f"name: {predictor_name}")
+    if not check_predictor_existence:
+        logger.debug(f"Predictor {predictor_name} doesn't exists")
+        raise Exception(f"Predictor {predictor_name} doesn't exists")
     if path / branch not in list(path.glob('*')):
+        logger.debug(f"path {path} + {branch} not found...")
         raise Exception(f'Predictor "{predictor_name}" is not fitted')
     pipeline = load_pipeline(predictor_name, branch, repo_path=repo_path)
     data = preprocessing_data(data, datetime_feature=pipeline.datetime_feature,
                               datetime_frequency=pipeline.datetime_frequency, get_only_X=True)
-
-
+    logger.debug("data transformed...")
+    logger.debug(f'forecast horizon {type(predict_params["forecasting_horizon"])}')
     try:
         preds = pipeline.predict(X=data["X"],
                                  horizon=predict_params["forecasting_horizon"])  # , include_probs=params['include_probs'])
@@ -113,6 +122,14 @@ def get_prediction(predictor_name, predict_params:dict, branch:str="development"
 def get_model_evaluation(predictor_name, branch, evaluate_params: dict=None, data:dict=None):
 
     logger.debug("loading predictor pipeline...")
+    path = repo_path / 'predictors' / predictor_name
+
+    if not check_predictor_existence:
+        logger.debug(f"Predictor {predictor_name} doesn't exists")
+        raise Exception(f"Predictor {predictor_name} doesn't exists")
+    if path / branch not in list(path.glob('*')):
+        logger.debug(f"path {path} + {branch} not found...")
+        raise Exception(f'Predictor "{predictor_name}" is not fitted')
     pipeline = load_pipeline(predictor_name, branch, repo_path=repo_path)
     datetime = pipeline.date.strftime('%Y-%m-%d %H:%M:%S.%f')
 
@@ -132,6 +149,9 @@ def get_model_evaluation(predictor_name, branch, evaluate_params: dict=None, dat
     logger.debug("computing forecast report")
     report = pipeline.get_forecast_report(y=y, X=X)
     logger.debug(f"report: {report}")
-    res = [{"report_test": report, "datetime": datetime,
+    res = [{"results": report, "datetime": datetime,
             "task": "forecast"}]
+    # if evaluate_params["save_eval_report"]:
+    #     fpath = Path(PREDICTOR_EVALUATE_FOLDER + "/" + evaluate_params["eval_fname"] + EVALUATE_FILES_EXTENSION)
+    #     json_writer(fpath, res[0])
     return res

@@ -31,7 +31,7 @@ from sanic.exceptions import SanicException, NotFound
 import sanic
 
 from ds4biz_time_series.utils.service_utils import check_predictor_existence, load_params, check_existence, train_model, \
-    get_prediction
+    get_prediction, get_model_evaluation
 from ds4biz_time_series.utils.serialization_utils import serialize, deserialize
 from ds4biz_time_series.utils.service_utils import get_all
 from ds4biz_time_series.utils.zip_utils import make_zipfile, import_zipfile
@@ -289,7 +289,8 @@ async def create_predictor(request, name):
 
     predictor_path = repo_path / 'predictors' / name
 
-    check_predictor_existence(predictor_path)
+    if check_predictor_existence(predictor_path):
+        raise SanicException(f"Predictor '{name}' already exists!", status_code=409)
     ### transformer ###
     transformer_id = request.args.get('transformer_id', 'auto')
     model_id = request.args.get('model_id', 'auto')
@@ -303,7 +304,8 @@ async def create_predictor(request, name):
         raise SanicException("'none' transformer not yet implemented", status_code=501)
     else:
         tpath = repo_path / 'transformers' / transformer_id
-        check_existence(tpath, "transformer")
+        if check_existence(tpath):
+            raise SanicException(f"Transformer '{tpath.name}' doesn't exists!", status_code=404)
         transformer = deserialize(tpath)
     ### model ###
     if model_id == 'auto':
@@ -311,7 +313,8 @@ async def create_predictor(request, name):
         raise NotImplementedError
     else:
         mpath = repo_path / 'models' / model_id
-        check_existence(mpath, "Model")
+        if check_existence(tpath):
+            raise SanicException(f"Model '{mpath.name}' doesn't exists!", status_code=404)
         mod = deserialize(mpath)
     ### blueprint ###
     if blueprint:
@@ -535,21 +538,20 @@ async def export_predictor(request, name):
 @doc.consumes(doc.JsonBody({}), location="body")
 @extract_value_args(file=False)
 async def loko_fit_service(value, args):
-    print("print vakue", value)
-    print("args", args)
-    print("fit")
     logger.debug(f"fit::: value: {value}  \n \n args: {args}")
-
     predictor_name = args["predictor_name"]
     logger.debug(f"pred: {predictor_name}")
-    fit_params = FitServiceArgs(**args).to_dict()
-
+    fit_params = FitServiceArgs(**args)
+    if not (fit_params.datetime_frequency and fit_params.datetime_feature):
+        msg = f"Date-time frequency value is '{fit_params.datetime_frequency}', Date-Time feature value is '{fit_params.datetime_feature}'. Both values need to be specified..."
+        logger.error(msg)
+        raise SanicException(msg, status_code=400)
     logger.debug("-------------------------------------")
     try:
-        train_model(predictor_name, fit_params=fit_params, data=value)
+        train_model(predictor_name, fit_params=fit_params.to_dict(), data=value)
     except Exception as e:
-        print("Error::::::: ", e)
-        raise SanicException(e)
+        logger.error(f"Fitting LOG Error... {e}")
+        raise SanicException(f"Fitting LOG Error... {e}")
     res = f"Predictor '{predictor_name}' correctly fitted"
     # res = get_all('transformers')
     # save_defaults(repo='transformers')
@@ -563,21 +565,21 @@ async def loko_fit_service(value, args):
 async def loko_predict_service(value, args):
     logger.debug(f"predict::: value: {value}  \n \n args: {args}")
     if isinstance(value, str):
-        value=None
+        value = None
     branch = "development"
     predictor_name = args["predictor_name"]
+
     logger.debug(f"pred: {predictor_name}")
-    try:
-        predict_params = PredictServiceArgs(**args).to_dict()
-    except Exception as e:
-        print("PRINT errrrrrrrrrrrr===================", e)
-        logger.error("LOG errrrrrrrrrrrr=================== %s" % e)
-        raise e
+    predict_params = PredictServiceArgs(**args).to_dict()
     logger.debug(f"predict_params: {predict_params}")
     # print("si")
     # res = get_all('transformers')
     # save_defaults(repo='transformers')
-    res = get_prediction(predictor_name, predict_params, branch=branch, data=value)
+    try:
+        res = get_prediction(predictor_name, predict_params, branch=branch, data=value)
+    except Exception as e:
+        logger.error(f"Prediction LOG err {e}")
+        raise e
     return sanic.json(res)
 
 
@@ -587,11 +589,21 @@ async def loko_predict_service(value, args):
 @doc.consumes(doc.JsonBody({}), location="body")
 @extract_value_args(file=False)
 async def loko_evaluate_service(value, args):
-    # print("si")
-    res = "eval"
-    # res = get_all('transformers')
-    # save_defaults(repo='transformers')
-    return sanic.json(res)
+    logger.debug(f"evaluate::: value: {value}  \n \n args: {args}")
+
+    branch = "development"
+    # params = {**load_params(request.args)}
+    predictor_name = unquote(args["predictor_name"])
+    logger.debug(f"pred: {predictor_name}")
+    eval_params = None  # EvaluateServiceArgs(**args).to_dict()
+
+    try:
+        eval_res = get_model_evaluation(predictor_name=predictor_name, branch=branch, evaluate_params=eval_params,
+                                        data=value)
+    except Exception as e:
+        logger.error(e)
+        raise SanicException(e)
+    return sanic.json(eval_res)
 
 
 @app.exception(Exception)

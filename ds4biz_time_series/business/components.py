@@ -6,34 +6,41 @@ evaluate_service = "loko-services/predictors/evaluate"
 
 #########################   ARGS     ###########################
 
-#### FIT ARGS
 pred_name = Arg(name="predictor_name", label="Predictor Name", type="text",
                 helper="Digit the name of the predictor you want to use")
+#### FIT ARGS
 
+fit_group = "Fit Parameters"
 # task = Select(name="task", label="Task", options=["Forecasting","Classification"], group="fit")
 
-fh = Arg(name="forecasting_horizon_fit", label="Forecasting Horizon", type="number", group="fit")
+fh = Arg(name="forecasting_horizon_fit", label="Forecasting Horizon", type="number", group=fit_group)
 dt_feature = Arg(name="datetime_feature", label="Datetime Feature", type="text",
-                 helper="Name of the feature to use as date-time reference", group="fit")
+                 helper="Name of the feature to use as date-time reference", group=fit_group)
 dt_frequency = Arg(name="datetime_frequency", label="Datetime Frequency", type="text",
-                   helper="Time frequence required for the model ", group="fit")
-report = Arg(name="report", label="Compute metrics report", type="boolean", group="fit", value="false")
+                   helper="Time frequence required for the model ", group=fit_group)
+report = Arg(name="report", label="Compute metrics report", type="boolean", group=fit_group, value="false")
 test_size = Dynamic(name="test_size", label="Test Size", parent="report", condition="{parent}===true",
-                    dynamicType="number", group="fit", value=30)
+                    dynamicType="number", group=fit_group, value=30)
 
 fit_args = [dt_feature, dt_frequency, fh, report, test_size]
 #### PREDICT ARGS
 
-fh_pred = Arg(name="forecasting_horizon", label="Forecasting Horizon", type="number", group="predict", value=1)
+pred_group = "Predict Parameters"
+fh_pred = Arg(name="forecasting_horizon", label="Forecasting Horizon", type="number", group=pred_group, value=1)
 
 # Arg(name= , label= , type= , group= "predict" )
 
 predict_args = [fh_pred]
 #### EVALUATE ARGS
 
-report_eval = Arg(name="save_eval_report", label="Save metrics report", type="boolean", group="evaluate", value="false")
+eval_group = "Evaluate parameters"
 
-evaluate_args = [report_eval]
+report_eval = Arg(name="save_eval_report", label="Save metrics report", type="boolean", group=eval_group, value=False)
+eval_fname = Dynamic(name='eval_fname', label='Evaluation file name', parent="save_eval_report", dynamicType="text", condition='{parent}===true',
+                     # helper="ciao",
+                     # description='Type the file name in which you want to store evaluation metrics.',# It will be automatically saved in the path \"data/prediction evaluations\" with extension \".eval\".',
+                     group=eval_group)
+evaluate_args = [report_eval, eval_fname]
 
 args_list = [pred_name] + fit_args + predict_args + evaluate_args
 #########################   INPUT   ###########################
