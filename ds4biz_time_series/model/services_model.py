@@ -27,13 +27,13 @@ class PredictServiceArgs():
         return self.__dict__
 
 
-# class EvaluateServiceArgs():
-#     def __init__(self, save_eval_report, eval_fname=None, **kwargs):
-#         self.save_eval_report = save_eval_report
-#         self.eval_fname = eval_fname
-#
-#     def to_dict(self):
-#         return self.__dict__
+class EvaluateServiceArgs():
+    def __init__(self, save_eval_report, eval_fname=None, **kwargs):
+        self.save_eval_report = save_eval_report
+        self.eval_fname = eval_fname
+
+    def to_dict(self):
+        return self.__dict__
 
 if __name__ == '__main__':
 

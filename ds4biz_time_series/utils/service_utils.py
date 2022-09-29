@@ -5,10 +5,12 @@ import json
 from sanic.exceptions import SanicException
 
 from ds4biz_time_series.business.training import training_pipeline
-from ds4biz_time_series.config.AppConfig import REPO_PATH
+from ds4biz_time_series.config.AppConfig import REPO_PATH, PREDICTOR_EVALUATE_FOLDER, EVALUATE_FILES_EXTENSION, \
+    ORCHESTRATOR
 from ds4biz_time_series.dao.fs_dao import FileSystemDAO
 from ds4biz_time_series.utils.core_utils import load_pipeline
 from ds4biz_time_series.utils.data_utils import preprocessing_data
+from ds4biz_time_series.utils.files_utils import save_eval_file
 from ds4biz_time_series.utils.logger_utils import logger
 from ds4biz_time_series.utils.serialization_utils import deserialize, serialize
 
@@ -135,13 +137,9 @@ def get_model_evaluation(predictor_name, branch, evaluate_params: dict=None, dat
 
     logger.debug("pre-processing evaluation data...")
     # y = FACTORY(body['target'])
-    try:
-        data = preprocessing_data(data, datetime_feature=pipeline.datetime_feature,
+    data = preprocessing_data(data, datetime_feature=pipeline.datetime_feature,
                                   datetime_frequency=pipeline.datetime_frequency)
-    except Exception as e:
-        print(f'----------------------{e}')
-        logger.error(f"evaluate error:::{e}")
-        raise e
+
 
     y = data["y"]
     X = data["X"]
@@ -151,7 +149,6 @@ def get_model_evaluation(predictor_name, branch, evaluate_params: dict=None, dat
     logger.debug(f"report: {report}")
     res = [{"results": report, "datetime": datetime,
             "task": "forecast"}]
-    # if evaluate_params["save_eval_report"]:
-    #     fpath = Path(PREDICTOR_EVALUATE_FOLDER + "/" + evaluate_params["eval_fname"] + EVALUATE_FILES_EXTENSION)
-    #     json_writer(fpath, res[0])
+    if evaluate_params["save_eval_report"]:
+        save_eval_file(eval_fname=evaluate_params["eval_fname"], data=res[0])
     return res

@@ -21,7 +21,7 @@ from ds4biz_time_series.business.components import fit_service
 from ds4biz_time_series.business.training import training_pipeline
 from ds4biz_time_series.config.AppConfig import REPO_PATH
 from ds4biz_time_series.dao.fs_dao import JSONFSDAO
-from ds4biz_time_series.model.services_model import FitServiceArgs, PredictServiceArgs
+from ds4biz_time_series.model.services_model import FitServiceArgs, PredictServiceArgs, EvaluateServiceArgs
 from ds4biz_time_series.utils.core_utils import load_pipeline, to_dataframe
 from ds4biz_time_series.utils.data_utils import preprocessing_data
 from ds4biz_time_series.utils.logger_utils import logger
@@ -595,7 +595,7 @@ async def loko_evaluate_service(value, args):
     # params = {**load_params(request.args)}
     predictor_name = unquote(args["predictor_name"])
     logger.debug(f"pred: {predictor_name}")
-    eval_params = None  # EvaluateServiceArgs(**args).to_dict()
+    eval_params = EvaluateServiceArgs(**args).to_dict()
 
     try:
         eval_res = get_model_evaluation(predictor_name=predictor_name, branch=branch, evaluate_params=eval_params,
