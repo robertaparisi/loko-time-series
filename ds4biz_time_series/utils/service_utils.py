@@ -57,14 +57,13 @@ def train_model(predictor_name, fit_params:dict, data:dict):
     print("predictor: ", predictor_path)
     logger.debug(f"predictor{predictor_path}")
     if not check_predictor_existence(predictor_path) or predictor_name=="":
-        raise SanicException(f"Predictor '{predictor_name}' doesn't exists")
-
+        raise SanicException(f"Predictor '{predictor_name}' doesn't exists", status_code=404)
     try:
         predictor_blueprint = deserialize(predictor_path)
 
     except FileNotFoundError as notfound:
         logger.error("predictor corrupt")
-        raise SanicException(f"Predictor '{predictor_name}' doesn't exists or corrupt...")
+        raise SanicException(f"Predictor '{predictor_name}' doesn't exists or corrupt...", status_code=404)
 
     dparams = dict(test_size=.2,
                    forecasting_horizon=None,
@@ -83,9 +82,8 @@ def train_model(predictor_name, fit_params:dict, data:dict):
     predictor_blueprint["datetime_frequency"] = params["datetime_frequency"]
     serialize(predictor_path, predictor_blueprint)
 
-    print("parameters::: ", params)
     data = data
-    print("data", data)
+
     training_pipeline(predictor_blueprint=predictor_blueprint, data=data, **params)
     logger.debug("training done...")
 
@@ -169,12 +167,12 @@ def get_model_evaluation(predictor_name, branch, evaluate_params: dict=None, dat
 
 def delete_model(model_name):
     if not model_name:
-        raise SanicException("Model name not specified...")
+        raise SanicException("Model name not specified...", status_code=400)
     model_name = unquote(model_name)
 
     path = repo_path / 'models' / model_name
     if not path.exists():
-        raise SanicException(f"Model '{model_name}' does not exist!", status_code=400)
+        raise SanicException(f"Model '{model_name}' does not exist!", status_code=404)
     shutil.rmtree(path)
     return f'Model "{model_name}" deleted'
 
@@ -182,22 +180,22 @@ def delete_model(model_name):
 
 def delete_transformer(transformer_name):
     if not transformer_name:
-        raise SanicException("Transformer name not specified...")
+        raise SanicException("Transformer name not specified...", status_code=400)
     transformer_name = unquote(transformer_name)
     path = repo_path / 'transformers' / transformer_name
     if not path.exists():
-        raise SanicException(f"Tranformer '{transformer_name}' does not exist!", status_code=400)
+        raise SanicException(f"Tranformer '{transformer_name}' does not exist!", status_code=404)
     shutil.rmtree(path)
     return f"Transformer '{transformer_name}' deleted"
 
 def delete_predictor(predictor_name):
     if not predictor_name:
-        raise SanicException("Predictor name not specified...")
+        raise SanicException("Predictor name not specified...", status_code=400)
     predictor_name = unquote(predictor_name)
 
     path = repo_path / 'predictors' / predictor_name
     if not path.exists():
-        raise SanicException(f'Predictor "{predictor_name}" does not exist!', status_code=400)
+        raise SanicException(f'Predictor "{predictor_name}" does not exist!', status_code=404)
     # ##TODO: sviluppare questa parte
     # if name in fitting.all('alive'):
     #     dc = fitting.get_by_id(name)['dc']

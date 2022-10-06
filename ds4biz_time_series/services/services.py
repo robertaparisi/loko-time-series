@@ -542,7 +542,7 @@ async def loko_get_dataset_service(value, args):
         return sanic.json(res)
     except Exception as e:
         logger.error(f"error::: {e}")
-        raise SanicException(f"error::: {e}")
+        raise SanicException(f"error::: {e}", status_code=500)
 
 
 
@@ -565,7 +565,7 @@ async def loko_fit_service(value, args):
         train_model(predictor_name, fit_params=fit_params.to_dict(), data=value)
     except Exception as e:
         logger.error(f"Fitting LOG Error... {e}")
-        raise SanicException(f"Fitting LOG Error... {e}")
+        raise SanicException(f"Fitting LOG Error... {e}", status_code=500)
     res = f"Predictor '{predictor_name}' correctly fitted"
     # res = get_all('transformers')
     # save_defaults(repo='transformers')
@@ -705,13 +705,13 @@ async def loko_evaluate_service(value, args):
 async def loko_delete_predictor_objs(value, args):
     model_name = args.get("del_model", None)
     if not model_name:
-        raise SanicException("Model name not specified...")
+        raise SanicException("Model name not specified...", status_code=400)
 
     model_name = unquote(model_name)
 
     path = repo_path / 'models' / model_name
     if not path.exists():
-        raise SanicException(f"Model '{model_name}' does not exist!", status_code=400)
+        raise SanicException(f"Model '{model_name}' does not exist!", status_code=404)
     shutil.rmtree(path)
     return sanic.json(f'Model "{model_name}" deleted')
 
@@ -721,15 +721,14 @@ async def loko_delete_predictor_objs(value, args):
 
 @app.exception(Exception)
 async def manage_exception(request, exception):
+    status_code = getattr(exception, "status_code", None) or 500
     if isinstance(exception, SanicException):
-        print(f"exc: {exception}")
-        return sanic.json(dict(error=str(exception)), status=exception.status_code)
+        return sanic.json(dict(error=str(exception)), status=status_code)
 
     e = dict(error=f"{exception.__class__.__name__}: {exception}")
 
     if isinstance(exception, NotFound):
         return sanic.json(e, status=404)
-    status_code = getattr(exception, "status_code", None) or 500
     # logger.error(f"status code {status_code}")
     logger.error('TracebackERROR: \n' + traceback.format_exc() + '\n\n', exc_info=True)
     return sanic.json(e, status=status_code)
