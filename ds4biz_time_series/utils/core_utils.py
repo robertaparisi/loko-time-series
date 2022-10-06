@@ -1,4 +1,5 @@
 import os
+
 import urllib
 from abc import ABC
 from collections import defaultdict
@@ -24,6 +25,12 @@ from ds4biz_time_series.utils.serialization_utils import deserialize
 
 
 class Status:
+    """
+    It takes a function as an argument, and returns a function that wraps the original function in a try/except block
+
+    :param f: the function that we are decorating
+    :return: A function
+    """
     def __init__(self, fname, content):
         self.fname = fname
         self.content = content
@@ -37,6 +44,7 @@ class Commit:
         self.content = content
         self.date = date
         self.hash = h
+
 class VersionControl(ABC):
     def __init__(self):
         pass
@@ -79,9 +87,20 @@ def lock_resource(f):
     return check
 
 
+# It's a wrapper around a file system that allows you to save and load files, and to keep track of the history of the
+# saved files
 class FileSystemVC(VersionControl):
 
     def __init__(self, path: Path, history_limit=0, save_date=True):
+        """
+        This function initializes a new instance of the `FileHistory` class
+
+        :param path: The path to the file you want to save to
+        :type path: Path
+        :param history_limit: The number of trained models to keep in the history. If set to 0, no history is kept, defaults to 0
+        (optional)
+        :param save_date: If True, the date will be appended to the filename, defaults to True (optional)
+        """
         self.path = path
         self.branch = 'development'
         print("si")
@@ -98,6 +117,11 @@ class FileSystemVC(VersionControl):
         self.date = None
 
     def create_branch(self, branch):
+        """
+        It creates a branch.
+
+        :param branch: The name of the branch to create
+        """
         os.makedirs(os.path.join(self.path, branch), exist_ok=True)
         self.branches.add(branch)
         self.commits[branch] = self.commits[self.branch]
@@ -202,7 +226,6 @@ class FileSystemVC(VersionControl):
             ### aggiorniamo data ###
             h = History()
             self.date = h.get_time_parsed(rfname)
-            logger.debug('date: %s' % str(self.date))
         return obj
 
     def revert(self, fname):
@@ -235,7 +258,6 @@ class FileSystemVC(VersionControl):
             ### aggiorniamo data ###
             h = History()
             self.date = h.get_time_parsed(id.split('__')[0], format="%Y-%m-%d_%H-%M-%S")
-            logger.debug('date: %s' % str(self.date))
         return res.content
 
     def get_last_fit(self):
@@ -292,7 +314,6 @@ def load_pipeline(model_id,
         return pipeline
 
     if im_dao and model_id in im_dao.objs:
-        logger.debug("dentro if")
         pipeline = im_dao.get_by_id(model_id)
         ### CHECK!! ###
         objs = [obj for name,obj in pipeline.steps if obj]

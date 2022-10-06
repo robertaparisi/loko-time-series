@@ -23,24 +23,14 @@ def training_task(pred_id: str, data: Dict, datetime_feature: str, datetime_freq
                   test_size: Union[float, int], ts_pipeline: TSPipeline,
                   forecasting_horizon: Union[int, list], fit_params: dict):
     logger.debug("Pipeline START")
+    logger.debug(f"dt f {datetime_feature}")
+    logger.debug(f"dt freq {datetime_frequency}")
     target = data['target'] if task != 'classification' else [str(el) for el in data['target']]
     data = data.get("data", None)
     fitting_time = datetime.now()
-    logger.debug(f"transforming data into pandas df{data}")
-    logger.debug("type of data %s" %str(type(data)))
-    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    logger.debug(f"transforming data into pandas df")
     df = pd.DataFrame(data)
-    logger.debug("coosi e' ok")
-    df = to_dataframe(data)
-    logger.debug("qui si")
-    logger.debug("shape %s" %str(df.shape))
-    logger.debug("col %s" %str(df.columns))
-    logger.debug("len %s" %str(len(df.columns)))
-
-    logger.debug(f"dt f {datetime_feature}")
-    logger.debug(f"dt freq {datetime_frequency}")
     dt = pd.PeriodIndex(df[datetime_feature], freq=datetime_frequency)
-    logger.debug(f"oki{dt}")
     df[datetime_feature] = dt
     if not datetime_feature in df.columns:
         raise Exception("The datetime_feature specified doesn't match any features in your data, please check again.")
@@ -61,11 +51,9 @@ def training_task(pred_id: str, data: Dict, datetime_feature: str, datetime_freq
     else:
         logger.debug("using covariate to train models")
         df.set_index(datetime_feature, inplace=True)
-        print("ciao")
         target = pd.DataFrame(target)
         target[datetime_feature] = df.index
         target.set_index(datetime_feature, inplace=True)
-        logger.debug("sono dopo index")
         if report:
             logger.debug(f"Splitting data, test size: {test_size}")
 

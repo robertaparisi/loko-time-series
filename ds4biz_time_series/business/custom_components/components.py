@@ -4,7 +4,14 @@ predict_service = "loko-services/predictors/predict"
 fit_service = "loko-services/predictors/fit"
 evaluate_service = "loko-services/predictors/evaluate"
 
+
 #########################   ARGS     ###########################
+
+##################### Time SERIES MANAGER ###########################
+
+
+
+################### TIME SERIES    ########################################
 
 pred_name = Arg(name="predictor_name", label="Predictor Name", type="text",
                 helper="Digit the name of the predictor you want to use")
@@ -44,17 +51,21 @@ evaluate_args = [report_eval, eval_fname]
 
 args_list = [pred_name] + fit_args + predict_args + evaluate_args
 #########################   INPUT   ###########################
-inp = [Input(id="fit", label="fit", to="fit", service=fit_service, ),
+inp = [Input(id="fit", label="fit", to="fit", service=fit_service),
        Input(id="predict", label="predict", service=predict_service, to="predict"),
        Input(id="evaluate", label="evaluate", to="evaluate", service=evaluate_service)]
+
 
 #########################   OUTPUT   ###########################
 
 out = [Output(id="fit", label="fit"), Output(id="predict", label="predict"), Output(id="evaluate", label="evaluate")]
 
+
+
 #########################   COMPONENT   ###########################
 
-c1 = Component(name="time-series", description="TimeSeries components", inputs=inp,
+time_series_component = Component(name="TimeSeries", description="###TimeSeries components", inputs=inp,
                outputs=out, args=args_list, configured=False)
 
-save_extensions([c1], path="../extensions")
+
+

@@ -1,7 +1,10 @@
 [
  {
-  "name": "time-series",
-  "description": "TimeSeries components",
+  "name": "TimeSeries",
+  "description": "###TimeSeries components",
+  "group": "Custom",
+  "icon": "RiCheckboxBlankCircleFill",
+  "click": null,
   "configured": false,
   "inputs": [
    {
@@ -38,9 +41,6 @@
    }
   ],
   "options": {
-   "group": "Custom",
-   "icon": "RiTyphoonFill",
-   "click": null,
    "values": {
     "report": "false",
     "test_size": 30,
@@ -54,7 +54,8 @@
      "helper": "Digit the name of the predictor you want to use",
      "group": "",
      "value": null,
-     "description": ""
+     "description": "",
+     "validation": null
     },
     {
      "name": "datetime_feature",
@@ -63,7 +64,8 @@
      "helper": "Name of the feature to use as date-time reference",
      "group": "Fit Parameters",
      "value": null,
-     "description": ""
+     "description": "",
+     "validation": null
     },
     {
      "name": "datetime_frequency",
@@ -72,7 +74,8 @@
      "helper": "Time frequence required for the model ",
      "group": "Fit Parameters",
      "value": null,
-     "description": ""
+     "description": "",
+     "validation": null
     },
     {
      "name": "forecasting_horizon_fit",
@@ -81,7 +84,8 @@
      "helper": "",
      "group": "Fit Parameters",
      "value": null,
-     "description": ""
+     "description": "",
+     "validation": null
     },
     {
      "name": "report",
@@ -90,7 +94,8 @@
      "helper": "",
      "group": "Fit Parameters",
      "value": "false",
-     "description": ""
+     "description": "",
+     "validation": null
     },
     {
      "name": "test_size",
@@ -100,9 +105,11 @@
      "group": "Fit Parameters",
      "value": 30,
      "description": "",
+     "validation": null,
      "parent": "report",
      "condition": "{parent}===true",
-     "dynamicType": "number"
+     "dynamicType": "number",
+     "options": null
     },
     {
      "name": "forecasting_horizon",
@@ -111,7 +118,8 @@
      "helper": "",
      "group": "Predict Parameters",
      "value": 1,
-     "description": ""
+     "description": "",
+     "validation": null
     },
     {
      "name": "save_eval_report",
@@ -120,7 +128,8 @@
      "helper": "",
      "group": "Evaluate parameters",
      "value": false,
-     "description": ""
+     "description": "",
+     "validation": null
     },
     {
      "name": "eval_fname",
@@ -130,9 +139,237 @@
      "group": "Evaluate parameters",
      "value": null,
      "description": "",
+     "validation": null,
      "parent": "save_eval_report",
      "condition": "{parent}===true",
-     "dynamicType": "text"
+     "dynamicType": "text",
+     "options": null
+    }
+   ]
+  }
+ },
+ {
+  "name": "TS Dataset",
+  "description": "Components that get example of dataset for TimeSeries task",
+  "group": "Custom",
+  "icon": "RiCheckboxBlankCircleFill",
+  "click": null,
+  "configured": true,
+  "inputs": [
+   {
+    "id": "load_df",
+    "label": "Get DF",
+    "service": "loko-services/datasets",
+    "to": "load_df"
+   }
+  ],
+  "outputs": [
+   {
+    "id": "load_df",
+    "label": "Get DF"
+   }
+  ],
+  "options": {
+   "values": {},
+   "args": [
+    {
+     "name": "dataset",
+     "type": "select",
+     "label": "Dataset",
+     "helper": "",
+     "group": "",
+     "value": null,
+     "description": "",
+     "validation": null,
+     "options": [
+      "load_airline",
+      "load_arrow_head",
+      "load_gunpoint",
+      "load_basic_motions",
+      "load_osuleaf",
+      "load_italy_power_demand",
+      "load_japanese_vowels",
+      "load_plaid",
+      "load_longley",
+      "load_lynx",
+      "load_shampoo_sales",
+      "load_UCR_UEA_dataset",
+      "load_unit_test",
+      "load_uschange",
+      "load_PBS_dataset",
+      "load_japanese_vowels",
+      "load_gun_point_segmentation",
+      "load_electric_devices_segmentation",
+      "load_acsf1",
+      "load_macroeconomic",
+      "load_from_arff_to_dataframe",
+      "load_from_long_to_dataframe",
+      "load_from_tsfile",
+      "load_from_tsfile_to_dataframe",
+      "load_from_ucr_tsv_to_dataframe",
+      "load_tsf_to_dataframe",
+      "load_unit_test_tsf",
+      "load_solar"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "TimeSeries Manager",
+  "description": "Components that managaes Time Series Models",
+  "group": "Custom",
+  "icon": "RiCheckboxBlankCircleFill",
+  "click": null,
+  "configured": true,
+  "inputs": [
+   {
+    "id": "create",
+    "label": "create_predictor",
+    "service": "",
+    "to": "create_predictor"
+   },
+   {
+    "id": "delete",
+    "label": "delete_predictor",
+    "service": "",
+    "to": "delete_predictor"
+   }
+  ],
+  "outputs": [
+   {
+    "id": "create",
+    "label": "create_predictor"
+   },
+   {
+    "id": "delete",
+    "label": "delete_predictor"
+   }
+  ],
+  "options": {
+   "values": {
+    "existing_transf": "true",
+    "existing_model": "false"
+   },
+   "args": [
+    {
+     "name": "predictor_name",
+     "type": "text",
+     "label": "Predictor",
+     "helper": "Choose the name you want to use for your predictor",
+     "group": "",
+     "value": null,
+     "description": "",
+     "validation": null
+    },
+    {
+     "name": "existing_transf",
+     "type": "boolean",
+     "label": "Use existing transformer",
+     "helper": "",
+     "group": "Create Parameters",
+     "value": "true",
+     "description": "",
+     "validation": null
+    },
+    {
+     "name": "transformer_name",
+     "type": "dynamic",
+     "label": "Transformer",
+     "helper": "",
+     "group": "Create Parameters",
+     "value": null,
+     "description": "Express the name of the transformer you want to use",
+     "validation": null,
+     "parent": "existing_transf",
+     "condition": "{parent}===true",
+     "dynamicType": "asyncSelect",
+     "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
+    },
+    {
+     "name": "transformer_def",
+     "type": "dynamic",
+     "label": "Transformer",
+     "helper": "",
+     "group": "Create Parameters",
+     "value": null,
+     "description": "Define the structure of the transformer you want to use",
+     "validation": null,
+     "parent": "existing_transf",
+     "condition": "{parent}===false",
+     "dynamicType": "area",
+     "options": null
+    },
+    {
+     "name": "existing_model",
+     "type": "boolean",
+     "label": "Use existing model",
+     "helper": "",
+     "group": "Create Parameters",
+     "value": "false",
+     "description": "",
+     "validation": null
+    },
+    {
+     "name": "model_name",
+     "type": "dynamic",
+     "label": "Model",
+     "helper": "",
+     "group": "Create Parameters",
+     "value": null,
+     "description": "Express the name of the model you want to use",
+     "validation": null,
+     "parent": "existing_model",
+     "condition": "{parent}===true",
+     "dynamicType": "text",
+     "options": null
+    },
+    {
+     "name": "model_def",
+     "type": "dynamic",
+     "label": "Model",
+     "helper": "",
+     "group": "Create Parameters",
+     "value": null,
+     "description": "Define the structure of the model you want to use",
+     "validation": null,
+     "parent": "existing_model",
+     "condition": "{parent}===false",
+     "dynamicType": "area",
+     "options": null
+    },
+    {
+     "name": "del_transformer",
+     "type": "asyncSelect",
+     "label": "Transformer",
+     "helper": "",
+     "group": "Delete Parameters",
+     "value": null,
+     "description": "",
+     "validation": null,
+     "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
+    },
+    {
+     "name": "del_model",
+     "type": "asyncSelect",
+     "label": "Model",
+     "helper": "",
+     "group": "Delete Parameters",
+     "value": null,
+     "description": "",
+     "validation": null,
+     "url": "http://localhost:9999/routes/ds4biz-time-series/models"
+    },
+    {
+     "name": "del_predictor",
+     "type": "asyncSelect",
+     "label": "Predictor",
+     "helper": "",
+     "group": "Delete Parameters",
+     "value": null,
+     "description": "",
+     "validation": null,
+     "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
     }
    ]
   }

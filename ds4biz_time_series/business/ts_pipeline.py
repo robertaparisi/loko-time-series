@@ -63,19 +63,15 @@ class TSPipeline():
                     if isinstance(horizon, int):
                         horizon = np.arange(1, horizon + 1)
                     fh = ForecastingHorizon(horizon, is_relative=True)
-                    logger.debug("fittingaaaaaaaa")
                     try:
                         obj.fit(y=y, X=X, fh=fh)
                     except Exception as e:
-                        logger.error(f"eeeeeeeeeeeeeeerrrr{e}")
+                        logger.error(f"Error:: {e}")
                         raise e
-                    logger.debug("done fitaaaaaaaaaa")
                 else:
                     if obj.get_tag("requires-fh-in-fit"):
                         raise Exception("You have to specify an horizon in order to fit this model..")
-                    logger.debug("fittingaaaaaaaaaaaa")
                     obj.fit(y=y, X=X, **kwargs)
-                    logger.debug("done fitaaaaaaaaaa")
 
 
     def predict(self, X=None, horizon: Union[int, list, pd.PeriodIndex] = None, h_is_relative: bool=True, **kwargs):
@@ -92,6 +88,7 @@ class TSPipeline():
             if name == 'model':
 
                 logger.debug('MODEL: %s' % str(obj))
+                logger.debug(f"horrrrrrr {horizon}")
                 if not isinstance(horizon, NoneType):
                     if isinstance(horizon, int):
                         horizon = np.arange(1, horizon + 1)
@@ -101,10 +98,8 @@ class TSPipeline():
                 else:
                     logger.debug("no forecasting horizon specified, predicting the next available occurrence...")
                     horizon = [1]
-                logger.debug(f"before fh-horizon:::: {horizon}")
                 fh = ForecastingHorizon(horizon, is_relative=h_is_relative)
-                logger.debug(f"before fh:::: {fh}")
-
+                logger.debug(f"ciiiaooo {fh}")
                 # if include_probs:
                 #     if hasattr(obj, "predict_proba"):
                 #         classes = obj.classes_
@@ -117,20 +112,18 @@ class TSPipeline():
                 #         raise PredictProbaException("%s has not predict_proba" % obj.__class__.__name__)
                 # else:
                 preds = obj.predict(fh=fh, X=X, **kwargs)
-                logger.debug(f"prediction: {preds}")
+                logger.debug(f"prediction: {preds.to_dict()}")
                 for name, obj in self.steps:
                     if name == "transformer":
                         preds = obj.inverse_transform(X=preds, y=X)
                         break
                 preds = preds.to_dict()
+                logger.debug(f"prediction after transformation: {preds}")
                 return preds
 
     def get_forecast_report(self, y, X=None):
         # horizon =
-        logger.debug("dentro forecast")
-        if not X:
-            logger.debug("no x:::")
-            logger.debug(f"y {y}")
+        if not isinstance(X, pd.DataFrame):
             horizon = y.index
         else:
             horizon = X.index
@@ -139,6 +132,9 @@ class TSPipeline():
         y_pred = self.predict(X=X, horizon=horizon, h_is_relative=False)
         y_pred = pd.DataFrame(y_pred)
         logger.debug("computing metrics")
+        logger.debug(f"ypred {y_pred}")
+        logger.debug(f"y true {y}")
+
         mape = MeanAbsolutePercentageError()
         mape = mape.evaluate(y, y_pred)
 

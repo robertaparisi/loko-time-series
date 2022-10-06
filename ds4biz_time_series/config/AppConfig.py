@@ -14,4 +14,4 @@ ORCHESTRATOR = f"{env.GATEWAY}/routes/orchestrator/"
 
 
 PREDICTOR_EVALUATE_FOLDER = '/data/ts_evaluation'
-EVALUATE_FILES_EXTENSION = ".ts_eval"
+EVALUATE_FILES_EXTENSION = ".eval"

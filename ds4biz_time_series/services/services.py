@@ -4,8 +4,6 @@ import shutil
 import time
 import traceback
 
-import numpy as np
-import pandas as pd
 from sanic import Sanic, Blueprint
 from sanic_openapi import swagger_blueprint
 from sanic_openapi.openapi2 import doc
@@ -17,13 +15,12 @@ from sanic.response import raw
 # app = Sanic("res")
 # swagger_blueprint.url_prefix = "/api"
 # app.blueprint(swagger_blueprint)
-from ds4biz_time_series.business.components import fit_service
-from ds4biz_time_series.business.training import training_pipeline
 from ds4biz_time_series.config.AppConfig import REPO_PATH
 from ds4biz_time_series.dao.fs_dao import JSONFSDAO
 from ds4biz_time_series.model.services_model import FitServiceArgs, PredictServiceArgs, EvaluateServiceArgs
-from ds4biz_time_series.utils.core_utils import load_pipeline, to_dataframe
+from ds4biz_time_series.utils.core_utils import load_pipeline
 from ds4biz_time_series.utils.data_utils import preprocessing_data
+from ds4biz_time_series.utils.factory_utils import get_factory
 from ds4biz_time_series.utils.logger_utils import logger
 from ds4biz_time_series.utils.ppom_utils import get_pom_major_minor
 from sanic.exceptions import SanicException, NotFound
@@ -177,6 +174,8 @@ async def delete_transformer(request, name):
         raise SanicException(f"Tranformer '{name}' does not exist!", status_code=400)
     shutil.rmtree(path)
     return sanic.json(f"Transformer '{name}' deleted")
+
+
 
 
 ### MODELS ###
@@ -355,7 +354,7 @@ async def predictors_info(request, name):
     details = request.args.get('details', 'false').capitalize
     if not details:
         return sanic.json(infos['steps'])
-    ###########todo: SVILUPPARE PARTE SOTTO#
+    ########### todo: SVILUPPARE PARTE SOTTO#
 
     # branch = request.args.get('branch', 'development')
     # infos = predictor_details(infos, name, branch, fitting.jobs, repo_path)
@@ -532,6 +531,32 @@ async def export_predictor(request, name):
 ##### LOKO SERVICES ########
 
 
+@bp.post("/loko-services/datasets")
+@doc.tag('loko-services')
+@doc.summary("Get SkTime datasets")
+@doc.consumes(doc.JsonBody({}), location="body")
+@extract_value_args(file=False)
+async def loko_get_dataset_service(value, args):
+    logger.debug(f"fit::: value: {value}  \n \n args: {args}")
+
+    logger.debug("si ci siamo")
+    df_name = args.get("dataset", "load_airline")
+    logger.debug(f"df:: {df_name}")
+    df_module = "sktime.datasets."
+
+    df_fact = dict(__klass__=df_module+df_name)
+    logger.debug(f"df fact {df_fact}")
+    res = get_factory(df_fact)
+    # res = value
+    # logger.debug(f"res {res}")
+    try:
+        return sanic.json(res)
+    except Exception as e:
+        logger.error(f"error::: {e}")
+        raise SanicException(f"error::: {e}")
+
+
+
 @bp.post("/loko-services/predictors/fit")
 @doc.tag('loko-services')
 @doc.summary("...")
@@ -556,6 +581,7 @@ async def loko_fit_service(value, args):
     # res = get_all('transformers')
     # save_defaults(repo='transformers')
     return sanic.json(res)
+
 
 
 @bp.post("/loko-services/predictors/predict")
@@ -601,9 +627,107 @@ async def loko_evaluate_service(value, args):
         eval_res = get_model_evaluation(predictor_name=predictor_name, branch=branch, evaluate_params=eval_params,
                                         data=value)
     except Exception as e:
-        logger.error(e)
-        raise SanicException(e)
+        logger.error(f"Evaluate LOG err: {e}")
+        raise SanicException(f"Evaluate LOG Error... {e}")
     return sanic.json(eval_res)
+
+
+@bp.delete("/loko_service/transformers")
+@doc.tag('loko-services')
+@doc.summary("Delete an object from 'transformers' - service compatible with loko;")
+@extract_value_args(file=False)
+async def loko_delete_transformer(value, args):
+    transformer_name = args.get("del_transformer", None)
+    if not transformer_name:
+        raise SanicException("Transformer name not specified...")
+    transformer_name = unquote(transformer_name)
+    path = repo_path / 'transformers' / transformer_name
+    if not path.exists():
+        raise SanicException(f"Tranformer '{transformer_name}' does not exist!", status_code=400)
+    shutil.rmtree(path)
+    return sanic.json(f"Transformer '{transformer_name}' deleted")
+
+
+
+
+@bp.delete("/loko_service/models")
+@doc.tag('loko_service')
+@doc.summary("Delete an object from 'models' - service compatible with loko;")
+@extract_value_args(file=False)
+async def loko_delete_model(value, args):
+    model_name = args.get("del_model", None)
+    if not model_name:
+        raise SanicException("Model name not specified...")
+
+    model_name = unquote(model_name)
+
+    path = repo_path / 'models' / model_name
+    if not path.exists():
+        raise SanicException(f"Model '{model_name}' does not exist!", status_code=400)
+    shutil.rmtree(path)
+    return sanic.json(f'Model "{model_name}" deleted')
+
+
+
+@bp.delete("/loko_service/predictors")
+@doc.tag('loko_service')
+@doc.summary("Delete an object from 'predictor'- service compatible with loko;")
+@doc.consumes(doc.String(name="name"), location="path", required=True)
+@extract_value_args(file=False)
+async def delete_predictor(value, args):
+    predictor_name = args.get("del_model", None)
+    if not predictor_name:
+        raise SanicException("Predictor name not specified...")
+
+    predictor_name = unquote(predictor_name)
+
+    path = repo_path / 'predictors' / predictor_name
+    if not path.exists():
+        raise SanicException(f'Predictor "{predictor_name}" does not exist!', status_code=400)
+    # ##TODO: sviluppare questa parte
+    # if name in fitting.all('alive'):
+    #     dc = fitting.get_by_id(name)['dc']
+    #     cd.kill(dc.name)
+    #     msg = 'Killed'
+    #     fitting.add(name, msg)
+    #     send_message(name, msg)
+    #     fitting.remove(name)
+    #     logger.debug(f'Fitting {name} Killed')
+    # else:
+    #     cname = list(filter(lambda x: x.endswith('_'+name), cd.containers.keys()))
+    #     if cname:
+    #         cd.kill(cname[0])
+    #         logger.debug(f'Container {cname[0]} Killed')
+
+    shutil.rmtree(path)
+
+    # testset_dao = get_dataset_dao(repo_path=repo_path)
+    # testset_dao.set_coll(name)
+    # testset_dao.dropcoll()
+    # testset_dao.close()
+
+    return sanic.json(f"Predictor '{predictor_name}' deleted")
+
+
+@bp.post("/loko_service/delete_predictors_objs")
+@doc.tag('loko_service')
+@doc.summary("Delete an object from 'models', 'transformer' and/or 'predictor' - service compatible with loko;")
+@extract_value_args(file=False)
+async def loko_delete_model(value, args):
+    model_name = args.get("del_model", None)
+    if not model_name:
+        raise SanicException("Model name not specified...")
+
+    model_name = unquote(model_name)
+
+    path = repo_path / 'models' / model_name
+    if not path.exists():
+        raise SanicException(f"Model '{model_name}' does not exist!", status_code=400)
+    shutil.rmtree(path)
+    return sanic.json(f'Model "{model_name}" deleted')
+
+
+
 
 
 @app.exception(Exception)
