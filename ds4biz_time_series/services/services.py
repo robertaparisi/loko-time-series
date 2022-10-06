@@ -56,9 +56,8 @@ app.config["API_VERSION"] = get_pom_major_minor()
 app.config["API_TITLE"] = name
 # app.config["REQUEST_MAX_SIZE"] = 20000000000 ## POI TOGLIERE!!
 CORS(app)
+app.static("/web", "/frontend/dist")
 
-
-#
 # @bp.post("/")
 # def test(request):
 #     print("ciao")
@@ -77,7 +76,7 @@ CORS(app)
 #     return sanic.json(dict(msg=f"Hello extensions, you have uploaded the file: {fname}!"))
 
 
-@app.exception(Exception)
+"""@app.exception(Exception)
 async def manage_exception(request, exception):
     if isinstance(exception, SanicException):
         print(dict(error=str(exception)))
@@ -88,7 +87,7 @@ async def manage_exception(request, exception):
         return sanic.json(e, status=404)
     status_code = exception.status_code or 500
     logger.error('TracebackERROR: \n' + traceback.format_exc() + '\n\n', exc_info=True)
-    return sanic.json(e, status=status_code)
+    return sanic.json(e, status=status_code)"""
 
 
 ### TRANSFORMERS ###
@@ -608,6 +607,7 @@ async def loko_evaluate_service(value, args):
 
 @app.exception(Exception)
 async def manage_exception(request, exception):
+    print("Exception", request, type(exception))
     if isinstance(exception, SanicException):
         print(dict(error=str(exception)))
         return sanic.json(dict(error=str(exception)), status=exception.status_code)

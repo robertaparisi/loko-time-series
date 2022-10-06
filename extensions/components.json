@@ -2,6 +2,9 @@
  {
   "name": "time-series",
   "description": "TimeSeries components",
+  "group": "Custom",
+  "icon": "RiCheckboxBlankCircleFill",
+  "click": null,
   "configured": false,
   "inputs": [
    {
@@ -38,9 +41,6 @@
    }
   ],
   "options": {
-   "group": "Custom",
-   "icon": "RiTyphoonFill",
-   "click": null,
    "values": {
     "report": "false",
     "test_size": 30,
@@ -54,7 +54,8 @@
      "helper": "Digit the name of the predictor you want to use",
      "group": "",
      "value": null,
-     "description": ""
+     "description": "",
+     "validation": null
     },
     {
      "name": "datetime_feature",
@@ -63,7 +64,8 @@
      "helper": "Name of the feature to use as date-time reference",
      "group": "Fit Parameters",
      "value": null,
-     "description": ""
+     "description": "",
+     "validation": null
     },
     {
      "name": "datetime_frequency",
@@ -72,7 +74,8 @@
      "helper": "Time frequence required for the model ",
      "group": "Fit Parameters",
      "value": null,
-     "description": ""
+     "description": "",
+     "validation": null
     },
     {
      "name": "forecasting_horizon_fit",
@@ -81,7 +84,8 @@
      "helper": "",
      "group": "Fit Parameters",
      "value": null,
-     "description": ""
+     "description": "",
+     "validation": null
     },
     {
      "name": "report",
@@ -90,7 +94,8 @@
      "helper": "",
      "group": "Fit Parameters",
      "value": "false",
-     "description": ""
+     "description": "",
+     "validation": null
     },
     {
      "name": "test_size",
@@ -100,9 +105,11 @@
      "group": "Fit Parameters",
      "value": 30,
      "description": "",
+     "validation": null,
      "parent": "report",
      "condition": "{parent}===true",
-     "dynamicType": "number"
+     "dynamicType": "number",
+     "options": null
     },
     {
      "name": "forecasting_horizon",
@@ -111,7 +118,8 @@
      "helper": "",
      "group": "Predict Parameters",
      "value": 1,
-     "description": ""
+     "description": "",
+     "validation": null
     },
     {
      "name": "save_eval_report",
@@ -120,7 +128,8 @@
      "helper": "",
      "group": "Evaluate parameters",
      "value": false,
-     "description": ""
+     "description": "",
+     "validation": null
     },
     {
      "name": "eval_fname",
@@ -130,9 +139,11 @@
      "group": "Evaluate parameters",
      "value": null,
      "description": "",
+     "validation": null,
      "parent": "save_eval_report",
      "condition": "{parent}===true",
-     "dynamicType": "text"
+     "dynamicType": "text",
+     "options": null
     }
    ]
   }
