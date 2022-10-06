@@ -299,7 +299,7 @@ async def create_predictor(request, name):
             raise SanicException("'none' transformer not yet implemented", status_code=501)
         else:
             tpath = repo_path / 'transformers' / transformer_id
-            if check_existence(tpath):
+            if not check_existence(tpath):
                 raise SanicException(f"Transformer '{tpath.name}' doesn't exists!", status_code=404)
             transformer = deserialize(tpath)
         ### model ###
@@ -308,7 +308,7 @@ async def create_predictor(request, name):
             raise NotImplementedError("Model auto not yet supported")
         else:
             mpath = repo_path / 'models' / model_id
-            if check_existence(tpath):
+            if not check_existence(tpath):
                 raise SanicException(f"Model '{mpath.name}' doesn't exists!", status_code=404)
             mod = deserialize(mpath)
 
