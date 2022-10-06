@@ -282,27 +282,6 @@ async def create_predictor(request, name):
     transformer_id = request.args.get('transformer_id', 'auto')
     model_id = request.args.get('model_id', 'auto')
     blueprint = request.json
-
-    if transformer_id == 'auto':
-        # transformer = 'auto'
-        raise NotImplementedError
-    elif transformer_id == 'none':
-        # transformer = {"__klass__": "ds4biz.ct", "transformers": {}, "remainder": "passthrough"}
-        raise SanicException("'none' transformer not yet implemented", status_code=501)
-    else:
-        tpath = repo_path / 'transformers' / transformer_id
-        if check_existence(tpath):
-            raise SanicException(f"Transformer '{tpath.name}' doesn't exists!", status_code=404)
-        transformer = deserialize(tpath)
-    ### model ###
-    if model_id == 'auto':
-        # mod = 'auto'
-        raise NotImplementedError
-    else:
-        mpath = repo_path / 'models' / model_id
-        if check_existence(tpath):
-            raise SanicException(f"Model '{mpath.name}' doesn't exists!", status_code=404)
-        mod = deserialize(mpath)
     ### blueprint ###
     if blueprint:
         if blueprint.get('transformer'):
@@ -311,6 +290,28 @@ async def create_predictor(request, name):
         if blueprint.get('model'):
             mod = blueprint['model']
             # check_blueprint(mod, step='model')
+    else:
+        if transformer_id == 'auto':
+            # transformer = 'auto'
+            raise NotImplementedError("Transformer auto not yet supported")
+        elif transformer_id == 'none':
+            # transformer = {"__klass__": "ds4biz.ct", "transformers": {}, "remainder": "passthrough"}
+            raise SanicException("'none' transformer not yet implemented", status_code=501)
+        else:
+            tpath = repo_path / 'transformers' / transformer_id
+            if check_existence(tpath):
+                raise SanicException(f"Transformer '{tpath.name}' doesn't exists!", status_code=404)
+            transformer = deserialize(tpath)
+        ### model ###
+        if model_id == 'auto':
+            # mod = 'auto'
+            raise NotImplementedError("Model auto not yet supported")
+        else:
+            mpath = repo_path / 'models' / model_id
+            if check_existence(tpath):
+                raise SanicException(f"Model '{mpath.name}' doesn't exists!", status_code=404)
+            mod = deserialize(mpath)
+
 
     predictor_path.mkdir(exist_ok=True, parents=True)
     predictor_blueprint = dict(id=name,
@@ -728,7 +729,7 @@ async def manage_exception(request, exception):
 
     if isinstance(exception, NotFound):
         return sanic.json(e, status=404)
-    status_code = exception.status_code or 500
+    status_code = 500
     logger.error('TracebackERROR: \n' + traceback.format_exc() + '\n\n', exc_info=True)
     return sanic.json(e, status=status_code)
 
