@@ -1,7 +1,7 @@
 import { Box, HStack, IconButton, Spacer, Stack, Tag } from "@chakra-ui/react";
 import { RiDeleteBin4Line } from "react-icons/ri";
 
-export function Model({ name, ...rest }) {
+export function Model({ name, onDelete, ...rest }) {
   return (
     <HStack
       bg="gray.200"
@@ -18,16 +18,6 @@ export function Model({ name, ...rest }) {
             Not fitted
           </Tag>
         </HStack>
-        <HStack fontSize={"xs"}>
-          <Stack spacing="0">
-            <Box>Model</Box>
-            <Box>auto</Box>
-          </Stack>
-          <Stack spacing="0">
-            <Box>transformer</Box>
-            <Box>auto</Box>
-          </Stack>
-        </HStack>
       </Stack>
       <Spacer />
       <HStack>
@@ -35,6 +25,11 @@ export function Model({ name, ...rest }) {
           size="sm"
           borderRadius={"full"}
           icon={<RiDeleteBin4Line />}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            onDelete(e);
+          }}
         />
       </HStack>
     </HStack>
