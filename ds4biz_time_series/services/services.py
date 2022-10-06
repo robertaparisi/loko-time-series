@@ -53,9 +53,8 @@ app.config["API_VERSION"] = get_pom_major_minor()
 app.config["API_TITLE"] = name
 # app.config["REQUEST_MAX_SIZE"] = 20000000000 ## POI TOGLIERE!!
 CORS(app)
+app.static("/web", "/frontend/dist")
 
-
-#
 # @bp.post("/")
 # def test(request):
 #     print("ciao")
@@ -74,18 +73,7 @@ CORS(app)
 #     return sanic.json(dict(msg=f"Hello extensions, you have uploaded the file: {fname}!"))
 
 
-@app.exception(Exception)
-async def manage_exception(request, exception):
-    if isinstance(exception, SanicException):
-        print(dict(error=str(exception)))
-        return sanic.json(dict(error=str(exception)), status=exception.status_code)
 
-    e = dict(error=f'{exception.__class__.__name__}: {exception}')
-    if isinstance(exception, NotFound):
-        return sanic.json(e, status=404)
-    status_code = exception.status_code or 500
-    logger.error('TracebackERROR: \n' + traceback.format_exc() + '\n\n', exc_info=True)
-    return sanic.json(e, status=status_code)
 
 
 ### TRANSFORMERS ###
@@ -631,89 +619,89 @@ async def loko_evaluate_service(value, args):
         raise SanicException(f"Evaluate LOG Error... {e}")
     return sanic.json(eval_res)
 
+#
+# @bp.delete("/loko-service/transformers")
+# @doc.tag('loko-services')
+# @doc.summary("Delete an object from 'transformers' - service compatible with loko;")
+# @extract_value_args(file=False)
+# async def loko_delete_transformer(value, args):
+#     transformer_name = args.get("del_transformer", None)
+#     if not transformer_name:
+#         raise SanicException("Transformer name not specified...")
+#     transformer_name = unquote(transformer_name)
+#     path = repo_path / 'transformers' / transformer_name
+#     if not path.exists():
+#         raise SanicException(f"Tranformer '{transformer_name}' does not exist!", status_code=400)
+#     shutil.rmtree(path)
+#     return sanic.json(f"Transformer '{transformer_name}' deleted")
+#
 
-@bp.delete("/loko_service/transformers")
+
+#
+# @bp.delete("/loko-service/models")
+# @doc.tag('loko_service')
+# @doc.summary("Delete an object from 'models' - service compatible with loko;")
+# @extract_value_args(file=False)
+# async def loko_delete_model(value, args):
+#     model_name = args.get("del_model", None)
+#     if not model_name:
+#         raise SanicException("Model name not specified...")
+#
+#     model_name = unquote(model_name)
+#
+#     path = repo_path / 'models' / model_name
+#     if not path.exists():
+#         raise SanicException(f"Model '{model_name}' does not exist!", status_code=400)
+#     shutil.rmtree(path)
+#     return sanic.json(f'Model "{model_name}" deleted')
+
+
+#
+# @bp.delete("/loko_service/predictors")
+# @doc.tag('loko_service')
+# @doc.summary("Delete an object from 'predictor'- service compatible with loko;")
+# @doc.consumes(doc.String(name="name"), location="path", required=True)
+# @extract_value_args(file=False)
+# async def loko_delete_predictor(value, args):
+#     predictor_name = args.get("del_model", None)
+#     if not predictor_name:
+#         raise SanicException("Predictor name not specified...")
+#
+#     predictor_name = unquote(predictor_name)
+#
+#     path = repo_path / 'predictors' / predictor_name
+#     if not path.exists():
+#         raise SanicException(f'Predictor "{predictor_name}" does not exist!', status_code=400)
+#     # ##TODO: sviluppare questa parte
+#     # if name in fitting.all('alive'):
+#     #     dc = fitting.get_by_id(name)['dc']
+#     #     cd.kill(dc.name)
+#     #     msg = 'Killed'
+#     #     fitting.add(name, msg)
+#     #     send_message(name, msg)
+#     #     fitting.remove(name)
+#     #     logger.debug(f'Fitting {name} Killed')
+#     # else:
+#     #     cname = list(filter(lambda x: x.endswith('_'+name), cd.containers.keys()))
+#     #     if cname:
+#     #         cd.kill(cname[0])
+#     #         logger.debug(f'Container {cname[0]} Killed')
+#
+#     shutil.rmtree(path)
+#
+#     # testset_dao = get_dataset_dao(repo_path=repo_path)
+#     # testset_dao.set_coll(name)
+#     # testset_dao.dropcoll()
+#     # testset_dao.close()
+#
+#     return sanic.json(f"Predictor '{predictor_name}' deleted")
+#
+
+@bp.post("/loko-services/delete_predictors_objs")
 @doc.tag('loko-services')
-@doc.summary("Delete an object from 'transformers' - service compatible with loko;")
-@extract_value_args(file=False)
-async def loko_delete_transformer(value, args):
-    transformer_name = args.get("del_transformer", None)
-    if not transformer_name:
-        raise SanicException("Transformer name not specified...")
-    transformer_name = unquote(transformer_name)
-    path = repo_path / 'transformers' / transformer_name
-    if not path.exists():
-        raise SanicException(f"Tranformer '{transformer_name}' does not exist!", status_code=400)
-    shutil.rmtree(path)
-    return sanic.json(f"Transformer '{transformer_name}' deleted")
-
-
-
-
-@bp.delete("/loko_service/models")
-@doc.tag('loko_service')
-@doc.summary("Delete an object from 'models' - service compatible with loko;")
-@extract_value_args(file=False)
-async def loko_delete_model(value, args):
-    model_name = args.get("del_model", None)
-    if not model_name:
-        raise SanicException("Model name not specified...")
-
-    model_name = unquote(model_name)
-
-    path = repo_path / 'models' / model_name
-    if not path.exists():
-        raise SanicException(f"Model '{model_name}' does not exist!", status_code=400)
-    shutil.rmtree(path)
-    return sanic.json(f'Model "{model_name}" deleted')
-
-
-
-@bp.delete("/loko_service/predictors")
-@doc.tag('loko_service')
-@doc.summary("Delete an object from 'predictor'- service compatible with loko;")
-@doc.consumes(doc.String(name="name"), location="path", required=True)
-@extract_value_args(file=False)
-async def delete_predictor(value, args):
-    predictor_name = args.get("del_model", None)
-    if not predictor_name:
-        raise SanicException("Predictor name not specified...")
-
-    predictor_name = unquote(predictor_name)
-
-    path = repo_path / 'predictors' / predictor_name
-    if not path.exists():
-        raise SanicException(f'Predictor "{predictor_name}" does not exist!', status_code=400)
-    # ##TODO: sviluppare questa parte
-    # if name in fitting.all('alive'):
-    #     dc = fitting.get_by_id(name)['dc']
-    #     cd.kill(dc.name)
-    #     msg = 'Killed'
-    #     fitting.add(name, msg)
-    #     send_message(name, msg)
-    #     fitting.remove(name)
-    #     logger.debug(f'Fitting {name} Killed')
-    # else:
-    #     cname = list(filter(lambda x: x.endswith('_'+name), cd.containers.keys()))
-    #     if cname:
-    #         cd.kill(cname[0])
-    #         logger.debug(f'Container {cname[0]} Killed')
-
-    shutil.rmtree(path)
-
-    # testset_dao = get_dataset_dao(repo_path=repo_path)
-    # testset_dao.set_coll(name)
-    # testset_dao.dropcoll()
-    # testset_dao.close()
-
-    return sanic.json(f"Predictor '{predictor_name}' deleted")
-
-
-@bp.post("/loko_service/delete_predictors_objs")
-@doc.tag('loko_service')
 @doc.summary("Delete an object from 'models', 'transformer' and/or 'predictor' - service compatible with loko;")
 @extract_value_args(file=False)
-async def loko_delete_model(value, args):
+async def loko_delete_predictor_objs(value, args):
     model_name = args.get("del_model", None)
     if not model_name:
         raise SanicException("Model name not specified...")
@@ -743,6 +731,8 @@ async def manage_exception(request, exception):
     status_code = exception.status_code or 500
     logger.error('TracebackERROR: \n' + traceback.format_exc() + '\n\n', exc_info=True)
     return sanic.json(e, status=status_code)
+
+
 
 
 app.blueprint(bp)
