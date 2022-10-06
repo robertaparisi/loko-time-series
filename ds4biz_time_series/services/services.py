@@ -722,14 +722,15 @@ async def loko_delete_predictor_objs(value, args):
 @app.exception(Exception)
 async def manage_exception(request, exception):
     if isinstance(exception, SanicException):
-        print(dict(error=str(exception)))
         return sanic.json(dict(error=str(exception)), status=exception.status_code)
 
     e = dict(error=f"{exception.__class__.__name__}: {exception}")
 
     if isinstance(exception, NotFound):
         return sanic.json(e, status=404)
-    status_code = 500
+
+    status_code = getattr(exception, "status_code", None) or 500
+    logger.debug(f"status code {status_code}")
     logger.error('TracebackERROR: \n' + traceback.format_exc() + '\n\n', exc_info=True)
     return sanic.json(e, status=status_code)
 
