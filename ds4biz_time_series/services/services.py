@@ -421,7 +421,7 @@ async def delete_predictor(request, name):
 #               required=True)
 @doc.consumes(doc.String(name="datetime_frequency"),
               required=True)
-@doc.consumes(doc.String(name="predictor_name"), location="path", required=True)
+@doc.consumes(doc.String(name="name"), location="path", required=True)
 async def fit(request, name):
     predictor_name = unquote(name)
     fit_params = request.args
@@ -722,15 +722,15 @@ async def loko_delete_predictor_objs(value, args):
 @app.exception(Exception)
 async def manage_exception(request, exception):
     if isinstance(exception, SanicException):
+        print(f"exc: {exception}")
         return sanic.json(dict(error=str(exception)), status=exception.status_code)
 
     e = dict(error=f"{exception.__class__.__name__}: {exception}")
 
     if isinstance(exception, NotFound):
         return sanic.json(e, status=404)
-
     status_code = getattr(exception, "status_code", None) or 500
-    logger.debug(f"status code {status_code}")
+    # logger.error(f"status code {status_code}")
     logger.error('TracebackERROR: \n' + traceback.format_exc() + '\n\n', exc_info=True)
     return sanic.json(e, status=status_code)
 

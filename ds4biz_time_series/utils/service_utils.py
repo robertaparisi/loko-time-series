@@ -56,7 +56,16 @@ def train_model(predictor_name, fit_params:dict, data:dict):
     predictor_path = repo_path / 'predictors' / predictor_name
     print("predictor: ", predictor_path)
     logger.debug(f"predictor{predictor_path}")
-    predictor_blueprint = deserialize(predictor_path)
+    if not check_predictor_existence(predictor_path) or predictor_name=="":
+        raise SanicException(f"Predictor '{predictor_name}' doesn't exists")
+
+    try:
+        predictor_blueprint = deserialize(predictor_path)
+
+    except FileNotFoundError as notfound:
+        logger.error("predictor corrupt")
+        raise SanicException(f"Predictor '{predictor_name}' doesn't exists or corrupt...")
+
     dparams = dict(test_size=.2,
                    forecasting_horizon=None,
                    datetime_frequency="s",

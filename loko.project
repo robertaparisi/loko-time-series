@@ -3,14 +3,14 @@
   "id": "ds4biz-time-series",
   "description": "",
   "created_on": "14/09/2022, 12:18:07",
-  "last_modify": "06/10/2022, 08:18:11",
+  "last_modify": "06/10/2022, 11:16:29",
   "graphs": {
     "main": {
       "nodes": [
         {
           "id": "0bca8ca4-b3e6-4caf-9cf4-63a9c7e98c87",
           "position": {
-            "x": 323.0188948219426,
+            "x": 365.0188948219426,
             "y": 111.4902087028936
           },
           "type": "custom",
@@ -99,7 +99,7 @@
           "selectable": true,
           "draggable": true,
           "positionAbsolute": {
-            "x": 323.0188948219426,
+            "x": 365.0188948219426,
             "y": 111.4902087028936
           },
           "__class__": "Node"
@@ -1328,8 +1328,8 @@
           "targetPosition": "left",
           "width": 150,
           "height": 56,
-          "selected": null,
-          "dragging": null,
+          "selected": false,
+          "dragging": false,
           "data": {
             "name": "TimeSeries Manager",
             "events": null,
