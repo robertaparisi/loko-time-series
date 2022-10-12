@@ -2,8 +2,7 @@ from typing import List
 
 
 class DocForm():
-    def __init__(self, default, description: str, params: List = []):
-
+    def __init__(self, description: str = '', params: List = []):
         self.description = description
         self.params = params
 

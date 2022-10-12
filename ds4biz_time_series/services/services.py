@@ -15,6 +15,7 @@ from sanic.response import raw
 # app = Sanic("res")
 # swagger_blueprint.url_prefix = "/api"
 # app.blueprint(swagger_blueprint)
+from ds4biz_time_series.business.form_model import get_form
 from ds4biz_time_series.config.AppConfig import REPO_PATH
 from ds4biz_time_series.dao.fs_dao import JSONFSDAO
 from ds4biz_time_series.model.services_model import FitServiceArgs, PredictServiceArgs, EvaluateServiceArgs
@@ -72,6 +73,16 @@ app.static("/web", "/frontend/dist")
 #     print("You have uploaded a file called:",fname)
 #     return sanic.json(dict(msg=f"Hello extensions, you have uploaded the file: {fname}!"))
 
+
+### UTILS ###
+@app.post("/utils/forms")
+@doc.tag('utils')
+@doc.consumes(doc.JsonBody({}), location="body")
+async def forms(request):
+    res = get_form(request.json)
+    res = FormsEncoder().encode(res)
+    logger.debug(f'form: {res}')
+    return sanic.json(json.loads(res))
 
 
 #

@@ -1,7 +1,8 @@
 from abc import abstractmethod
 from typing import List
 
-from ds4biz_time_series.utils.form_utils import guess_convert
+from ds4biz_time_series.utils.factory_utils import get_factory
+from ds4biz_time_series.utils.form_utils import guess_convert, get_default_doc
 from ds4biz_time_series.utils.logger_utils import logger
 
 
@@ -105,23 +106,62 @@ class ModelForm(Form):
             logger.exception(inst)
 
 
-def get_form(obj, factory):
 
-    r = predictor_form(obj, factory)
+def get_form(obj):
 
-    res = factory(obj)
-    res = res.__dict__
-    name = obj['__klass__'].split('.')[1]
-    info = get_default_doc(factory, filter=name)
+
+    kl = get_factory(obj)
+    kl_dict = kl.__dict__
+    doc = kl.__doc__
+    # res = res.__dict__
+    # name = obj['__klass__'].split('.')[1]
+    info = get_default_doc(doc)
     ### filtriamo parametri ###
-    info['params'] = [dict(name=p['name'],
-                           types=p['types'],
-                           description=p['description'],
-                           default=res[p['name']]) for p in info['params'] if p['name'] in res]
+    info['params'] = [dict(name=params['name'],
+                           types=params['types'],
+                           description=params['description'],
+                           default=kl_dict[params['name']]) for params in info['params'] if params['name'] in kl_dict]
 
     form = ModelForm(obj.get("__klass__"))
-    r = ObjectDict(r)
-    form.description = r.description
-    params = [ObjectDict(el) for el in r.params]
-    form.parse(params)
+
+    # r = ObjectDict(info)
+    # form.description = r.description
+    # params = [ObjectDict(el) for el in r.params]
+    # form.parse(params)
     return form.__dict__
+
+
+
+if __name__ == '__main__':
+    from _collections import defaultdict
+
+
+    class ObjectDict(defaultdict):
+
+        def __init__(self, mapping=None):
+            if mapping:
+                defaultdict.__init__(self, ObjectDict, ObjectDict.convert(mapping))
+            else:
+                defaultdict.__init__(self, ObjectDict)
+
+        def __setattr__(self, k, v):
+            self[k] = ObjectDict.convert(v)
+
+        def __getattr__(self, k):
+            return self[k]
+
+        @classmethod
+        def convert(cls, obj):
+            if type(obj) is dict:
+                ret = ObjectDict()
+                for k, v in obj.items():
+                    ret[k] = ObjectDict.convert(v)
+                return ret
+            elif type(obj) is list:
+                return [ObjectDict.convert(x) for x in obj]
+            else:
+                return obj
+
+
+    a = ObjectDict([{"ciao": 1, "casa": [1, 2, 3]}, {"ciao":"be", "casa": [1, 2, 2]}, {"ciao":"jshdgd", "casa": [1, 1, 1]}])
+    print(a.casa)

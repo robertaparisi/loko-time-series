@@ -32,15 +32,24 @@ def clean_type(type: str):
 
 
 def get_single_parameter(s: str):
-    name_s = re.search('[a-z_0-9]+(?= : )', s)
-    name = name_s.group() if name_s else ''
-    type_s = re.search('(?<= : ).*(?=,)', s)
+    name_s = re.search('[a-z_0-9 ]+(?= : )', s)
+    name = name_s.group().strip(" ") if name_s else ''
+    type_match = '(?<= : ).*(?=( \\(| (?<=[^\\(]),|, )+)'
+    type_s = re.search(type_match, s)
     type = type_s.group() if type_s else ''
     types_cleaned = clean_type(type)
-    default_s = re.search('(?<=default=).*(?=\n)', s)
+    if isinstance(types_cleaned, list):
+        waste = types_cleaned[1:]
+        types_cleaned = types_cleaned[0]
+    default_match = "(?<=(default)[=| ]).*(?=(\\)|\\)\n|(?<=[^)])\n)+)"
+    default_s = re.search(default_match, s)
     default = default_s.group() if default_s else ''
     default = guess_convert(default)
-    description_s = re.search('(?<=        ).*', s)
+    # old_description_match='(?<=        ).*'
+    # right_description_match = '(((?<=        )|, | \()+)(.|\n.|\r.|\t.|\n[ ].)*'
+
+    description_match = '(((?<=        )|, | \\()+)(.|\n.|\r.|\t.)*'
+    description_s = re.search(description_match, s)
     description = s[description_s.start():] if description_s else ''
     description = re.sub('\n[ ]+', '\n', description)
     description = re.sub('^[ ]+', '', description)
@@ -48,38 +57,41 @@ def get_single_parameter(s: str):
 
 
 
-def get_default_doc(algorithm_path):
+def get_default_doc(doc):
     doc_form = DocForm()
+    print(doc)
+    # print(f"re::: {re.search('Parameters', doc)}")
 
-    kl = dict(__klass__=algorithm_path)
-    kl_inst = get_factory(kl)
-    doc = kl_inst.__doc__
+    parameters_match = re.search('Parameters', doc)
+    parameters_match_start, parameters_match_end = parameters_match.start(), parameters_match.end()
+    attribute_match = re.search('Attributes', doc)
+    if not attribute_match:
+        examples_match = re.search('Examples', doc)
+        if not examples_match:
+            parameters_end = len(doc)-1
+        else:
+            parameters_end = examples_match.start()
+    else:
+        parameters_end = attribute_match.start()
 
-    parameters_start = re.search('Parameters', doc)
-    parameters_start_s, parameters_start_e = parameters_start.start(), parameters_start.end()
-    parameters_end = re.search('Attributes', doc)
-    if not parameters_end:
-        parameters_end = re.search('Examples', doc)
-    parameters_end_s, parameters_end_e = parameters_end.start(), parameters_end.end()
-
-    doc_form.description = re.sub('\n[ ]+', '\n', doc[: parameters_start_s])
+    doc_form.description = re.sub('\n[ ]+', '\n', doc[: parameters_match_start])
     # repr(ret[:parameters_start_s])
 
-    s = doc[parameters_start_e:parameters_end_s]
+    s = doc[parameters_match_start:parameters_end]
     while (len(s) > 0):
-        r = '[a-z_0-9]+ : '
-        param_start = re.search(r, s)
-        param_end = re.search(r, s[param_start.end():])
-        param_start_s, param_start_e = param_start.start(), param_start.end()
-        if param_end:
-            param_end_s, param_end_e = param_start_e + param_end.start(), param_start_e + param_end.end()
+        r = '[a-z_0-9 ]+ : '
+        param_match = re.search(r, s)
+        next_param_match = re.search(r, s[param_match.end():])
+        param_match_start, param_match_end = param_match.start(), param_match.end()
+        if next_param_match:
+            next_param_start, next_param_end = param_match_end + next_param_match.start(), param_match_end + next_param_match.end()
             # print('END:', repr(s[(param_end_s - 10):(param_end_e + 10)]))
-            param_string = s[param_start_s:param_end_s]
-            s = s[param_end_s:]
+            param_string = s[param_match_start:next_param_start]
+            s = s[next_param_start:]
         else:
-            param_string = s[param_start_s:]
+            param_string = s[param_match_start:]
             s = ''
         res = get_single_parameter(param_string)
         doc_form.params.append(res)
 
-    return doc_form
+    return doc_form.__dict__
