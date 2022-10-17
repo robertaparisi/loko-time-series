@@ -1,4 +1,4 @@
-import { Box, Button, HStack, IconButton, Spacer, Stack, Tag, Flex } from "@chakra-ui/react";
+import { Box, Button, HStack, IconButton, Spacer, Stack, Tag, Flex, Text } from "@chakra-ui/react";
 import { RiDeleteBin4Line } from "react-icons/ri";
 import { useCompositeState } from "ds4biz-core";
 import { useEffect, useState } from "react";
@@ -13,27 +13,42 @@ export function Predictor({ name, onClick, onDelete, ...rest }) {
   const state = useCompositeState({
     model: null,
     transformer: null,
-    view: "general"
+    view: "general",
+    model_type: "Auto",
+    transformer_type: "Auto",
   });
   
+
 
   useEffect(() => {
     CLIENT.predictors[name]
     .get()
-    .then((resp) => {state.model=resp.data.steps.model 
-                      state.transformer = resp.data.steps.transformer})
+    .then((resp) => {state.model=resp.data.steps.model
+                      state.transformer = resp.data.steps.transformer
+                      state.model_type = resp.data.steps.model.__klass__.split(".").at(-1)
+                      state.transformer_type = resp.data.steps.transformer.__klass__.split(".").at(-1)
+                    })
     .catch((err) => console.log(err));
   }, []);
 
-  console.log(state.model)
+  // console.log("MODELLLLL",state.model)
+  console.log("::",state.transformer)
 
-  console.log(state.transformer)
-
-
-  let model_type = "FAKE_M"
-  let transformer_type = "FAKE_T"
-  let status_tag = "FAKE_STATUS"
+  let status_tag  = "Not Fitted"
   let color_status = "orange.400"
+  // if (!state.model.is_trainable) {
+  //   tag = "Pretrained";
+  //   color = "green.200";
+  // } else if (state.model.is_trained) {
+  //   tag = "Fitted";
+  //   color = "orange.200";
+  // } else {
+  //   tag = "Not fitted"
+  //   color = "red.500"
+  // }
+
+
+
 
   switch (state.view){
   case "details":
@@ -60,19 +75,19 @@ export function Predictor({ name, onClick, onDelete, ...rest }) {
       >
         <Stack spacing={0}>
           <HStack color={"pink.500"}>
-            <Box>{name}</Box>
+            <Box><Text as="b" color='#3f986c'>{name}</Text></Box>
             <Tag borderRadius={"10px"} p=".3rem" bg={color_status} fontSize="xs">
               {status_tag}
             </Tag>
           </HStack>
           <HStack fontSize={"xs"}>
             <Stack spacing="0">
-              <Box>Model</Box>
-              <Box>{model_type}</Box>
+              <Box><Text as="b">Model</Text></Box>
+              <Box>{state.model_type}</Box>
             </Stack>
             <Stack spacing="0">
-              <Box>transformer</Box>
-              <Box>{transformer_type}</Box>
+              <Box><Text as="b">Transformer</Text></Box>
+              <Box>{state.transformer_type}</Box>
             </Stack>
           </HStack>
         </Stack>
