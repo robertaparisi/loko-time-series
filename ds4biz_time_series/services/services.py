@@ -15,6 +15,7 @@ from sanic.response import raw
 # app = Sanic("res")
 # swagger_blueprint.url_prefix = "/api"
 # app.blueprint(swagger_blueprint)
+from ds4biz_time_series.business.form_model import get_form
 from ds4biz_time_series.config.AppConfig import REPO_PATH
 from ds4biz_time_series.dao.fs_dao import JSONFSDAO
 from ds4biz_time_series.model.services_model import FitServiceArgs, PredictServiceArgs, EvaluateServiceArgs
@@ -73,9 +74,41 @@ app.static("/web", "/frontend/dist")
 #     return sanic.json(dict(msg=f"Hello extensions, you have uploaded the file: {fname}!"))
 
 
+### UTILS ###
+@app.post("/utils/forms")
+@doc.tag('utils')
+@doc.consumes(doc.JsonBody({}), location="body")
+async def forms(request):
+    res = get_form(request.json)
+    res = FormsEncoder().encode(res)
+    logger.debug(f'form: {res}')
+    return sanic.json(json.loads(res))
 
 
-
+#
+# @bp.get("/utils/algorithms")
+# @doc.tag('utils')
+# @doc.summary('Get available forms')
+# @doc.consumes(doc.Boolean(name="predict_proba"), location="query")
+# @doc.consumes(doc.Boolean(name="partial"), location="query")
+# @doc.consumes(doc.String(name="framework", choices=list(IMGS_MAPPING.keys())), location="query")
+# @doc.consumes(doc.String(name="task", choices=sorted(tasks)), location="query")
+# async def algorithms(request):
+#     dparams = dict(task=None, framework=None, partial=False, predict_proba=False)
+#     params = {**dparams, **load_params(request.args)}
+#     framework = [params['framework']] if params['framework'] else IMGS_MAPPING.keys()
+#     del params['framework']
+#     res = []
+#     for img_name in framework:
+#         try:
+#             resp = base_request(img_name, 'utils/algorithms', 'GET', **params)
+#             res += resp.json()
+#             for r in resp.json():
+#                 base_request(img_name, 'utils/forms', 'POST', body=json.dumps(r))
+#         except:
+#             logger.debug('TracebackERROR: \n' + traceback.format_exc() + '\n\n')
+#         kill_base(img_name)
+#     return sanic.json(res)
 ### TRANSFORMERS ###
 
 @bp.get("/transformers")
@@ -570,6 +603,8 @@ async def loko_fit_service(value, args):
     # res = get_all('transformers')
     # save_defaults(repo='transformers')
     return sanic.json(res)
+
+
 
 
 
