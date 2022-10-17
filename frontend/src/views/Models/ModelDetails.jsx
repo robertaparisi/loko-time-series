@@ -22,14 +22,14 @@ import {
 
 
   
-  export function TransformerDetails({ onClose, name }) {
+  export function ModelDetails({ onClose, name }) {
     const state = useCompositeState({ blueprint: "Not Available" });
 
     const _state = useContext(StateContext);
     console.log("name::: ", {name})
 
     useEffect(() => {
-        CLIENT.transformers[name]
+        CLIENT.models[name]
         .get()
         .then((resp) => {state.blueprint=resp.data})
         .catch((err) => console.log(err));
@@ -48,9 +48,7 @@ import {
           />
         <Flex w="100vw" h="100vh" p="2rem" color="#000000">
           <div class="container">
-          <div class="item" style={{
-        backgroundColor: '#f2eed9',        width: '1000px',
-        height: '50px'}}><Text as='b' fontSize='30px' color='#870f42'>Time Series Transformer: <Text as='i' fontSize='30px' color='#a91654'>{name}</Text></Text></div>
+          <div class="item" style={{backgroundColor: '#f2eed9', width: '1000px',height: '50px'}}><Text as='b' fontSize='30px' color='#053c5f'>Time Series Model: <Text as='i' fontSize='30px' color='#095789'>{name}</Text></Text></div>
           <div class="item"><CodeEditor mode="json" readOnly value={JSON.stringify(state.blueprint, null, 2)} height="700px" />
           </div>
             </div>

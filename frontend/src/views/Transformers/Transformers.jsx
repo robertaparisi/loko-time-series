@@ -5,6 +5,7 @@ import { CLIENT, StateContext } from "../../config/constants";
 import { Transformer } from "./Transformer";
 import { TransformCreation } from "./TransformerCreation";
 import { RiAddFill } from 'react-icons/ri';
+import { TransformerDetails } from "./TransformerDetails";
 
 
 export function Transformers({ transformers }) {
@@ -23,8 +24,8 @@ export function Transformers({ transformers }) {
           <Stack>
             {transformers.map((name) => (
               <Transformer
-                onClick={(e) => (state.view = "model")}
-                name={name}
+              onClick={(e) => {state.view = "show_blueprint", state.name ={name}}}
+              name={name}
                 key={name}
                 onDelete={(e) =>
                   CLIENT.transformers[name].delete().then((resp) => {
@@ -42,8 +43,14 @@ export function Transformers({ transformers }) {
           <TransformCreation onClose={(e) => (state.view = "list")} />
         </Flex>
       );
-    // case "model":
-    //   return(...);
+      case "show_blueprint":
+        console.log("Transformer in detailssssssss::::")
+        return (
+          <Flex w="100vw" h="100vh" p="2rem">
+            <TransformerDetails onClose={(e) => (state.view = "list")} name={Object.values(state.name)} />
+          </Flex>
+  
+        );
 
     default:
       break;

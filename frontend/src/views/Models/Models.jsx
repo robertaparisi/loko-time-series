@@ -5,6 +5,8 @@ import { CLIENT, StateContext } from "../../config/constants";
 import { Model } from "./Model";
 import { ModelCreation } from "./ModelCreation";
 import { RiAddFill } from 'react-icons/ri';
+import { ModelDetails } from "./ModelDetails";
+
 
 
 export function Models({ models }) {
@@ -22,7 +24,7 @@ export function Models({ models }) {
           <Stack>
             {models.map((name) => (
               <Model
-                //onClick={(e) => (state.view = "model")}
+                onClick={(e) => {state.view = "show_blueprint", state.name ={name}}}
                 name={name}
                 key={name}
                 onDelete={(e) =>
@@ -41,6 +43,15 @@ export function Models({ models }) {
           <ModelCreation onClose={(e) => (state.view = "list")} />
         </Flex>
       );
+    case "show_blueprint":
+      console.log("Models in detailssssssss::::")
+      return (
+        <Flex w="100vw" h="100vh" p="2rem">
+          <ModelDetails onClose={(e) => (state.view = "list")} name={Object.values(state.name)} />
+        </Flex>
+
+      );
+      
 
     default:
       break;

@@ -1,4 +1,4 @@
-import { Box, HStack, IconButton, Spacer, Stack, Tag } from "@chakra-ui/react";
+import { Box, Text, HStack, IconButton, Spacer, Stack, Tag } from "@chakra-ui/react";
 import { RiDeleteBin4Line } from "react-icons/ri";
 
 export function Transformer({ name, onDelete, ...rest }) {
@@ -12,11 +12,11 @@ export function Transformer({ name, onDelete, ...rest }) {
       {...rest}
     >
       <Stack spacing={0}>
-        <HStack color={"pink.500"}>
-          <Box>{name}</Box>
-          <Tag borderRadius={"10px"} p=".3rem" bg="pink.200" fontSize="xs">
+        <HStack color={"#a91654"}>
+          <Box><Text as="b" color="#a91654">{name}</Text></Box>
+          {/* <Tag borderRadius={"10px"} p=".3rem" bg="pink.200" fontSize="xs">
             Not fitted
-          </Tag>
+          </Tag> */}
         </HStack>
       </Stack>
       <Spacer />

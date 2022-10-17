@@ -1,9 +1,8 @@
-import { Box, HStack, IconButton, Spacer, Stack, Tag, Button } from "@chakra-ui/react";
+import { Box, HStack, Text, IconButton, Spacer, Stack, Tag, Button } from "@chakra-ui/react";
 import { RiDeleteBin4Line } from "react-icons/ri";
 
 export function Model({ name, onDelete, ...rest }) {
   return (
-    <Button onClick={(e) => {state.view="model"}}>
     <HStack
       bg="gray.200"
       borderRadius={"10px"}
@@ -13,11 +12,11 @@ export function Model({ name, onDelete, ...rest }) {
       {...rest}
     >
       <Stack spacing={0}>
-        <HStack color={"pink.500"}>
-          <Box>{name}</Box>
-          <Tag borderRadius={"10px"} p=".3rem" bg="pink.200" fontSize="xs">
+        <HStack color={"#095789"}>
+          <Box><Text as="b">{name}</Text></Box>
+          {/* <Tag borderRadius={"10px"} p=".3rem" bg="pink.200" fontSize="xs">
             Not fitted
-          </Tag>
+          </Tag> */}
         </HStack>
       </Stack>
       <Spacer />
@@ -34,6 +33,5 @@ export function Model({ name, onDelete, ...rest }) {
         />
       </HStack>
     </HStack>
-  </Button>
   );
 }

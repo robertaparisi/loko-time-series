@@ -23,7 +23,7 @@ export function Predictors({ predictors }) {
           <Stack>
             {predictors.map((name) => (
               <Predictor
-                onClick={(e) => {state.view = "model", state.name ={name}}}
+                onClick={(e) => {state.view = "show_blueprint", state.name ={name}}}
                 name={name}
                 key={name}
                 onDelete={(e) =>
@@ -43,7 +43,7 @@ export function Predictors({ predictors }) {
           <PredictorCreation onClose={(e) => (state.view = "list")} />
         </Flex>
       );
-    case "model":
+    case "show_blueprint":
       console.log("PREDICTORS in detailssssssss::::")
       return (
         <Flex w="100vw" h="100vh" p="2rem">
