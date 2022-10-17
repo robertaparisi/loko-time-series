@@ -55,7 +55,9 @@
      "group": "",
      "value": null,
      "description": "",
-     "validation": null
+     "validation": {
+      "required": "Required field"
+     }
     },
     {
      "name": "datetime_feature",
@@ -109,7 +111,8 @@
      "parent": "report",
      "condition": "{parent}===true",
      "dynamicType": "number",
-     "options": null
+     "options": null,
+     "url": null
     },
     {
      "name": "forecasting_horizon",
@@ -143,7 +146,8 @@
      "parent": "save_eval_report",
      "condition": "{parent}===true",
      "dynamicType": "text",
-     "options": null
+     "options": null,
+     "url": null
     }
    ]
   }
@@ -234,6 +238,12 @@
     "label": "delete_predictor",
     "service": "",
     "to": "delete_predictor"
+   },
+   {
+    "id": "info",
+    "label": "info_predictor",
+    "service": "loko-services/info",
+    "to": "info_predictor"
    }
   ],
   "outputs": [
@@ -244,6 +254,10 @@
    {
     "id": "delete",
     "label": "delete_predictor"
+   },
+   {
+    "id": "info",
+    "label": "info_predictor"
    }
   ],
   "options": {
@@ -252,16 +266,6 @@
     "existing_model": "false"
    },
    "args": [
-    {
-     "name": "predictor_name",
-     "type": "text",
-     "label": "Predictor",
-     "helper": "Choose the name you want to use for your predictor",
-     "group": "",
-     "value": null,
-     "description": "",
-     "validation": null
-    },
     {
      "name": "existing_transf",
      "type": "boolean",
@@ -284,6 +288,7 @@
      "parent": "existing_transf",
      "condition": "{parent}===true",
      "dynamicType": "asyncSelect",
+     "options": null,
      "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
     },
     {
@@ -298,7 +303,8 @@
      "parent": "existing_transf",
      "condition": "{parent}===false",
      "dynamicType": "area",
-     "options": null
+     "options": null,
+     "url": null
     },
     {
      "name": "existing_model",
@@ -321,8 +327,9 @@
      "validation": null,
      "parent": "existing_model",
      "condition": "{parent}===true",
-     "dynamicType": "text",
-     "options": null
+     "dynamicType": "asyncSelect",
+     "options": null,
+     "url": "http://localhost:9999/routes/ds4biz-time-series/models"
     },
     {
      "name": "model_def",
@@ -336,7 +343,8 @@
      "parent": "existing_model",
      "condition": "{parent}===false",
      "dynamicType": "area",
-     "options": null
+     "options": null,
+     "url": null
     },
     {
      "name": "del_transformer",
@@ -370,6 +378,66 @@
      "description": "",
      "validation": null,
      "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
+    },
+    {
+     "name": "info_obj",
+     "type": "select",
+     "label": "Object",
+     "helper": "Select the object you want to have info on.",
+     "group": "Info Parameters",
+     "value": null,
+     "description": "",
+     "validation": null,
+     "options": [
+      "Predictor",
+      "Transformer",
+      "Model"
+     ]
+    },
+    {
+     "name": "obj_name",
+     "type": "dynamic",
+     "label": "Predictor",
+     "helper": "",
+     "group": "Info Parameters",
+     "value": null,
+     "description": "Select the name of the predictor you want to know about",
+     "validation": null,
+     "parent": "info_obj",
+     "condition": "{parent}===\"Predictor\"",
+     "dynamicType": "asyncSelect",
+     "options": null,
+     "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
+    },
+    {
+     "name": "obj_name",
+     "type": "dynamic",
+     "label": "Model",
+     "helper": "",
+     "group": "Info Parameters",
+     "value": null,
+     "description": "Select the name of the model you want to know about",
+     "validation": null,
+     "parent": "info_obj",
+     "condition": "{parent}===\"Model\"",
+     "dynamicType": "asyncSelect",
+     "options": null,
+     "url": "http://localhost:9999/routes/ds4biz-time-series/models"
+    },
+    {
+     "name": "obj_name",
+     "type": "dynamic",
+     "label": "Transformer",
+     "helper": "",
+     "group": "Info Parameters",
+     "value": null,
+     "description": "Select the name of the transformer you want to know about",
+     "validation": null,
+     "parent": "info_obj",
+     "condition": "{parent}===\"Transformer\"",
+     "dynamicType": "asyncSelect",
+     "options": null,
+     "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
     }
    ]
   }

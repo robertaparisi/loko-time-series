@@ -14,7 +14,7 @@ evaluate_service = "loko-services/predictors/evaluate"
 ################### TIME SERIES    ########################################
 
 pred_name = Arg(name="predictor_name", label="Predictor Name", type="text",
-                helper="Digit the name of the predictor you want to use")
+                helper="Digit the name of the predictor you want to use", required=True)
 #### FIT ARGS
 
 fit_group = "Fit Parameters"

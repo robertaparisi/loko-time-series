@@ -56,6 +56,7 @@ app.config["API_TITLE"] = name
 CORS(app)
 app.static("/web", "/frontend/dist")
 
+
 # @bp.post("/")
 # def test(request):
 #     print("ciao")
@@ -75,14 +76,14 @@ app.static("/web", "/frontend/dist")
 
 
 ### UTILS ###
-@app.post("/utils/forms")
-@doc.tag('utils')
-@doc.consumes(doc.JsonBody({}), location="body")
-async def forms(request):
-    res = get_form(request.json)
-    res = FormsEncoder().encode(res)
-    logger.debug(f'form: {res}')
-    return sanic.json(json.loads(res))
+# @app.post("/utils/forms")
+# @doc.tag('utils')
+# @doc.consumes(doc.JsonBody({}), location="body")
+# async def forms(request):
+#     res = get_form(request.json)
+#     res = FormsEncoder().encode(res)
+#     logger.debug(f'form: {res}')
+#     return sanic.json(json.loads(res))
 
 
 #
@@ -195,8 +196,6 @@ async def delete_transformer(request, name):
         raise SanicException(f"Tranformer '{name}' does not exist!", status_code=400)
     shutil.rmtree(path)
     return sanic.json(f"Transformer '{name}' deleted")
-
-
 
 
 ### MODELS ###
@@ -344,7 +343,6 @@ async def create_predictor(request, name):
             if not check_existence(tpath):
                 raise SanicException(f"Model '{mpath.name}' doesn't exists!", status_code=404)
             mod = deserialize(mpath)
-
 
     predictor_path.mkdir(exist_ok=True, parents=True)
     predictor_blueprint = dict(id=name,
@@ -566,7 +564,7 @@ async def loko_get_dataset_service(value, args):
     logger.debug(f"df:: {df_name}")
     df_module = "sktime.datasets."
 
-    df_fact = dict(__klass__=df_module+df_name)
+    df_fact = dict(__klass__=df_module + df_name)
     logger.debug(f"df fact {df_fact}")
     res = get_factory(df_fact)
     # res = value
@@ -576,7 +574,6 @@ async def loko_get_dataset_service(value, args):
     except Exception as e:
         logger.error(f"error::: {e}")
         raise SanicException(f"error::: {e}", status_code=500)
-
 
 
 @bp.post("/loko-services/predictors/fit")
@@ -603,9 +600,6 @@ async def loko_fit_service(value, args):
     # res = get_all('transformers')
     # save_defaults(repo='transformers')
     return sanic.json(res)
-
-
-
 
 
 @bp.post("/loko-services/predictors/predict")
@@ -654,6 +648,36 @@ async def loko_evaluate_service(value, args):
         logger.error(f"Evaluate LOG err: {e}")
         raise SanicException(f"Evaluate LOG Error... {e}")
     return sanic.json(eval_res)
+
+
+@bp.post("/loko-services/info")
+@doc.tag('loko-services')
+@doc.summary("...")
+@doc.consumes(doc.JsonBody({}), location="body")
+@extract_value_args(file=False)
+async def loko_info_service(value, args):
+    logger.debug(f"infooo::: value: {value}  \n \n args: {args}")
+    info_obj = args.get("info_obj", None)
+    logger.debug(f"info obj {info_obj}")
+    obj_name = args.get("obj_name", None)
+    if info_obj is None:
+        msg = "Object to get info on not specified! Please select one of the option..."
+        logger.error(msg)
+        raise SanicException(msg, status_code=400)
+    if not obj_name:
+        msg = "Object name to get info on not specified! Please select one of them from the available list..."
+        logger.error(msg)
+        raise SanicException(msg, status_code=400)
+    obj_url = info_obj.lower() + "s/" + obj_name
+    logger.debug(f"debugging url {obj_url}")
+    # if info_obj.lower()=="predictor":
+    #
+    # elif info_obj.lower()=="transformer":
+    #
+    # elif info_obj.lower()=="model":
+
+    return sanic.json(obj_url)
+
 
 #
 # @bp.delete("/loko-service/transformers")
@@ -751,12 +775,10 @@ async def loko_delete_predictor_objs(value, args):
     return sanic.json(f'Model "{model_name}" deleted')
 
 
-
-
-
 @app.exception(Exception)
 async def manage_exception(request, exception):
     status_code = getattr(exception, "status_code", None) or 500
+    logger.debug(f"status_code:::: {status_code}")
     if isinstance(exception, SanicException):
         return sanic.json(dict(error=str(exception)), status=status_code)
 
@@ -767,8 +789,6 @@ async def manage_exception(request, exception):
     # logger.error(f"status code {status_code}")
     logger.error('TracebackERROR: \n' + traceback.format_exc() + '\n\n', exc_info=True)
     return sanic.json(e, status=status_code)
-
-
 
 
 app.blueprint(bp)

@@ -3,7 +3,7 @@
   "id": "ds4biz-time-series",
   "description": "",
   "created_on": "14/09/2022, 12:18:07",
-  "last_modify": "06/10/2022, 12:54:23",
+  "last_modify": "17/10/2022, 14:45:59",
   "graphs": {
     "main": {
       "nodes": [
@@ -811,7 +811,7 @@
                 "comment": "",
                 "alias": "",
                 "debug": true,
-                "predictor_name": "",
+                "predictor_name": "pred_day",
                 "datetime_feature": "Date_Time",
                 "datetime_frequency": "7d",
                 "forecasting_horizon_fit": "",
@@ -1020,497 +1020,6 @@
             "y": 228.57423992754522
           },
           "__class__": "Node"
-        },
-        {
-          "id": "c0fe9d85-06df-44e9-8d40-740d61be719b",
-          "position": {
-            "x": 596.3413064039311,
-            "y": 901.3739574517462
-          },
-          "type": "custom",
-          "dragHandle": "#nodeHandle",
-          "sourcePosition": "right",
-          "targetPosition": "left",
-          "width": 150,
-          "height": 56,
-          "selected": false,
-          "dragging": false,
-          "data": {
-            "name": "TimeSeries Manager",
-            "events": null,
-            "description": "Components that managaes Time Series Models",
-            "inputs": [
-              {
-                "id": "create",
-                "label": "create_predictor",
-                "service": "",
-                "to": "create_predictor"
-              },
-              {
-                "id": "delete",
-                "label": "delete_predictor",
-                "service": "",
-                "to": "delete_predictor"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "create",
-                "label": "create_predictor"
-              },
-              {
-                "id": "delete",
-                "label": "delete_predictor"
-              }
-            ],
-            "configured": true,
-            "options": {
-              "group": "Custom",
-              "args": [
-                {
-                  "name": "comment",
-                  "type": "area",
-                  "label": "Node comment",
-                  "helper": "Use it to explain the usage of this node"
-                },
-                {
-                  "name": "alias",
-                  "type": "text",
-                  "label": "Name",
-                  "helper": "Use this name as an alias"
-                },
-                {
-                  "name": "debug",
-                  "type": "boolean",
-                  "label": "Debug to Console",
-                  "divider": true
-                },
-                {
-                  "name": "predictor_name",
-                  "type": "text",
-                  "label": "Predictor",
-                  "helper": "Choose the name you want to use for your predictor",
-                  "group": "",
-                  "value": null,
-                  "description": "",
-                  "validation": null
-                },
-                {
-                  "name": "existing_transf",
-                  "type": "boolean",
-                  "label": "Use existing transformer",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": "true",
-                  "description": "",
-                  "validation": null
-                },
-                {
-                  "name": "transformer_name",
-                  "type": "dynamic",
-                  "label": "Transformer",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Express the name of the transformer you want to use",
-                  "validation": null,
-                  "parent": "existing_transf",
-                  "condition": "{parent}===true",
-                  "dynamicType": "asyncSelect",
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
-                },
-                {
-                  "name": "transformer_def",
-                  "type": "dynamic",
-                  "label": "Transformer",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Define the structure of the transformer you want to use",
-                  "validation": null,
-                  "parent": "existing_transf",
-                  "condition": "{parent}===false",
-                  "dynamicType": "area",
-                  "options": null
-                },
-                {
-                  "name": "existing_model",
-                  "type": "boolean",
-                  "label": "Use existing model",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": "false",
-                  "description": "",
-                  "validation": null
-                },
-                {
-                  "name": "model_name",
-                  "type": "dynamic",
-                  "label": "Model",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Express the name of the model you want to use",
-                  "validation": null,
-                  "parent": "existing_model",
-                  "condition": "{parent}===true",
-                  "dynamicType": "text",
-                  "options": null
-                },
-                {
-                  "name": "model_def",
-                  "type": "dynamic",
-                  "label": "Model",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Define the structure of the model you want to use",
-                  "validation": null,
-                  "parent": "existing_model",
-                  "condition": "{parent}===false",
-                  "dynamicType": "area",
-                  "options": null
-                },
-                {
-                  "name": "del_transformer",
-                  "type": "asyncSelect",
-                  "label": "Transformer",
-                  "helper": "",
-                  "group": "Delete Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
-                },
-                {
-                  "name": "del_model",
-                  "type": "asyncSelect",
-                  "label": "Model",
-                  "helper": "",
-                  "group": "Delete Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
-                },
-                {
-                  "name": "del_predictor",
-                  "type": "asyncSelect",
-                  "label": "Predictor",
-                  "helper": "",
-                  "group": "Delete Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
-                }
-              ],
-              "click": null,
-              "icon": "RiCheckboxBlankCircleFill",
-              "values": {
-                "comment": "",
-                "alias": "",
-                "debug": true,
-                "predictor_name": "",
-                "existing_transf": true,
-                "existing_model": true,
-                "model_name": "",
-                "del_transformer": "prova1",
-                "del_model": "",
-                "del_predictor": "",
-                "transformer_name": ""
-              }
-            },
-            "locked": null
-          },
-          "selectable": true,
-          "draggable": true,
-          "__class__": "Node"
-        },
-        {
-          "id": "f1f2aaa3-d2be-4176-9035-15ec9d7179e0",
-          "position": {
-            "x": 232.65109990818362,
-            "y": 914.8439650997368
-          },
-          "type": "custom",
-          "dragHandle": "#nodeHandle",
-          "sourcePosition": "right",
-          "targetPosition": "left",
-          "width": 150,
-          "height": 56,
-          "selected": false,
-          "dragging": false,
-          "data": {
-            "name": "Trigger",
-            "events": null,
-            "description": "### Description\nThe TRIGGER component is used to start streams.\n\n### Output\nThe parameter Type can be set as a **String** or an **Object**. The parameter Value, on the other hand, defines the actual output of the component.",
-            "inputs": [],
-            "outputs": [
-              {
-                "id": "output",
-                "label": "output"
-              }
-            ],
-            "configured": true,
-            "options": {
-              "group": "Common",
-              "args": [
-                {
-                  "name": "comment",
-                  "type": "area",
-                  "label": "Node comment",
-                  "helper": "Use it to explain the usage of this node"
-                },
-                {
-                  "name": "alias",
-                  "type": "text",
-                  "label": "Name",
-                  "helper": "Use this name as an alias"
-                },
-                {
-                  "name": "debug",
-                  "type": "boolean",
-                  "label": "Debug to Console",
-                  "divider": true
-                },
-                {
-                  "name": "type",
-                  "type": "select",
-                  "description": "The type of data",
-                  "label": "Type",
-                  "validation": {
-                    "required": "Required field"
-                  },
-                  "fragment": null,
-                  "advanced": false,
-                  "options": [
-                    "String",
-                    "Object"
-                  ],
-                  "value": null
-                },
-                {
-                  "name": "value",
-                  "type": "dynamic",
-                  "dynamicType": {
-                    "String": "area",
-                    "Object": "code"
-                  },
-                  "parent": "type",
-                  "label": "Value",
-                  "validation": {
-                    "required": "Required field"
-                  }
-                }
-              ],
-              "click": "Send message",
-              "icon": "RiPlayFill",
-              "values": {
-                "type": "String",
-                "value": "Hello world!"
-              }
-            }
-          },
-          "selectable": true,
-          "draggable": true,
-          "__class__": "Node"
-        },
-        {
-          "id": "01418df3-3972-43b6-a7ff-b424066d4ef0",
-          "position": {
-            "x": 722.4263077631607,
-            "y": 543.6275817324004
-          },
-          "type": "custom",
-          "dragHandle": "#nodeHandle",
-          "sourcePosition": "right",
-          "targetPosition": "left",
-          "width": 150,
-          "height": 56,
-          "selected": false,
-          "dragging": false,
-          "data": {
-            "name": "TimeSeries Manager",
-            "events": null,
-            "description": "Components that managaes Time Series Models",
-            "inputs": [
-              {
-                "id": "create",
-                "label": "create_predictor",
-                "service": "",
-                "to": "create_predictor"
-              },
-              {
-                "id": "delete",
-                "label": "delete_predictor",
-                "service": "",
-                "to": "delete_predictor"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "create",
-                "label": "create_predictor"
-              },
-              {
-                "id": "delete",
-                "label": "delete_predictor"
-              }
-            ],
-            "configured": true,
-            "options": {
-              "group": "Custom",
-              "args": [
-                {
-                  "name": "comment",
-                  "type": "area",
-                  "label": "Node comment",
-                  "helper": "Use it to explain the usage of this node"
-                },
-                {
-                  "name": "alias",
-                  "type": "text",
-                  "label": "Name",
-                  "helper": "Use this name as an alias"
-                },
-                {
-                  "name": "debug",
-                  "type": "boolean",
-                  "label": "Debug to Console",
-                  "divider": true
-                },
-                {
-                  "name": "predictor_name",
-                  "type": "text",
-                  "label": "Predictor",
-                  "helper": "Choose the name you want to use for your predictor",
-                  "group": "",
-                  "value": null,
-                  "description": "",
-                  "validation": null
-                },
-                {
-                  "name": "existing_transf",
-                  "type": "boolean",
-                  "label": "Use existing transformer",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": "true",
-                  "description": "",
-                  "validation": null
-                },
-                {
-                  "name": "transformer_name",
-                  "type": "dynamic",
-                  "label": "Transformer",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Express the name of the transformer you want to use",
-                  "validation": null,
-                  "parent": "existing_transf",
-                  "condition": "{parent}===true",
-                  "dynamicType": "asyncSelect",
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
-                },
-                {
-                  "name": "transformer_def",
-                  "type": "dynamic",
-                  "label": "Transformer",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Define the structure of the transformer you want to use",
-                  "validation": null,
-                  "parent": "existing_transf",
-                  "condition": "{parent}===false",
-                  "dynamicType": "area",
-                  "options": null
-                },
-                {
-                  "name": "existing_model",
-                  "type": "boolean",
-                  "label": "Use existing model",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": "false",
-                  "description": "",
-                  "validation": null
-                },
-                {
-                  "name": "model_name",
-                  "type": "dynamic",
-                  "label": "Model",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Express the name of the model you want to use",
-                  "validation": null,
-                  "parent": "existing_model",
-                  "condition": "{parent}===true",
-                  "dynamicType": "text",
-                  "options": null
-                },
-                {
-                  "name": "model_def",
-                  "type": "dynamic",
-                  "label": "Model",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Define the structure of the model you want to use",
-                  "validation": null,
-                  "parent": "existing_model",
-                  "condition": "{parent}===false",
-                  "dynamicType": "area",
-                  "options": null
-                },
-                {
-                  "name": "del_transformer",
-                  "type": "asyncSelect",
-                  "label": "Transformer",
-                  "helper": "",
-                  "group": "Delete Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
-                },
-                {
-                  "name": "del_model",
-                  "type": "asyncSelect",
-                  "label": "Model",
-                  "helper": "",
-                  "group": "Delete Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
-                },
-                {
-                  "name": "del_predictor",
-                  "type": "asyncSelect",
-                  "label": "Predictor",
-                  "helper": "",
-                  "group": "Delete Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
-                }
-              ],
-              "click": null,
-              "icon": "RiCheckboxBlankCircleFill",
-              "values": {
-                "existing_transf": "true",
-                "existing_model": "false"
-              }
-            }
-          },
-          "selectable": true,
-          "draggable": true,
-          "__class__": "Node"
         }
       ],
       "edges": [
@@ -1597,13 +1106,860 @@
           "selected": false,
           "dragging": false,
           "__class__": "Edge"
+        }
+      ],
+      "__class__": "Graph"
+    },
+    "Manage TS": {
+      "nodes": [
+        {
+          "id": "f4a7db9d-f3ce-4ab5-95bb-60c60e929161",
+          "position": {
+            "x": 480,
+            "y": 257
+          },
+          "type": "custom",
+          "dragHandle": "#nodeHandle",
+          "sourcePosition": "right",
+          "targetPosition": "left",
+          "width": 150,
+          "height": 56,
+          "selected": false,
+          "dragging": false,
+          "data": {
+            "name": "Trigger",
+            "events": null,
+            "description": "### Description\nThe TRIGGER component is used to start streams.\n\n### Output\nThe parameter Type can be set as a **String** or an **Object**. The parameter Value, on the other hand, defines the actual output of the component.",
+            "inputs": [],
+            "outputs": [
+              {
+                "id": "output",
+                "label": "output"
+              }
+            ],
+            "configured": true,
+            "options": {
+              "group": "Common",
+              "args": [
+                {
+                  "name": "comment",
+                  "type": "area",
+                  "label": "Node comment",
+                  "helper": "Use it to explain the usage of this node"
+                },
+                {
+                  "name": "alias",
+                  "type": "text",
+                  "label": "Name",
+                  "helper": "Use this name as an alias"
+                },
+                {
+                  "name": "debug",
+                  "type": "boolean",
+                  "label": "Debug to Console",
+                  "divider": true
+                },
+                {
+                  "name": "type",
+                  "type": "select",
+                  "description": "The type of data",
+                  "label": "Type",
+                  "validation": {
+                    "required": "Required field"
+                  },
+                  "fragment": null,
+                  "advanced": false,
+                  "options": [
+                    "String",
+                    "Object"
+                  ],
+                  "value": null
+                },
+                {
+                  "name": "value",
+                  "type": "dynamic",
+                  "dynamicType": {
+                    "String": "area",
+                    "Object": "code"
+                  },
+                  "parent": "type",
+                  "label": "Value",
+                  "validation": {
+                    "required": "Required field"
+                  }
+                }
+              ],
+              "click": "Send message",
+              "icon": "RiPlayFill",
+              "values": {
+                "comment": "",
+                "alias": "Create TS Predictor",
+                "debug": false,
+                "type": "String",
+                "value": "Hello world!"
+              }
+            },
+            "locked": null
+          },
+          "selectable": true,
+          "draggable": true,
+          "__class__": "Node"
         },
         {
-          "id": "reactflow__edge-f1f2aaa3-d2be-4176-9035-15ec9d7179e0output-c0fe9d85-06df-44e9-8d40-740d61be719bdelete",
-          "source": "f1f2aaa3-d2be-4176-9035-15ec9d7179e0",
+          "id": "fb5ab616-fc92-4d26-8ecc-5fa759615ab1",
+          "position": {
+            "x": 480.79323331447256,
+            "y": 471.28638058450997
+          },
+          "type": "custom",
+          "dragHandle": "#nodeHandle",
+          "sourcePosition": "right",
+          "targetPosition": "left",
+          "width": 222,
+          "height": 104,
+          "selected": false,
+          "dragging": false,
+          "data": {
+            "name": "Trigger",
+            "events": null,
+            "description": "### Description\nThe TRIGGER component is used to start streams.\n\n### Output\nThe parameter Type can be set as a **String** or an **Object**. The parameter Value, on the other hand, defines the actual output of the component.",
+            "inputs": [],
+            "outputs": [
+              {
+                "id": "output",
+                "label": "output"
+              }
+            ],
+            "configured": true,
+            "options": {
+              "group": "Common",
+              "args": [
+                {
+                  "name": "comment",
+                  "type": "area",
+                  "label": "Node comment",
+                  "helper": "Use it to explain the usage of this node"
+                },
+                {
+                  "name": "alias",
+                  "type": "text",
+                  "label": "Name",
+                  "helper": "Use this name as an alias"
+                },
+                {
+                  "name": "debug",
+                  "type": "boolean",
+                  "label": "Debug to Console",
+                  "divider": true
+                },
+                {
+                  "name": "type",
+                  "type": "select",
+                  "description": "The type of data",
+                  "label": "Type",
+                  "validation": {
+                    "required": "Required field"
+                  },
+                  "fragment": null,
+                  "advanced": false,
+                  "options": [
+                    "String",
+                    "Object"
+                  ],
+                  "value": null
+                },
+                {
+                  "name": "value",
+                  "type": "dynamic",
+                  "dynamicType": {
+                    "String": "area",
+                    "Object": "code"
+                  },
+                  "parent": "type",
+                  "label": "Value",
+                  "validation": {
+                    "required": "Required field"
+                  }
+                }
+              ],
+              "click": "Send message",
+              "icon": "RiPlayFill",
+              "values": {
+                "comment": "",
+                "alias": "Delete TS Predictor",
+                "debug": false,
+                "type": "String",
+                "value": "Hello world!"
+              }
+            },
+            "locked": null
+          },
+          "selectable": true,
+          "draggable": true,
+          "positionAbsolute": {
+            "x": 480.79323331447256,
+            "y": 471.28638058450997
+          },
+          "__class__": "Node"
+        },
+        {
+          "id": "55daee1a-6b7d-422d-92da-0aa6167bd040",
+          "position": {
+            "x": 968,
+            "y": 388
+          },
+          "type": "custom",
+          "dragHandle": "#nodeHandle",
+          "sourcePosition": "right",
+          "targetPosition": "left",
+          "width": 150,
+          "height": 56,
+          "selected": false,
+          "dragging": false,
+          "data": {
+            "name": "Trigger",
+            "events": null,
+            "description": "### Description\nThe TRIGGER component is used to start streams.\n\n### Output\nThe parameter Type can be set as a **String** or an **Object**. The parameter Value, on the other hand, defines the actual output of the component.",
+            "inputs": [],
+            "outputs": [
+              {
+                "id": "output",
+                "label": "output"
+              }
+            ],
+            "configured": true,
+            "options": {
+              "group": "Common",
+              "args": [
+                {
+                  "name": "comment",
+                  "type": "area",
+                  "label": "Node comment",
+                  "helper": "Use it to explain the usage of this node"
+                },
+                {
+                  "name": "alias",
+                  "type": "text",
+                  "label": "Name",
+                  "helper": "Use this name as an alias"
+                },
+                {
+                  "name": "debug",
+                  "type": "boolean",
+                  "label": "Debug to Console",
+                  "divider": true
+                },
+                {
+                  "name": "type",
+                  "type": "select",
+                  "description": "The type of data",
+                  "label": "Type",
+                  "validation": {
+                    "required": "Required field"
+                  },
+                  "fragment": null,
+                  "advanced": false,
+                  "options": [
+                    "String",
+                    "Object"
+                  ],
+                  "value": null
+                },
+                {
+                  "name": "value",
+                  "type": "dynamic",
+                  "dynamicType": {
+                    "String": "area",
+                    "Object": "code"
+                  },
+                  "parent": "type",
+                  "label": "Value",
+                  "validation": {
+                    "required": "Required field"
+                  }
+                }
+              ],
+              "click": "Send message",
+              "icon": "RiPlayFill",
+              "values": {
+                "type": "String",
+                "value": "Hello world!"
+              }
+            }
+          },
+          "selectable": true,
+          "draggable": true,
+          "__class__": "Node"
+        },
+        {
+          "id": "000eba37-ba8a-427d-814e-3892cd9c170e",
+          "position": {
+            "x": 1303.110611663728,
+            "y": 390.03733394496663
+          },
+          "type": "custom",
+          "dragHandle": "#nodeHandle",
+          "sourcePosition": "right",
+          "targetPosition": "left",
+          "width": 214,
+          "height": 60,
+          "selected": false,
+          "dragging": false,
+          "data": {
+            "name": "TimeSeries Manager",
+            "events": null,
+            "description": "Components that managaes Time Series Models",
+            "inputs": [
+              {
+                "id": "create",
+                "label": "create_predictor",
+                "service": "",
+                "to": "create_predictor"
+              },
+              {
+                "id": "delete",
+                "label": "delete_predictor",
+                "service": "",
+                "to": "delete_predictor"
+              },
+              {
+                "id": "info",
+                "label": "info_predictor",
+                "service": "loko-services/info",
+                "to": "info_predictor",
+                "closed": true
+              }
+            ],
+            "outputs": [
+              {
+                "id": "create",
+                "label": "create_predictor"
+              },
+              {
+                "id": "delete",
+                "label": "delete_predictor"
+              },
+              {
+                "id": "info",
+                "label": "info_predictor"
+              }
+            ],
+            "configured": true,
+            "options": {
+              "group": "Custom",
+              "args": [
+                {
+                  "name": "comment",
+                  "type": "area",
+                  "label": "Node comment",
+                  "helper": "Use it to explain the usage of this node"
+                },
+                {
+                  "name": "alias",
+                  "type": "text",
+                  "label": "Name",
+                  "helper": "Use this name as an alias"
+                },
+                {
+                  "name": "debug",
+                  "type": "boolean",
+                  "label": "Debug to Console",
+                  "divider": true
+                },
+                {
+                  "name": "existing_transf",
+                  "type": "boolean",
+                  "label": "Use existing transformer",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": "true",
+                  "description": "",
+                  "validation": null
+                },
+                {
+                  "name": "transformer_name",
+                  "type": "dynamic",
+                  "label": "Transformer",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": null,
+                  "description": "Express the name of the transformer you want to use",
+                  "validation": null,
+                  "parent": "existing_transf",
+                  "condition": "{parent}===true",
+                  "dynamicType": "asyncSelect",
+                  "options": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
+                },
+                {
+                  "name": "transformer_def",
+                  "type": "dynamic",
+                  "label": "Transformer",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": null,
+                  "description": "Define the structure of the transformer you want to use",
+                  "validation": null,
+                  "parent": "existing_transf",
+                  "condition": "{parent}===false",
+                  "dynamicType": "area",
+                  "options": null,
+                  "url": null
+                },
+                {
+                  "name": "existing_model",
+                  "type": "boolean",
+                  "label": "Use existing model",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": "false",
+                  "description": "",
+                  "validation": null
+                },
+                {
+                  "name": "model_name",
+                  "type": "dynamic",
+                  "label": "Model",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": null,
+                  "description": "Express the name of the model you want to use",
+                  "validation": null,
+                  "parent": "existing_model",
+                  "condition": "{parent}===true",
+                  "dynamicType": "asyncSelect",
+                  "options": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
+                },
+                {
+                  "name": "model_def",
+                  "type": "dynamic",
+                  "label": "Model",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": null,
+                  "description": "Define the structure of the model you want to use",
+                  "validation": null,
+                  "parent": "existing_model",
+                  "condition": "{parent}===false",
+                  "dynamicType": "area",
+                  "options": null,
+                  "url": null
+                },
+                {
+                  "name": "del_transformer",
+                  "type": "asyncSelect",
+                  "label": "Transformer",
+                  "helper": "",
+                  "group": "Delete Parameters",
+                  "value": null,
+                  "description": "",
+                  "validation": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
+                },
+                {
+                  "name": "del_model",
+                  "type": "asyncSelect",
+                  "label": "Model",
+                  "helper": "",
+                  "group": "Delete Parameters",
+                  "value": null,
+                  "description": "",
+                  "validation": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
+                },
+                {
+                  "name": "del_predictor",
+                  "type": "asyncSelect",
+                  "label": "Predictor",
+                  "helper": "",
+                  "group": "Delete Parameters",
+                  "value": null,
+                  "description": "",
+                  "validation": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
+                },
+                {
+                  "name": "info_obj",
+                  "type": "select",
+                  "label": "Object",
+                  "helper": "Select the object you want to have info on.",
+                  "group": "Info Parameters",
+                  "value": null,
+                  "description": "",
+                  "validation": null,
+                  "options": [
+                    "Predictor",
+                    "Transformer",
+                    "Model"
+                  ]
+                },
+                {
+                  "name": "info_predictor",
+                  "type": "dynamic",
+                  "label": "Predictor",
+                  "helper": "",
+                  "group": "Info Parameters",
+                  "value": null,
+                  "description": "Select the name of the predictor you want to know about",
+                  "validation": null,
+                  "parent": "info_obj",
+                  "condition": "{parent}===\"Predictor\"",
+                  "dynamicType": "asyncSelect",
+                  "options": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
+                },
+                {
+                  "name": "info_model",
+                  "type": "dynamic",
+                  "label": "Model",
+                  "helper": "",
+                  "group": "Info Parameters",
+                  "value": null,
+                  "description": "Select the name of the model you want to know about",
+                  "validation": null,
+                  "parent": "info_obj",
+                  "condition": "{parent}===\"Model\"",
+                  "dynamicType": "asyncSelect",
+                  "options": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
+                },
+                {
+                  "name": "info_transformer",
+                  "type": "dynamic",
+                  "label": "Transformer",
+                  "helper": "",
+                  "group": "Info Parameters",
+                  "value": null,
+                  "description": "Select the name of the transformer you want to know about",
+                  "validation": null,
+                  "parent": "info_obj",
+                  "condition": "{parent}===\"Transformer\"",
+                  "dynamicType": "asyncSelect",
+                  "options": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
+                }
+              ],
+              "click": null,
+              "icon": "RiCheckboxBlankCircleFill",
+              "values": {
+                "comment": "",
+                "alias": "",
+                "debug": false,
+                "existing_transf": true,
+                "existing_model": true,
+                "info_obj": "Transformer",
+                "del_transformer": "",
+                "transformer_name": "",
+                "model_name": "",
+                "del_model": "",
+                "del_predictor": "",
+                "info_transformer": "tf_i"
+              }
+            },
+            "locked": null
+          },
+          "selectable": true,
+          "draggable": true,
+          "positionAbsolute": {
+            "x": 1303.110611663728,
+            "y": 390.03733394496663
+          },
+          "__class__": "Node"
+        },
+        {
+          "id": "1a3702a7-f662-46b8-be54-55c7af93c22b",
+          "position": {
+            "x": 1238,
+            "y": 610
+          },
+          "type": "custom",
+          "dragHandle": "#nodeHandle",
+          "sourcePosition": "right",
+          "targetPosition": "left",
+          "width": 150,
+          "height": 56,
+          "selected": false,
+          "dragging": false,
+          "data": {
+            "name": "TimeSeries Manager",
+            "events": null,
+            "description": "Components that managaes Time Series Models",
+            "inputs": [
+              {
+                "id": "create",
+                "label": "create_predictor",
+                "service": "",
+                "to": "create_predictor"
+              },
+              {
+                "id": "delete",
+                "label": "delete_predictor",
+                "service": "",
+                "to": "delete_predictor"
+              },
+              {
+                "id": "info",
+                "label": "info_predictor",
+                "service": "loko-services/info",
+                "to": "info_predictor"
+              }
+            ],
+            "outputs": [
+              {
+                "id": "create",
+                "label": "create_predictor"
+              },
+              {
+                "id": "delete",
+                "label": "delete_predictor"
+              },
+              {
+                "id": "info",
+                "label": "info_predictor"
+              }
+            ],
+            "configured": true,
+            "options": {
+              "group": "Custom",
+              "args": [
+                {
+                  "name": "comment",
+                  "type": "area",
+                  "label": "Node comment",
+                  "helper": "Use it to explain the usage of this node"
+                },
+                {
+                  "name": "alias",
+                  "type": "text",
+                  "label": "Name",
+                  "helper": "Use this name as an alias"
+                },
+                {
+                  "name": "debug",
+                  "type": "boolean",
+                  "label": "Debug to Console",
+                  "divider": true
+                },
+                {
+                  "name": "existing_transf",
+                  "type": "boolean",
+                  "label": "Use existing transformer",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": "true",
+                  "description": "",
+                  "validation": null
+                },
+                {
+                  "name": "transformer_name",
+                  "type": "dynamic",
+                  "label": "Transformer",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": null,
+                  "description": "Express the name of the transformer you want to use",
+                  "validation": null,
+                  "parent": "existing_transf",
+                  "condition": "{parent}===true",
+                  "dynamicType": "asyncSelect",
+                  "options": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
+                },
+                {
+                  "name": "transformer_def",
+                  "type": "dynamic",
+                  "label": "Transformer",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": null,
+                  "description": "Define the structure of the transformer you want to use",
+                  "validation": null,
+                  "parent": "existing_transf",
+                  "condition": "{parent}===false",
+                  "dynamicType": "area",
+                  "options": null,
+                  "url": null
+                },
+                {
+                  "name": "existing_model",
+                  "type": "boolean",
+                  "label": "Use existing model",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": "false",
+                  "description": "",
+                  "validation": null
+                },
+                {
+                  "name": "model_name",
+                  "type": "dynamic",
+                  "label": "Model",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": null,
+                  "description": "Express the name of the model you want to use",
+                  "validation": null,
+                  "parent": "existing_model",
+                  "condition": "{parent}===true",
+                  "dynamicType": "asyncSelect",
+                  "options": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
+                },
+                {
+                  "name": "model_def",
+                  "type": "dynamic",
+                  "label": "Model",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": null,
+                  "description": "Define the structure of the model you want to use",
+                  "validation": null,
+                  "parent": "existing_model",
+                  "condition": "{parent}===false",
+                  "dynamicType": "area",
+                  "options": null,
+                  "url": null
+                },
+                {
+                  "name": "del_transformer",
+                  "type": "asyncSelect",
+                  "label": "Transformer",
+                  "helper": "",
+                  "group": "Delete Parameters",
+                  "value": null,
+                  "description": "",
+                  "validation": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
+                },
+                {
+                  "name": "del_model",
+                  "type": "asyncSelect",
+                  "label": "Model",
+                  "helper": "",
+                  "group": "Delete Parameters",
+                  "value": null,
+                  "description": "",
+                  "validation": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
+                },
+                {
+                  "name": "del_predictor",
+                  "type": "asyncSelect",
+                  "label": "Predictor",
+                  "helper": "",
+                  "group": "Delete Parameters",
+                  "value": null,
+                  "description": "",
+                  "validation": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
+                },
+                {
+                  "name": "info_obj",
+                  "type": "select",
+                  "label": "Object",
+                  "helper": "Select the object you want to have info on.",
+                  "group": "Info Parameters",
+                  "value": null,
+                  "description": "",
+                  "validation": null,
+                  "options": [
+                    "Predictor",
+                    "Transformer",
+                    "Model"
+                  ]
+                },
+                {
+                  "name": "obj_name",
+                  "type": "dynamic",
+                  "label": "Predictor",
+                  "helper": "",
+                  "group": "Info Parameters",
+                  "value": null,
+                  "description": "Select the name of the predictor you want to know about",
+                  "validation": null,
+                  "parent": "info_obj",
+                  "condition": "{parent}===\"Predictor\"",
+                  "dynamicType": "asyncSelect",
+                  "options": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
+                },
+                {
+                  "name": "obj_name",
+                  "type": "dynamic",
+                  "label": "Model",
+                  "helper": "",
+                  "group": "Info Parameters",
+                  "value": null,
+                  "description": "Select the name of the model you want to know about",
+                  "validation": null,
+                  "parent": "info_obj",
+                  "condition": "{parent}===\"Model\"",
+                  "dynamicType": "asyncSelect",
+                  "options": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
+                },
+                {
+                  "name": "obj_name",
+                  "type": "dynamic",
+                  "label": "Transformer",
+                  "helper": "",
+                  "group": "Info Parameters",
+                  "value": null,
+                  "description": "Select the name of the transformer you want to know about",
+                  "validation": null,
+                  "parent": "info_obj",
+                  "condition": "{parent}===\"Transformer\"",
+                  "dynamicType": "asyncSelect",
+                  "options": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
+                }
+              ],
+              "click": null,
+              "icon": "RiCheckboxBlankCircleFill",
+              "values": {
+                "comment": "",
+                "alias": "",
+                "debug": true,
+                "existing_transf": true,
+                "existing_model": true,
+                "info_obj": "Transformer",
+                "del_transformer": "",
+                "del_model": "",
+                "del_predictor": "",
+                "transformer_name": "",
+                "model_name": "",
+                "obj_name": "tf_i"
+              }
+            },
+            "locked": null
+          },
+          "selectable": true,
+          "draggable": true,
+          "__class__": "Node"
+        }
+      ],
+      "edges": [
+        {
+          "id": "reactflow__edge-55daee1a-6b7d-422d-92da-0aa6167bd040output-000eba37-ba8a-427d-814e-3892cd9c170einfo",
+          "source": "55daee1a-6b7d-422d-92da-0aa6167bd040",
           "sourceHandle": "output",
-          "target": "c0fe9d85-06df-44e9-8d40-740d61be719b",
-          "targetHandle": "delete",
+          "target": "000eba37-ba8a-427d-814e-3892cd9c170e",
+          "targetHandle": "info",
+          "data": {
+            "startColor": "#D770AD",
+            "stopColor": "#888"
+          },
+          "selected": false,
+          "dragging": false,
+          "__class__": "Edge"
+        },
+        {
+          "id": "reactflow__edge-55daee1a-6b7d-422d-92da-0aa6167bd040output-1a3702a7-f662-46b8-be54-55c7af93c22binfo",
+          "source": "55daee1a-6b7d-422d-92da-0aa6167bd040",
+          "sourceHandle": "output",
+          "target": "1a3702a7-f662-46b8-be54-55c7af93c22b",
+          "targetHandle": "info",
           "data": {
             "startColor": "#D770AD",
             "stopColor": "#888"
