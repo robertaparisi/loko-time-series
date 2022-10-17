@@ -74,7 +74,7 @@ function App() {
       console.log("state view === MODEL")
       return (
         <Flex w="100vw" h="100vh" p="2rem">
-          <Box onClick={(e) => (state.view = "list")}>Details</Box>
+          <Box onClick={(e) => (state.view = "list")}>Details</Box> #blueprint
         </Flex>
       );
     case "model_creation":

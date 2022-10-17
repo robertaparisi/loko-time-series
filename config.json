@@ -1,7 +1,7 @@
 {
   "main": {
     "gui": {
-      "name": "Time series"
+      "name": "Time series GUI"
     }
   }
 }
