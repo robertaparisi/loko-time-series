@@ -4,22 +4,26 @@ import { useContext } from "react";
 import { CLIENT, StateContext } from "../../config/constants";
 import { Predictor } from "./Predictor";
 import { PredictorCreation } from "./PredictorCreation";
+import { RiAddFill } from 'react-icons/ri';
+import { PredictorDetails } from "./PredictorDetails";
+
 
 export function Predictors({ predictors }) {
-  const state = useCompositeState({ view: "list" });
+  const state = useCompositeState({ view: "list", name:null });
   const _state = useContext(StateContext);
+
   switch (state.view) {
     case "list":
       return (
         <Stack w="100%" h="100%" spacing="2rem">
           <HStack>
-            <Button onClick={(e) => (state.view = "new")}>New predictor</Button>
+            <Button onClick={(e) => (state.view = "new")} leftIcon={<RiAddFill />}>New predictor</Button>
           </HStack>
 
           <Stack>
             {predictors.map((name) => (
               <Predictor
-                //onClick={(e) => (state.view = "model")}
+                onClick={(e) => {state.view = "model", state.name ={name}}}
                 name={name}
                 key={name}
                 onDelete={(e) =>
@@ -34,11 +38,20 @@ export function Predictors({ predictors }) {
       );
     case "new":
       return (
+        
         <Flex w="100vw" h="100vh" p="2rem">
           <PredictorCreation onClose={(e) => (state.view = "list")} />
         </Flex>
       );
+    case "model":
+      console.log("PREDICTORS in detailssssssss::::")
+      return (
+        <Flex w="100vw" h="100vh" p="2rem">
+          <PredictorDetails onClose={(e) => (state.view = "list")} name={Object.values(state.name)} />
+        </Flex>
 
+      );
+    
     default:
       break;
   }

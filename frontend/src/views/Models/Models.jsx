@@ -4,6 +4,8 @@ import { useContext } from "react";
 import { CLIENT, StateContext } from "../../config/constants";
 import { Model } from "./Model";
 import { ModelCreation } from "./ModelCreation";
+import { RiAddFill } from 'react-icons/ri';
+
 
 export function Models({ models }) {
   const state = useCompositeState({ view: "list" });
@@ -13,7 +15,8 @@ export function Models({ models }) {
       return (
         <Stack w="100%" h="100%" spacing="2rem">
           <HStack>
-            <Button onClick={(e) => (state.view = "new")}>New model</Button>
+            <Button onClick={(e) => (state.view = "new")} leftIcon={<RiAddFill />}>New model</Button>
+
           </HStack>
 
           <Stack>
@@ -32,7 +35,7 @@ export function Models({ models }) {
           </Stack>
         </Stack>
       );
-    case "new":
+    case "New":
       return (
         <Flex w="100vw" h="100vh" p="2rem">
           <ModelCreation onClose={(e) => (state.view = "list")} />

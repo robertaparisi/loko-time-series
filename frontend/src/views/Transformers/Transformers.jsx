@@ -4,6 +4,8 @@ import { useContext } from "react";
 import { CLIENT, StateContext } from "../../config/constants";
 import { Transformer } from "./Transformer";
 import { TransformCreation } from "./TransformerCreation";
+import { RiAddFill } from 'react-icons/ri';
+
 
 export function Transformers({ transformers }) {
   const state = useCompositeState({ view: "list" });
@@ -13,7 +15,7 @@ export function Transformers({ transformers }) {
       return (
         <Stack w="100%" h="100%" spacing="2rem">
           <HStack>
-            <Button onClick={(e) => (state.view = "new")}>
+            <Button onClick={(e) => (state.view = "new")} leftIcon={<RiAddFill />}>
               New transformer
             </Button>
           </HStack>
@@ -21,7 +23,7 @@ export function Transformers({ transformers }) {
           <Stack>
             {transformers.map((name) => (
               <Transformer
-                //onClick={(e) => (state.view = "model")}
+                onClick={(e) => (state.view = "model")}
                 name={name}
                 key={name}
                 onDelete={(e) =>
@@ -40,6 +42,8 @@ export function Transformers({ transformers }) {
           <TransformCreation onClose={(e) => (state.view = "list")} />
         </Flex>
       );
+    // case "model":
+    //   return(...);
 
     default:
       break;
