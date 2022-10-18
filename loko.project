@@ -3,7 +3,7 @@
   "id": "ds4biz-time-series",
   "description": "",
   "created_on": "14/09/2022, 12:18:07",
-  "last_modify": "18/10/2022, 23:23:38",
+  "last_modify": "18/10/2022, 23:42:32",
   "graphs": {
     "Manage TS": {
       "nodes": [
@@ -602,12 +602,12 @@
                 "existing_transf": true,
                 "existing_model": false,
                 "info_obj": "Predictor",
-                "model_bp": "{\"__klass__\": \"sktime.forecasting.arima.ARIMA\"}",
+                "model_bp": "{\"__klass__\": \"sktime.forecasting.naive.NaiveForecaster\", \"strategy\": \"mean\"}",
                 "del_transformer": "",
-                "transformer_id": "tf1",
-                "info_obj_name": "",
                 "del_model": "",
-                "del_predictor": ""
+                "del_predictor": "",
+                "transformer_id": "tf1",
+                "info_obj_name": "example"
               }
             },
             "locked": null
