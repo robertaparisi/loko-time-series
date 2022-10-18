@@ -65,7 +65,7 @@ out = [Output(id="fit", label="fit"), Output(id="predict", label="predict"), Out
 #########################   COMPONENT   ###########################
 
 time_series_component = Component(name="TimeSeries", description="###TimeSeries components", inputs=inp,
-               outputs=out, args=args_list, configured=False)
+               outputs=out, args=args_list, configured=False, icon="RiFundsBoxFill")
 
 
 

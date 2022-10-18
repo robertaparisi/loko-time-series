@@ -37,7 +37,7 @@ export function Models({ models }) {
           </Stack>
         </Stack>
       );
-    case "New":
+    case "new":
       return (
         <Flex w="100vw" h="100vh" p="2rem">
           <ModelCreation onClose={(e) => (state.view = "list")} />

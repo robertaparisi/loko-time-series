@@ -92,7 +92,7 @@ manager_outputs = [Output(id="create", label="create_predictor"),
                    Output(id="info", label="info_predictor")]
 
 ts_manager_component = Component(name="TimeSeries Manager", description="Components that managaes Time Series Models",
-                                 args=args_list, inputs=manager_inputs, outputs=manager_outputs)
+                                 args=args_list, inputs=manager_inputs, outputs=manager_outputs, icon="RiFileSettingsFill")
 
 
 

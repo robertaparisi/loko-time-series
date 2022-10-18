@@ -3,7 +3,7 @@
   "name": "TimeSeries",
   "description": "###TimeSeries components",
   "group": "Custom",
-  "icon": "RiCheckboxBlankCircleFill",
+  "icon": "RiFundsBoxFill",
   "click": null,
   "configured": false,
   "inputs": [
@@ -223,7 +223,7 @@
   "name": "TimeSeries Manager",
   "description": "Components that managaes Time Series Models",
   "group": "Custom",
-  "icon": "RiCheckboxBlankCircleFill",
+  "icon": "RiFileSettingsFill",
   "click": null,
   "configured": true,
   "inputs": [

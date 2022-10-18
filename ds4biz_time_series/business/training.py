@@ -15,6 +15,7 @@ from ds4biz_time_series.dao.fs_dao import JSONFSDAO
 from ds4biz_time_series.utils.core_utils import save_pipeline, to_dataframe
 from ds4biz_time_series.utils.factory_utils import get_factory
 from ds4biz_time_series.utils.logger_utils import logger
+from ds4biz_time_series.utils.serialization_utils import serialize
 
 repo_path = Path(REPO_PATH)
 
@@ -97,7 +98,7 @@ def training_task(pred_id: str, data: Dict, datetime_feature: str, datetime_freq
     return res
 
 
-def training_pipeline(predictor_blueprint: Dict, data: Dict, datetime_feature: str, datetime_frequency: str, task: str,
+def training_pipeline(predictor_path, predictor_blueprint: Dict, data: Dict, datetime_feature: str, datetime_frequency: str, task: str,
                       report: bool, test_size: Union[float, int], fit_params: Dict,
                       forecasting_horizon: Union[int, list]):
     print("dentro")
@@ -119,3 +120,5 @@ def training_pipeline(predictor_blueprint: Dict, data: Dict, datetime_feature: s
     logger.debug("training task starts")
     training_task(pred_id, data, datetime_feature, datetime_frequency, task, report, test_size, ts_pipeline,
                   forecasting_horizon, fit_params)
+    # predictor_blueprint["status"] = "Fitted"
+    # serialize(predictor_path, predictor_blueprint)

@@ -1,16 +1,19 @@
 import { Button, Flex, HStack, Stack } from "@chakra-ui/react";
 import { useCompositeState } from "ds4biz-core";
-import { useContext } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { CLIENT, StateContext } from "../../config/constants";
 import { Predictor } from "./Predictor";
 import { PredictorCreation } from "./PredictorCreation";
-import { RiAddFill } from 'react-icons/ri';
+import { RiAddFill,RiUploadCloud2Line } from 'react-icons/ri';
 import { PredictorDetails } from "./PredictorDetails";
+import { saveAs } from 'file-saver';
+
 
 
 export function Predictors({ predictors }) {
   const state = useCompositeState({ view: "list", name:null });
   const _state = useContext(StateContext);
+  const ref_import = useRef();
 
   switch (state.view) {
     case "list":
@@ -18,8 +21,34 @@ export function Predictors({ predictors }) {
         <Stack w="100%" h="100%" spacing="2rem">
           <HStack>
             <Button onClick={(e) => (state.view = "new")} leftIcon={<RiAddFill />}>New predictor</Button>
+            <Button leftIcon={<RiUploadCloud2Line />}
+                onClick={(e) => {
+                    console.log('click');
+                    ref_import.current.click()
+                }}
+            >
+             Import
+             </Button>
+             <input
+                type='file'
+                accept=".zip"
+                ref={ref_import}
+                onChange={(e) => {
+                    console.log('change import');
+                    console.log(e.target.files[0]);
+                    const formData = new FormData();
+                    formData.append('f', e.target.files[0]);
+                    CLIENT.predictors.import.post(formData).then(()=>location.reload()).catch((err) => console.log(err));
+                }}
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    console.log('submit import');
+                    _state.refresh = new Date();
+                    // location.reload();
+                }}
+                style={{ display: 'none' }}/>
           </HStack>
-
+          
           <Stack>
             {predictors.map((name) => (
               <Predictor
@@ -31,6 +60,26 @@ export function Predictors({ predictors }) {
                     _state.refresh = new Date();
                   })
                 }
+                onExport={(e) =>
+                  CLIENT.predictors[name].export.get({responseType: "arraybuffer"})
+                  .then(response => {
+                    console.log('download');
+                    console.log(response);
+                    const blob = new Blob([response.data], {
+                            type: 'application/octet-stream'
+                            })
+                    return blob
+                    })
+                    .then(blob => {
+                    console.log(blob)
+                    const filename = name+'.zip'
+                    saveAs(blob, filename)
+                    console.log('hello');
+                    })
+                  .catch(error => {
+                    console.log(error);
+                    })
+                   }
               />
             ))}
           </Stack>

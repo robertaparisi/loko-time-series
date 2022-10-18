@@ -80,11 +80,15 @@ def train_model(predictor_name, fit_params:dict, data:dict):
     params["datetime_frequency"] = params["datetime_frequency"]
     predictor_blueprint["datetime_feature"] = params["datetime_feature"]
     predictor_blueprint["datetime_frequency"] = params["datetime_frequency"]
+    predictor_blueprint["status"] = "Training"
     serialize(predictor_path, predictor_blueprint)
-
+    pred_blueprint_copy = predictor_blueprint.copy()
     data = data
 
-    training_pipeline(predictor_blueprint=predictor_blueprint, data=data, **params)
+    training_pipeline(predictor_path=predictor_path,predictor_blueprint=pred_blueprint_copy, data=data, **params)
+    predictor_blueprint["status"] = "Fitted"
+    # # predictor_blueprint["fitted"] = "Training"
+    serialize(predictor_path, predictor_blueprint)
     logger.debug("training done...")
 
 def get_prediction(predictor_name, predict_params:dict, branch:str="development",  data:dict=None):

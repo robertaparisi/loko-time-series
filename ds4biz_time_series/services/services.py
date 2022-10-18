@@ -368,9 +368,11 @@ async def predictors_info(request, name):
     name = unquote(name)
 
     path = repo_path / 'predictors' / name
+    logger.debug(f"details::: {path}")
     if not path.exists():
         raise SanicException(f'Predictor "{name}" does not exist!', status_code=400)
     infos = deserialize(path)
+    logger.debug(f"info:::: {infos}")
     details = request.args.get('details', 'false').capitalize
     if not details:
         return sanic.json(infos['steps'])
@@ -523,6 +525,7 @@ async def evaluate(request, name):
 @doc.summary('Upload existing predictor')
 @doc.consumes(doc.File(name="f"), location="formData", content_type="multipart/form-data", required=True)
 async def import_predictor(request):
+    print(f"repo::: {repo_path}")
     path = repo_path / 'predictors'
     file = request.files.get('f')
     if file.name.endswith('.zip'):

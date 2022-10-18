@@ -1,5 +1,5 @@
 import { Box, Button, HStack, IconButton, Spacer, Stack, Tag, Flex, Text } from "@chakra-ui/react";
-import { RiDeleteBin4Line } from "react-icons/ri";
+import { RiDeleteBin4Line, RiFolderDownloadLine } from "react-icons/ri";
 import { useCompositeState } from "ds4biz-core";
 import { useEffect, useState } from "react";
 import { CLIENT, baseURL} from "../../config/constants";
@@ -8,7 +8,7 @@ import { PredictorDetails } from "./PredictorDetails";
 
 
 
-export function Predictor({ name, onClick, onDelete, ...rest }) {
+export function Predictor({ name, onClick, onDelete, onExport, ...rest }) {
 
   const state = useCompositeState({
     model: null,
@@ -16,6 +16,7 @@ export function Predictor({ name, onClick, onDelete, ...rest }) {
     view: "general",
     model_type: "Auto",
     transformer_type: "Auto",
+    status_tag: null
   });
   
 
@@ -26,27 +27,23 @@ export function Predictor({ name, onClick, onDelete, ...rest }) {
     .then((resp) => {state.model=resp.data.steps.model
                       state.transformer = resp.data.steps.transformer
                       state.model_type = resp.data.steps.model.__klass__.split(".").at(-1)
-                      state.transformer_type = resp.data.steps.transformer.__klass__.split(".").at(-1)
+                      state.transformer_type = resp.data.steps.transformer.__klass__.split(".").at(-1)                      
+                      state.status_tag = resp.data.status ??= "Not Fitted"
                     })
     .catch((err) => console.log(err));
   }, []);
 
   // console.log("MODELLLLL",state.model)
-  console.log("::",state.transformer)
+  console.log("PRED NAME ::", name)
+  console.log("Status TAG ::",state.status_tag)
 
-  let status_tag  = "Not Fitted"
-  let color_status = "orange.400"
-  // if (!state.model.is_trainable) {
-  //   tag = "Pretrained";
-  //   color = "green.200";
-  // } else if (state.model.is_trained) {
-  //   tag = "Fitted";
-  //   color = "orange.200";
-  // } else {
-  //   tag = "Not fitted"
-  //   color = "red.500"
-  // }
-
+  let color_status = "#fcec85"
+  if (state.status_tag=="Fitted") {
+    color_status = "#94c099";
+  } else if (state.status_tag=="Training") {
+    color_status = "#df8e6e";
+    //#d06464
+  } 
 
 
 
@@ -77,7 +74,7 @@ export function Predictor({ name, onClick, onDelete, ...rest }) {
           <HStack color={"pink.500"}>
             <Box><Text as="b" color='#3f986c'>{name}</Text></Box>
             <Tag borderRadius={"10px"} p=".3rem" bg={color_status} fontSize="xs">
-              {status_tag}
+              {state.status_tag}
             </Tag>
           </HStack>
           <HStack fontSize={"xs"}>
@@ -103,6 +100,16 @@ export function Predictor({ name, onClick, onDelete, ...rest }) {
               onDelete(e);
             }}
           />
+        <IconButton
+          size="sm"
+          borderRadius={"full"}
+          icon={<RiFolderDownloadLine />}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            onExport(e);
+          }}
+        />
         </HStack>
       </HStack>
     
