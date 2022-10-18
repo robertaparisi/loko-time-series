@@ -4,9 +4,9 @@
 This projects, developed in Python, create some [LoKo AI](https://github.com/loko-ai/loko/tree/development) extensions that helps with **Time Series Forecasting**. 
 
 
-### Component
+## Component
 
-#### TimeSeries
+### TimeSeries
 
 
 Thanks to the **TimeSeries** component you can train your model, make prediction and test evaluation, with the possibility to save the evaluation metrics in a file. This component works similarly to the Predictor component.
@@ -24,7 +24,7 @@ In order to **evaluate** new data instead it's not required to specify anything 
 ![image](https://user-images.githubusercontent.com/34518514/196524919-865e3456-003f-4cf6-b5ae-4d15533399d1.png)
 
 
-### Example Flow
+## Example Flow
 
 
 Opening Loko AI, you can find the Tab **TimeSeriesForecasting**, where you can find two examples of forecasting, one that do not use covariates for the training and one that use them.
@@ -40,7 +40,7 @@ Down below is shown an example of how you can fill the component parameters
 
 
 
-### TimeSeries GUI
+## TimeSeries GUI
 It's possible to use the **TimeSeries GUI** to *create* or *delete* your own **Transformer**, **Model** and **Predictors**. Once you have a TimeSeries predictor you can also choose to *export* it, obtaining a zip file, or eventually *import* a TimeSeries predictor that you previously created. 
 
 
