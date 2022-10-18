@@ -497,27 +497,33 @@ async def evaluate(request, name):
     name = unquote(name)
     body = request.json
 
-    logger.debug("loading predictor pipeline...")
-    pipeline = load_pipeline(name, params['branch'], repo_path=repo_path)
-    datetime = pipeline.date.strftime('%Y-%m-%d %H:%M:%S.%f')
+    branch = "development"
+    # params = {**load_params(request.args)}
+    eval_params = dict(save_eval_report=False, eval_fname="NONE")
 
-    logger.debug("pre-processing evaluation data...")
-    # y = FACTORY(body['target'])
-    try:
-        data = preprocessing_data(body, datetime_feature=pipeline.datetime_feature,
-                                  datetime_frequency=pipeline.datetime_frequency)
-    except Exception as e:
-        print(f'----------------------{e}')
-    y = data["y"]
-    X = data["X"]
-
-    logger.debug("computing forecast report")
-    report = pipeline.get_forecast_report(y=y, X=X)
-    logger.debug(f"report: {report}")
-    res = [{"report_test": report, "datetime": datetime,
-            "task": "forecast"}]
-    print("res:::", res)
-    return sanic.json(res)
+    eval_res = get_model_evaluation(predictor_name=name, branch=branch, evaluate_params=eval_params,
+                                    data=body)
+    # logger.debug("loading predictor pipeline...")
+    # pipeline = load_pipeline(name, params['branch'], repo_path=repo_path)
+    # datetime = pipeline.date.strftime('%Y-%m-%d %H:%M:%S.%f')
+    #
+    # logger.debug("pre-processing evaluation data...")
+    # # y = FACTORY(body['target'])
+    # try:
+    #     data = preprocessing_data(body, datetime_feature=pipeline.datetime_feature,
+    #                               datetime_frequency=pipeline.datetime_frequency)
+    # except Exception as e:
+    #     print(f'----------------------{e}')
+    # y = data["y"]
+    # X = data["X"]
+    #
+    # logger.debug("computing forecast report")
+    # report = pipeline.get_forecast_report(y=y, X=X)
+    # logger.debug(f"report: {report}")
+    # res = [{"report_test": report, "datetime": datetime,
+    #         "task": "forecast"}]
+    # print("res:::", res)
+    return sanic.json(eval_res)
 
 
 @bp.post("/predictors/import")
@@ -638,6 +644,7 @@ async def loko_predict_service(value, args):
 async def loko_evaluate_service(value, args):
     logger.debug(f"evaluate::: value: {value}  \n \n args: {args}")
 
+
     branch = "development"
     # params = {**load_params(request.args)}
     predictor_name = unquote(args["predictor_name"])
@@ -651,6 +658,8 @@ async def loko_evaluate_service(value, args):
         logger.error(f"Evaluate LOG err: {e}")
         raise SanicException(f"Evaluate LOG Error... {e}")
     return sanic.json(eval_res)
+
+
 
 
 @bp.post("/loko-services/info")

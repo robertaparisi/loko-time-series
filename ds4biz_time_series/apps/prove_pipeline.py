@@ -10,6 +10,7 @@ from sktime.forecasting.compose import TransformedTargetForecaster
 from sktime.transformations.series.detrend import Deseasonalizer
 from sktime.forecasting.arima import ARIMA
 
+
 # data loading for illustration (see section 1 for explanation)
 print("a")
 y = load_airline()

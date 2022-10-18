@@ -3,9 +3,712 @@
   "id": "ds4biz-time-series",
   "description": "",
   "created_on": "14/09/2022, 12:18:07",
-  "last_modify": "18/10/2022, 18:38:36",
+  "last_modify": "18/10/2022, 20:00:31",
   "graphs": {
-    "main": {
+    "Manage TS": {
+      "nodes": [
+        {
+          "id": "d5427381-bce8-4292-ad92-247475a9465f",
+          "position": {
+            "x": 694.9915351044307,
+            "y": 250.96800705814522
+          },
+          "type": "custom",
+          "dragHandle": "#nodeHandle",
+          "sourcePosition": "right",
+          "targetPosition": "left",
+          "width": 150,
+          "height": 56,
+          "selected": null,
+          "dragging": null,
+          "data": {
+            "name": "TimeSeries Manager",
+            "events": null,
+            "description": "Components that managaes Time Series Models",
+            "inputs": [
+              {
+                "id": "create",
+                "label": "create_predictor",
+                "service": "",
+                "to": "create_predictor"
+              },
+              {
+                "id": "delete",
+                "label": "delete_predictor",
+                "service": "",
+                "to": "delete_predictor"
+              },
+              {
+                "id": "info",
+                "label": "info_predictor",
+                "service": "loko-services/info",
+                "to": "info_predictor"
+              }
+            ],
+            "outputs": [
+              {
+                "id": "create",
+                "label": "create_predictor"
+              },
+              {
+                "id": "delete",
+                "label": "delete_predictor"
+              },
+              {
+                "id": "info",
+                "label": "info_predictor"
+              }
+            ],
+            "configured": true,
+            "options": {
+              "group": "Custom",
+              "args": [
+                {
+                  "name": "comment",
+                  "type": "area",
+                  "label": "Node comment",
+                  "helper": "Use it to explain the usage of this node"
+                },
+                {
+                  "name": "alias",
+                  "type": "text",
+                  "label": "Name",
+                  "helper": "Use this name as an alias"
+                },
+                {
+                  "name": "debug",
+                  "type": "boolean",
+                  "label": "Debug to Console",
+                  "divider": true
+                },
+                {
+                  "name": "existing_transf",
+                  "type": "boolean",
+                  "label": "Use existing transformer",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": "true",
+                  "description": "",
+                  "validation": null
+                },
+                {
+                  "name": "transformer_name",
+                  "type": "dynamic",
+                  "label": "Transformer",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": null,
+                  "description": "Express the name of the transformer you want to use",
+                  "validation": null,
+                  "parent": "existing_transf",
+                  "condition": "{parent}===true",
+                  "dynamicType": "asyncSelect",
+                  "options": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
+                },
+                {
+                  "name": "transformer_def",
+                  "type": "dynamic",
+                  "label": "Transformer",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": null,
+                  "description": "Define the structure of the transformer you want to use",
+                  "validation": null,
+                  "parent": "existing_transf",
+                  "condition": "{parent}===false",
+                  "dynamicType": "area",
+                  "options": null,
+                  "url": null
+                },
+                {
+                  "name": "existing_model",
+                  "type": "boolean",
+                  "label": "Use existing model",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": "false",
+                  "description": "",
+                  "validation": null
+                },
+                {
+                  "name": "model_name",
+                  "type": "dynamic",
+                  "label": "Model",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": null,
+                  "description": "Express the name of the model you want to use",
+                  "validation": null,
+                  "parent": "existing_model",
+                  "condition": "{parent}===true",
+                  "dynamicType": "asyncSelect",
+                  "options": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
+                },
+                {
+                  "name": "model_def",
+                  "type": "dynamic",
+                  "label": "Model",
+                  "helper": "",
+                  "group": "Create Parameters",
+                  "value": null,
+                  "description": "Define the structure of the model you want to use",
+                  "validation": null,
+                  "parent": "existing_model",
+                  "condition": "{parent}===false",
+                  "dynamicType": "area",
+                  "options": null,
+                  "url": null
+                },
+                {
+                  "name": "del_transformer",
+                  "type": "asyncSelect",
+                  "label": "Transformer",
+                  "helper": "",
+                  "group": "Delete Parameters",
+                  "value": null,
+                  "description": "",
+                  "validation": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
+                },
+                {
+                  "name": "del_model",
+                  "type": "asyncSelect",
+                  "label": "Model",
+                  "helper": "",
+                  "group": "Delete Parameters",
+                  "value": null,
+                  "description": "",
+                  "validation": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
+                },
+                {
+                  "name": "del_predictor",
+                  "type": "asyncSelect",
+                  "label": "Predictor",
+                  "helper": "",
+                  "group": "Delete Parameters",
+                  "value": null,
+                  "description": "",
+                  "validation": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
+                },
+                {
+                  "name": "info_obj",
+                  "type": "select",
+                  "label": "Object",
+                  "helper": "Select the object you want to have info on.",
+                  "group": "Info Parameters",
+                  "value": null,
+                  "description": "",
+                  "validation": null,
+                  "options": [
+                    "Predictor",
+                    "Transformer",
+                    "Model"
+                  ]
+                },
+                {
+                  "name": "obj_name",
+                  "type": "dynamic",
+                  "label": "Predictor",
+                  "helper": "",
+                  "group": "Info Parameters",
+                  "value": null,
+                  "description": "Select the name of the predictor you want to know about",
+                  "validation": null,
+                  "parent": "info_obj",
+                  "condition": "{parent}===\"Predictor\"",
+                  "dynamicType": "asyncSelect",
+                  "options": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
+                },
+                {
+                  "name": "obj_name",
+                  "type": "dynamic",
+                  "label": "Model",
+                  "helper": "",
+                  "group": "Info Parameters",
+                  "value": null,
+                  "description": "Select the name of the model you want to know about",
+                  "validation": null,
+                  "parent": "info_obj",
+                  "condition": "{parent}===\"Model\"",
+                  "dynamicType": "asyncSelect",
+                  "options": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
+                },
+                {
+                  "name": "obj_name",
+                  "type": "dynamic",
+                  "label": "Transformer",
+                  "helper": "",
+                  "group": "Info Parameters",
+                  "value": null,
+                  "description": "Select the name of the transformer you want to know about",
+                  "validation": null,
+                  "parent": "info_obj",
+                  "condition": "{parent}===\"Transformer\"",
+                  "dynamicType": "asyncSelect",
+                  "options": null,
+                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
+                }
+              ],
+              "click": null,
+              "icon": "RiFileSettingsFill",
+              "values": {
+                "existing_transf": "true",
+                "existing_model": "false"
+              }
+            }
+          },
+          "selectable": true,
+          "draggable": true,
+          "__class__": "Node"
+        }
+      ],
+      "edges": [],
+      "__class__": "Graph"
+    },
+    "BrandonTest": {
+      "nodes": [
+        {
+          "id": "ec053f0f-1c0c-49e0-bade-866c2748e10f",
+          "position": {
+            "x": 519,
+            "y": 334
+          },
+          "type": "custom",
+          "dragHandle": "#nodeHandle",
+          "sourcePosition": "right",
+          "targetPosition": "left",
+          "width": 150,
+          "height": 56,
+          "selected": false,
+          "dragging": false,
+          "data": {
+            "name": "CSV Reader",
+            "events": null,
+            "description": "### Description\nThe CSV READER component allows reading files in csv format. \n\nYou have the possibility to set a separator using the **Separator** parameter. The **Infer types** parameter allows the automatic transformation of the type of non-textual fields.\n\n### Input\nThe input required by this component is the file path in PosixPath format. However, the file path can also be defined when the component is created, in which case no input is required.\n\n### Output\nThe submitted file is returned row by row, where each row is represented by a dictionary that has the column names as keys.",
+            "inputs": [
+              {
+                "id": "input",
+                "label": "input"
+              }
+            ],
+            "outputs": [
+              {
+                "id": "output",
+                "label": "output"
+              }
+            ],
+            "configured": true,
+            "options": {
+              "group": "Inputs",
+              "args": [
+                {
+                  "name": "comment",
+                  "type": "area",
+                  "label": "Node comment",
+                  "helper": "Use it to explain the usage of this node"
+                },
+                {
+                  "name": "alias",
+                  "type": "text",
+                  "label": "Name",
+                  "helper": "Use this name as an alias"
+                },
+                {
+                  "name": "debug",
+                  "type": "boolean",
+                  "label": "Debug to Console",
+                  "divider": true
+                },
+                {
+                  "name": "value",
+                  "type": "files",
+                  "label": "File",
+                  "fragment": "files",
+                  "helper": "choose a file or read input"
+                },
+                {
+                  "name": "separator",
+                  "type": "text",
+                  "label": "Separator"
+                },
+                {
+                  "name": "df",
+                  "type": "boolean",
+                  "label": "Dask Dataframe"
+                },
+                {
+                  "name": "infer_type",
+                  "type": "boolean",
+                  "label": "Infer types"
+                },
+                {
+                  "name": "propagate",
+                  "type": "boolean",
+                  "label": "Flush at the end"
+                }
+              ],
+              "click": "Send file",
+              "icon": "RiFileChart2Fill",
+              "values": {
+                "comment": "",
+                "alias": "",
+                "debug": false,
+                "separator": ",",
+                "df": false,
+                "infer_type": false,
+                "propagate": true,
+                "value": {
+                  "name": "df_Parapharma.csv",
+                  "path": "data/dati/df_Parapharma.csv",
+                  "parent": "data/dati",
+                  "isDir": false,
+                  "hidden": false
+                }
+              }
+            },
+            "locked": null
+          },
+          "selectable": true,
+          "draggable": true,
+          "__class__": "Node"
+        },
+        {
+          "id": "b16ade74-d981-4e4a-a003-bc3c895215d6",
+          "position": {
+            "x": 750,
+            "y": 289
+          },
+          "type": "custom",
+          "dragHandle": "#nodeHandle",
+          "sourcePosition": "right",
+          "targetPosition": "left",
+          "width": 150,
+          "height": 56,
+          "selected": false,
+          "dragging": false,
+          "data": {
+            "name": "Filter",
+            "events": null,
+            "description": "### Description\nThe FILTER component is used to filter the input data. To configure this component, you need to define Python code that returns a boolean (true / false) that depends on the input received. The input can be retrieved using the variable **data**.\n\n### Input\nThe input is used by the component using the variable **data**.\n\n### Output\nThere are two outputs: **output** and **discarded**. Through the first output are returned the inputs that verify the condition defined inside the component, in the second those that do not verify it.",
+            "inputs": [
+              {
+                "id": "input",
+                "label": "input"
+              }
+            ],
+            "outputs": [
+              {
+                "id": "output",
+                "label": "output"
+              },
+              {
+                "id": "discarded",
+                "label": "discarded"
+              }
+            ],
+            "configured": true,
+            "options": {
+              "group": "Common",
+              "args": [
+                {
+                  "name": "comment",
+                  "type": "area",
+                  "label": "Node comment",
+                  "helper": "Use it to explain the usage of this node"
+                },
+                {
+                  "name": "alias",
+                  "type": "text",
+                  "label": "Name",
+                  "helper": "Use this name as an alias"
+                },
+                {
+                  "name": "debug",
+                  "type": "boolean",
+                  "label": "Debug to Console",
+                  "divider": true
+                },
+                {
+                  "name": "notify_warnings",
+                  "type": "boolean",
+                  "label": "Notify warnings"
+                },
+                {
+                  "name": "code",
+                  "type": "code",
+                  "description": "Python code that return a boolean (True,False). Incoming messages that evaluates to True are sent to the first output while the others are redirected to the second one",
+                  "label": "Code",
+                  "validation": {
+                    "required": "Required field"
+                  },
+                  "fragment": null,
+                  "advanced": false,
+                  "options": null,
+                  "value": null
+                }
+              ],
+              "click": null,
+              "icon": "RiFilter2Fill",
+              "values": {
+                "comment": "",
+                "alias": "",
+                "debug": false,
+                "notify_warnings": true,
+                "code": "if data[\"product_ean\"]==\"8059147053303\":\n  return True\nelse:\n  return False"
+              }
+            },
+            "locked": null
+          },
+          "selectable": true,
+          "draggable": true,
+          "positionAbsolute": {
+            "x": 750,
+            "y": 289
+          },
+          "__class__": "Node"
+        },
+        {
+          "id": "93b05647-f746-46c9-b5ff-e39ea0af2801",
+          "position": {
+            "x": 969,
+            "y": 277
+          },
+          "type": "custom",
+          "dragHandle": "#nodeHandle",
+          "sourcePosition": "right",
+          "targetPosition": "left",
+          "width": 150,
+          "height": 56,
+          "selected": false,
+          "dragging": false,
+          "data": {
+            "name": "Sampler",
+            "events": null,
+            "description": "### Description\nThe SAMPLER component is used to sample the elements received in input. The parameter **Sample size** represents the number of items to receive as output.\n\n### Input\nIn this case there is no fixed input format.\n\n### Output\nAre returned **Sample size** items chosen at random.",
+            "inputs": [
+              {
+                "id": "input",
+                "label": "input"
+              }
+            ],
+            "outputs": [
+              {
+                "id": "output",
+                "label": "output"
+              }
+            ],
+            "configured": true,
+            "options": {
+              "group": "Common",
+              "args": [
+                {
+                  "name": "comment",
+                  "type": "area",
+                  "label": "Node comment",
+                  "helper": "Use it to explain the usage of this node"
+                },
+                {
+                  "name": "alias",
+                  "type": "text",
+                  "label": "Name",
+                  "helper": "Use this name as an alias"
+                },
+                {
+                  "name": "debug",
+                  "type": "boolean",
+                  "label": "Debug to Console",
+                  "divider": true
+                },
+                {
+                  "name": "k",
+                  "type": "number",
+                  "label": "Sample size"
+                }
+              ],
+              "click": null,
+              "icon": "RiBarChartGroupedFill",
+              "values": {
+                "comment": "",
+                "alias": "",
+                "debug": false,
+                "k": "100"
+              }
+            },
+            "locked": null
+          },
+          "selectable": true,
+          "draggable": true,
+          "positionAbsolute": {
+            "x": 969,
+            "y": 277
+          },
+          "__class__": "Node"
+        },
+        {
+          "id": "90467f17-30ee-47b0-8b69-9e2b8de033c8",
+          "position": {
+            "x": 1212,
+            "y": 232
+          },
+          "type": "custom",
+          "dragHandle": "#nodeHandle",
+          "sourcePosition": "right",
+          "targetPosition": "left",
+          "width": 150,
+          "height": 56,
+          "selected": false,
+          "dragging": false,
+          "data": {
+            "name": "Selector",
+            "events": null,
+            "description": "### Description\nThe SELECTOR component is used to select the value of one or more object keys. The required key/s are defined using the parameter **Keys**.\n\nIn order to add other keys you need to click on the **\"Add field\"** button.\n\nIf the field **Ignore Error** is toggled, missing keys are ignored.\n\nIt's also possible to select nested key, just by writing them in a *key* field, and seperating them using a full stop. Let's consider the object in the example below: if you want to have access to the content of the \"key3\" object, you need to use the following notation \"key1.key2.key3\".\n\n\n```json\n {\"key1\":{\"key2\":{\"key3\":[\"val1\", \"val2\", \"val3\"]}}} \n```\n\n\n\n### Input\n\nThe input consists of a dictionary.\n\n\n\n### Output\n\nThe output is the value of the required key of the dictionary received as input, if only one key is selected; otherwise it's an object which contains the keys specified and their value.\n",
+            "inputs": [
+              {
+                "id": "input",
+                "label": "input"
+              }
+            ],
+            "outputs": [
+              {
+                "id": "output",
+                "label": "output"
+              }
+            ],
+            "configured": true,
+            "options": {
+              "group": "Common",
+              "args": [
+                {
+                  "name": "comment",
+                  "type": "area",
+                  "label": "Node comment",
+                  "helper": "Use it to explain the usage of this node"
+                },
+                {
+                  "name": "alias",
+                  "type": "text",
+                  "label": "Name",
+                  "helper": "Use this name as an alias"
+                },
+                {
+                  "name": "debug",
+                  "type": "boolean",
+                  "label": "Debug to Console",
+                  "divider": true
+                },
+                {
+                  "name": "ignore_err",
+                  "label": "Ignor Error",
+                  "type": "boolean",
+                  "description": "Choose whether to ignore error in case of a missing key or not"
+                },
+                {
+                  "name": "exclude",
+                  "label": "Exclude Keys",
+                  "type": "boolean",
+                  "description": "If enabled, the output contains the whole input object excluding the specified keys; otherwise, only the specified keys are returned"
+                },
+                {
+                  "name": "keys",
+                  "label": "Keys",
+                  "type": "multiKeyValue",
+                  "validation": {
+                    "required": "Required field"
+                  },
+                  "description": "Name of the key/s to select from the incoming message",
+                  "fields": [
+                    {
+                      "name": "k",
+                      "placeholder": "key",
+                      "validation": {
+                        "required": "Required field"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "click": null,
+              "icon": "RiCursorFill",
+              "values": {
+                "comment": "",
+                "alias": "",
+                "debug": false,
+                "ignore_err": false,
+                "exclude": false,
+                "keys": [
+                  {
+                    "k": "po_ordered_on",
+                    "id": "30b661aa-c116-48db-931e-04b4a5692f1f"
+                  },
+                  {
+                    "k": "poi_submitted_quantity",
+                    "id": "4960b85a-527e-4623-bcc8-05cba4f6fa83"
+                  }
+                ]
+              }
+            },
+            "locked": null
+          },
+          "selectable": true,
+          "draggable": true,
+          "positionAbsolute": {
+            "x": 1212,
+            "y": 232
+          },
+          "__class__": "Node"
+        }
+      ],
+      "edges": [
+        {
+          "id": "reactflow__edge-ec053f0f-1c0c-49e0-bade-866c2748e10foutput-b16ade74-d981-4e4a-a003-bc3c895215d6input",
+          "source": "ec053f0f-1c0c-49e0-bade-866c2748e10f",
+          "sourceHandle": "output",
+          "target": "b16ade74-d981-4e4a-a003-bc3c895215d6",
+          "targetHandle": "input",
+          "data": {
+            "startColor": "#F8637A",
+            "stopColor": "#D770AD"
+          },
+          "selected": false,
+          "dragging": false,
+          "__class__": "Edge"
+        },
+        {
+          "id": "reactflow__edge-b16ade74-d981-4e4a-a003-bc3c895215d6output-93b05647-f746-46c9-b5ff-e39ea0af2801input",
+          "source": "b16ade74-d981-4e4a-a003-bc3c895215d6",
+          "sourceHandle": "output",
+          "target": "93b05647-f746-46c9-b5ff-e39ea0af2801",
+          "targetHandle": "input",
+          "data": {
+            "startColor": "#D770AD",
+            "stopColor": "#D770AD"
+          },
+          "selected": false,
+          "dragging": false,
+          "__class__": "Edge"
+        },
+        {
+          "id": "reactflow__edge-93b05647-f746-46c9-b5ff-e39ea0af2801output-90467f17-30ee-47b0-8b69-9e2b8de033c8input",
+          "source": "93b05647-f746-46c9-b5ff-e39ea0af2801",
+          "sourceHandle": "output",
+          "target": "90467f17-30ee-47b0-8b69-9e2b8de033c8",
+          "targetHandle": "input",
+          "data": {
+            "startColor": "#D770AD",
+            "stopColor": "#D770AD"
+          },
+          "__class__": "Edge"
+        }
+      ],
+      "__class__": "Graph"
+    },
+    "TimeSeriesForecasting": {
       "nodes": [
         {
           "id": "0bca8ca4-b3e6-4caf-9cf4-63a9c7e98c87",
@@ -1036,9 +1739,8 @@
                 "forecasting_horizon_fit": "",
                 "report": true,
                 "forecasting_horizon": "2",
-                "save_eval_report": true,
-                "test_size": "0.1",
-                "eval_fname": "tseval_covariates"
+                "save_eval_report": false,
+                "test_size": "0.1"
               }
             },
             "locked": null
@@ -1130,709 +1832,6 @@
           "data": {
             "startColor": "#D770AD",
             "stopColor": "#888"
-          },
-          "__class__": "Edge"
-        }
-      ],
-      "__class__": "Graph"
-    },
-    "Manage TS": {
-      "nodes": [
-        {
-          "id": "d5427381-bce8-4292-ad92-247475a9465f",
-          "position": {
-            "x": 694.9915351044307,
-            "y": 250.96800705814522
-          },
-          "type": "custom",
-          "dragHandle": "#nodeHandle",
-          "sourcePosition": "right",
-          "targetPosition": "left",
-          "width": 150,
-          "height": 56,
-          "selected": null,
-          "dragging": null,
-          "data": {
-            "name": "TimeSeries Manager",
-            "events": null,
-            "description": "Components that managaes Time Series Models",
-            "inputs": [
-              {
-                "id": "create",
-                "label": "create_predictor",
-                "service": "",
-                "to": "create_predictor"
-              },
-              {
-                "id": "delete",
-                "label": "delete_predictor",
-                "service": "",
-                "to": "delete_predictor"
-              },
-              {
-                "id": "info",
-                "label": "info_predictor",
-                "service": "loko-services/info",
-                "to": "info_predictor"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "create",
-                "label": "create_predictor"
-              },
-              {
-                "id": "delete",
-                "label": "delete_predictor"
-              },
-              {
-                "id": "info",
-                "label": "info_predictor"
-              }
-            ],
-            "configured": true,
-            "options": {
-              "group": "Custom",
-              "args": [
-                {
-                  "name": "comment",
-                  "type": "area",
-                  "label": "Node comment",
-                  "helper": "Use it to explain the usage of this node"
-                },
-                {
-                  "name": "alias",
-                  "type": "text",
-                  "label": "Name",
-                  "helper": "Use this name as an alias"
-                },
-                {
-                  "name": "debug",
-                  "type": "boolean",
-                  "label": "Debug to Console",
-                  "divider": true
-                },
-                {
-                  "name": "existing_transf",
-                  "type": "boolean",
-                  "label": "Use existing transformer",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": "true",
-                  "description": "",
-                  "validation": null
-                },
-                {
-                  "name": "transformer_name",
-                  "type": "dynamic",
-                  "label": "Transformer",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Express the name of the transformer you want to use",
-                  "validation": null,
-                  "parent": "existing_transf",
-                  "condition": "{parent}===true",
-                  "dynamicType": "asyncSelect",
-                  "options": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
-                },
-                {
-                  "name": "transformer_def",
-                  "type": "dynamic",
-                  "label": "Transformer",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Define the structure of the transformer you want to use",
-                  "validation": null,
-                  "parent": "existing_transf",
-                  "condition": "{parent}===false",
-                  "dynamicType": "area",
-                  "options": null,
-                  "url": null
-                },
-                {
-                  "name": "existing_model",
-                  "type": "boolean",
-                  "label": "Use existing model",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": "false",
-                  "description": "",
-                  "validation": null
-                },
-                {
-                  "name": "model_name",
-                  "type": "dynamic",
-                  "label": "Model",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Express the name of the model you want to use",
-                  "validation": null,
-                  "parent": "existing_model",
-                  "condition": "{parent}===true",
-                  "dynamicType": "asyncSelect",
-                  "options": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
-                },
-                {
-                  "name": "model_def",
-                  "type": "dynamic",
-                  "label": "Model",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Define the structure of the model you want to use",
-                  "validation": null,
-                  "parent": "existing_model",
-                  "condition": "{parent}===false",
-                  "dynamicType": "area",
-                  "options": null,
-                  "url": null
-                },
-                {
-                  "name": "del_transformer",
-                  "type": "asyncSelect",
-                  "label": "Transformer",
-                  "helper": "",
-                  "group": "Delete Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
-                },
-                {
-                  "name": "del_model",
-                  "type": "asyncSelect",
-                  "label": "Model",
-                  "helper": "",
-                  "group": "Delete Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
-                },
-                {
-                  "name": "del_predictor",
-                  "type": "asyncSelect",
-                  "label": "Predictor",
-                  "helper": "",
-                  "group": "Delete Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
-                },
-                {
-                  "name": "info_obj",
-                  "type": "select",
-                  "label": "Object",
-                  "helper": "Select the object you want to have info on.",
-                  "group": "Info Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null,
-                  "options": [
-                    "Predictor",
-                    "Transformer",
-                    "Model"
-                  ]
-                },
-                {
-                  "name": "obj_name",
-                  "type": "dynamic",
-                  "label": "Predictor",
-                  "helper": "",
-                  "group": "Info Parameters",
-                  "value": null,
-                  "description": "Select the name of the predictor you want to know about",
-                  "validation": null,
-                  "parent": "info_obj",
-                  "condition": "{parent}===\"Predictor\"",
-                  "dynamicType": "asyncSelect",
-                  "options": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
-                },
-                {
-                  "name": "obj_name",
-                  "type": "dynamic",
-                  "label": "Model",
-                  "helper": "",
-                  "group": "Info Parameters",
-                  "value": null,
-                  "description": "Select the name of the model you want to know about",
-                  "validation": null,
-                  "parent": "info_obj",
-                  "condition": "{parent}===\"Model\"",
-                  "dynamicType": "asyncSelect",
-                  "options": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
-                },
-                {
-                  "name": "obj_name",
-                  "type": "dynamic",
-                  "label": "Transformer",
-                  "helper": "",
-                  "group": "Info Parameters",
-                  "value": null,
-                  "description": "Select the name of the transformer you want to know about",
-                  "validation": null,
-                  "parent": "info_obj",
-                  "condition": "{parent}===\"Transformer\"",
-                  "dynamicType": "asyncSelect",
-                  "options": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
-                }
-              ],
-              "click": null,
-              "icon": "RiFileSettingsFill",
-              "values": {
-                "existing_transf": "true",
-                "existing_model": "false"
-              }
-            }
-          },
-          "selectable": true,
-          "draggable": true,
-          "__class__": "Node"
-        }
-      ],
-      "edges": [],
-      "__class__": "Graph"
-    },
-    "BrandonTest": {
-      "nodes": [
-        {
-          "id": "ec053f0f-1c0c-49e0-bade-866c2748e10f",
-          "position": {
-            "x": 519,
-            "y": 334
-          },
-          "type": "custom",
-          "dragHandle": "#nodeHandle",
-          "sourcePosition": "right",
-          "targetPosition": "left",
-          "width": 150,
-          "height": 56,
-          "selected": false,
-          "dragging": false,
-          "data": {
-            "name": "CSV Reader",
-            "events": null,
-            "description": "### Description\nThe CSV READER component allows reading files in csv format. \n\nYou have the possibility to set a separator using the **Separator** parameter. The **Infer types** parameter allows the automatic transformation of the type of non-textual fields.\n\n### Input\nThe input required by this component is the file path in PosixPath format. However, the file path can also be defined when the component is created, in which case no input is required.\n\n### Output\nThe submitted file is returned row by row, where each row is represented by a dictionary that has the column names as keys.",
-            "inputs": [
-              {
-                "id": "input",
-                "label": "input"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "output",
-                "label": "output"
-              }
-            ],
-            "configured": true,
-            "options": {
-              "group": "Inputs",
-              "args": [
-                {
-                  "name": "comment",
-                  "type": "area",
-                  "label": "Node comment",
-                  "helper": "Use it to explain the usage of this node"
-                },
-                {
-                  "name": "alias",
-                  "type": "text",
-                  "label": "Name",
-                  "helper": "Use this name as an alias"
-                },
-                {
-                  "name": "debug",
-                  "type": "boolean",
-                  "label": "Debug to Console",
-                  "divider": true
-                },
-                {
-                  "name": "value",
-                  "type": "files",
-                  "label": "File",
-                  "fragment": "files",
-                  "helper": "choose a file or read input"
-                },
-                {
-                  "name": "separator",
-                  "type": "text",
-                  "label": "Separator"
-                },
-                {
-                  "name": "df",
-                  "type": "boolean",
-                  "label": "Dask Dataframe"
-                },
-                {
-                  "name": "infer_type",
-                  "type": "boolean",
-                  "label": "Infer types"
-                },
-                {
-                  "name": "propagate",
-                  "type": "boolean",
-                  "label": "Flush at the end"
-                }
-              ],
-              "click": "Send file",
-              "icon": "RiFileChart2Fill",
-              "values": {
-                "comment": "",
-                "alias": "",
-                "debug": false,
-                "separator": ",",
-                "df": false,
-                "infer_type": false,
-                "propagate": true,
-                "value": {
-                  "name": "df_Parapharma.csv",
-                  "path": "data/dati/df_Parapharma.csv",
-                  "parent": "data/dati",
-                  "isDir": false,
-                  "hidden": false
-                }
-              }
-            },
-            "locked": null
-          },
-          "selectable": true,
-          "draggable": true,
-          "__class__": "Node"
-        },
-        {
-          "id": "b16ade74-d981-4e4a-a003-bc3c895215d6",
-          "position": {
-            "x": 750,
-            "y": 289
-          },
-          "type": "custom",
-          "dragHandle": "#nodeHandle",
-          "sourcePosition": "right",
-          "targetPosition": "left",
-          "width": 150,
-          "height": 56,
-          "selected": false,
-          "dragging": false,
-          "data": {
-            "name": "Filter",
-            "events": null,
-            "description": "### Description\nThe FILTER component is used to filter the input data. To configure this component, you need to define Python code that returns a boolean (true / false) that depends on the input received. The input can be retrieved using the variable **data**.\n\n### Input\nThe input is used by the component using the variable **data**.\n\n### Output\nThere are two outputs: **output** and **discarded**. Through the first output are returned the inputs that verify the condition defined inside the component, in the second those that do not verify it.",
-            "inputs": [
-              {
-                "id": "input",
-                "label": "input"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "output",
-                "label": "output"
-              },
-              {
-                "id": "discarded",
-                "label": "discarded"
-              }
-            ],
-            "configured": true,
-            "options": {
-              "group": "Common",
-              "args": [
-                {
-                  "name": "comment",
-                  "type": "area",
-                  "label": "Node comment",
-                  "helper": "Use it to explain the usage of this node"
-                },
-                {
-                  "name": "alias",
-                  "type": "text",
-                  "label": "Name",
-                  "helper": "Use this name as an alias"
-                },
-                {
-                  "name": "debug",
-                  "type": "boolean",
-                  "label": "Debug to Console",
-                  "divider": true
-                },
-                {
-                  "name": "notify_warnings",
-                  "type": "boolean",
-                  "label": "Notify warnings"
-                },
-                {
-                  "name": "code",
-                  "type": "code",
-                  "description": "Python code that return a boolean (True,False). Incoming messages that evaluates to True are sent to the first output while the others are redirected to the second one",
-                  "label": "Code",
-                  "validation": {
-                    "required": "Required field"
-                  },
-                  "fragment": null,
-                  "advanced": false,
-                  "options": null,
-                  "value": null
-                }
-              ],
-              "click": null,
-              "icon": "RiFilter2Fill",
-              "values": {
-                "comment": "",
-                "alias": "",
-                "debug": false,
-                "notify_warnings": true,
-                "code": "if data[\"product_ean\"]==\"8059147053303\":\n  return True\nelse:\n  return False"
-              }
-            },
-            "locked": null
-          },
-          "selectable": true,
-          "draggable": true,
-          "positionAbsolute": {
-            "x": 750,
-            "y": 289
-          },
-          "__class__": "Node"
-        },
-        {
-          "id": "93b05647-f746-46c9-b5ff-e39ea0af2801",
-          "position": {
-            "x": 969,
-            "y": 277
-          },
-          "type": "custom",
-          "dragHandle": "#nodeHandle",
-          "sourcePosition": "right",
-          "targetPosition": "left",
-          "width": 150,
-          "height": 56,
-          "selected": false,
-          "dragging": false,
-          "data": {
-            "name": "Sampler",
-            "events": null,
-            "description": "### Description\nThe SAMPLER component is used to sample the elements received in input. The parameter **Sample size** represents the number of items to receive as output.\n\n### Input\nIn this case there is no fixed input format.\n\n### Output\nAre returned **Sample size** items chosen at random.",
-            "inputs": [
-              {
-                "id": "input",
-                "label": "input"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "output",
-                "label": "output"
-              }
-            ],
-            "configured": true,
-            "options": {
-              "group": "Common",
-              "args": [
-                {
-                  "name": "comment",
-                  "type": "area",
-                  "label": "Node comment",
-                  "helper": "Use it to explain the usage of this node"
-                },
-                {
-                  "name": "alias",
-                  "type": "text",
-                  "label": "Name",
-                  "helper": "Use this name as an alias"
-                },
-                {
-                  "name": "debug",
-                  "type": "boolean",
-                  "label": "Debug to Console",
-                  "divider": true
-                },
-                {
-                  "name": "k",
-                  "type": "number",
-                  "label": "Sample size"
-                }
-              ],
-              "click": null,
-              "icon": "RiBarChartGroupedFill",
-              "values": {
-                "comment": "",
-                "alias": "",
-                "debug": false,
-                "k": "100"
-              }
-            },
-            "locked": null
-          },
-          "selectable": true,
-          "draggable": true,
-          "positionAbsolute": {
-            "x": 969,
-            "y": 277
-          },
-          "__class__": "Node"
-        },
-        {
-          "id": "90467f17-30ee-47b0-8b69-9e2b8de033c8",
-          "position": {
-            "x": 1212,
-            "y": 232
-          },
-          "type": "custom",
-          "dragHandle": "#nodeHandle",
-          "sourcePosition": "right",
-          "targetPosition": "left",
-          "width": 150,
-          "height": 56,
-          "selected": false,
-          "dragging": false,
-          "data": {
-            "name": "Selector",
-            "events": null,
-            "description": "### Description\nThe SELECTOR component is used to select the value of one or more object keys. The required key/s are defined using the parameter **Keys**.\n\nIn order to add other keys you need to click on the **\"Add field\"** button.\n\nIf the field **Ignore Error** is toggled, missing keys are ignored.\n\nIt's also possible to select nested key, just by writing them in a *key* field, and seperating them using a full stop. Let's consider the object in the example below: if you want to have access to the content of the \"key3\" object, you need to use the following notation \"key1.key2.key3\".\n\n\n```json\n {\"key1\":{\"key2\":{\"key3\":[\"val1\", \"val2\", \"val3\"]}}} \n```\n\n\n\n### Input\n\nThe input consists of a dictionary.\n\n\n\n### Output\n\nThe output is the value of the required key of the dictionary received as input, if only one key is selected; otherwise it's an object which contains the keys specified and their value.\n",
-            "inputs": [
-              {
-                "id": "input",
-                "label": "input"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "output",
-                "label": "output"
-              }
-            ],
-            "configured": true,
-            "options": {
-              "group": "Common",
-              "args": [
-                {
-                  "name": "comment",
-                  "type": "area",
-                  "label": "Node comment",
-                  "helper": "Use it to explain the usage of this node"
-                },
-                {
-                  "name": "alias",
-                  "type": "text",
-                  "label": "Name",
-                  "helper": "Use this name as an alias"
-                },
-                {
-                  "name": "debug",
-                  "type": "boolean",
-                  "label": "Debug to Console",
-                  "divider": true
-                },
-                {
-                  "name": "ignore_err",
-                  "label": "Ignor Error",
-                  "type": "boolean",
-                  "description": "Choose whether to ignore error in case of a missing key or not"
-                },
-                {
-                  "name": "exclude",
-                  "label": "Exclude Keys",
-                  "type": "boolean",
-                  "description": "If enabled, the output contains the whole input object excluding the specified keys; otherwise, only the specified keys are returned"
-                },
-                {
-                  "name": "keys",
-                  "label": "Keys",
-                  "type": "multiKeyValue",
-                  "validation": {
-                    "required": "Required field"
-                  },
-                  "description": "Name of the key/s to select from the incoming message",
-                  "fields": [
-                    {
-                      "name": "k",
-                      "placeholder": "key",
-                      "validation": {
-                        "required": "Required field"
-                      }
-                    }
-                  ]
-                }
-              ],
-              "click": null,
-              "icon": "RiCursorFill",
-              "values": {
-                "comment": "",
-                "alias": "",
-                "debug": false,
-                "ignore_err": false,
-                "exclude": false,
-                "keys": [
-                  {
-                    "k": "po_ordered_on",
-                    "id": "30b661aa-c116-48db-931e-04b4a5692f1f"
-                  },
-                  {
-                    "k": "poi_submitted_quantity",
-                    "id": "4960b85a-527e-4623-bcc8-05cba4f6fa83"
-                  }
-                ]
-              }
-            },
-            "locked": null
-          },
-          "selectable": true,
-          "draggable": true,
-          "positionAbsolute": {
-            "x": 1212,
-            "y": 232
-          },
-          "__class__": "Node"
-        }
-      ],
-      "edges": [
-        {
-          "id": "reactflow__edge-ec053f0f-1c0c-49e0-bade-866c2748e10foutput-b16ade74-d981-4e4a-a003-bc3c895215d6input",
-          "source": "ec053f0f-1c0c-49e0-bade-866c2748e10f",
-          "sourceHandle": "output",
-          "target": "b16ade74-d981-4e4a-a003-bc3c895215d6",
-          "targetHandle": "input",
-          "data": {
-            "startColor": "#F8637A",
-            "stopColor": "#D770AD"
-          },
-          "selected": false,
-          "dragging": false,
-          "__class__": "Edge"
-        },
-        {
-          "id": "reactflow__edge-b16ade74-d981-4e4a-a003-bc3c895215d6output-93b05647-f746-46c9-b5ff-e39ea0af2801input",
-          "source": "b16ade74-d981-4e4a-a003-bc3c895215d6",
-          "sourceHandle": "output",
-          "target": "93b05647-f746-46c9-b5ff-e39ea0af2801",
-          "targetHandle": "input",
-          "data": {
-            "startColor": "#D770AD",
-            "stopColor": "#D770AD"
-          },
-          "selected": false,
-          "dragging": false,
-          "__class__": "Edge"
-        },
-        {
-          "id": "reactflow__edge-93b05647-f746-46c9-b5ff-e39ea0af2801output-90467f17-30ee-47b0-8b69-9e2b8de033c8input",
-          "source": "93b05647-f746-46c9-b5ff-e39ea0af2801",
-          "sourceHandle": "output",
-          "target": "90467f17-30ee-47b0-8b69-9e2b8de033c8",
-          "targetHandle": "input",
-          "data": {
-            "startColor": "#D770AD",
-            "stopColor": "#D770AD"
           },
           "__class__": "Edge"
         }
