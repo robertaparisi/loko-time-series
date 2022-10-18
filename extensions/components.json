@@ -235,13 +235,13 @@
    },
    {
     "id": "delete",
-    "label": "delete_predictor",
+    "label": "delete_objects",
     "service": "loko-services/delete_objs",
     "to": "delete"
    },
    {
     "id": "info",
-    "label": "info_predictor",
+    "label": "info_object",
     "service": "loko-services/info_obj",
     "to": "info"
    }
@@ -253,11 +253,11 @@
    },
    {
     "id": "delete",
-    "label": "delete_predictor"
+    "label": "delete_objects"
    },
    {
     "id": "info",
-    "label": "info_predictor"
+    "label": "info_object"
    }
   ],
   "options": {

@@ -96,13 +96,13 @@ args_list = create_args + delete_args + info_args
 
 ##################### Time SERIES MANAGER ###########################
 manager_inputs = [Input(id="create", label="create_predictor", to="create", service=create_predictor_service),
-                  Input(id="delete", label="delete_predictor", service=delete_predictor_service, to="delete"),
-                  Input(id="info", label="info_predictor", service=info_predictor_service, to="info")]
+                  Input(id="delete", label="delete_objects", service=delete_predictor_service, to="delete"),
+                  Input(id="info", label="info_object", service=info_predictor_service, to="info")]
 
 ##################### Time SERIES MANAGER ###########################
 manager_outputs = [Output(id="create", label="create_predictor"),
-                   Output(id="delete", label="delete_predictor"),
-                   Output(id="info", label="info_predictor")]
+                   Output(id="delete", label="delete_objects"),
+                   Output(id="info", label="info_object")]
 
 ts_manager_component = Component(name="TimeSeries Manager", description="Components that managaes Time Series Models",
                                  args=args_list, inputs=manager_inputs, outputs=manager_outputs, icon="RiFileSettingsFill")
