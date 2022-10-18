@@ -1,9 +1,11 @@
 import io
+import json
 import re
 import shutil
 import time
 import traceback
 
+import requests
 from sanic import Sanic, Blueprint
 from sanic_openapi import swagger_blueprint
 from sanic_openapi.openapi2 import doc
@@ -662,16 +664,16 @@ async def loko_evaluate_service(value, args):
 
 
 
-@bp.post("/loko-services/info")
+@bp.post("/loko-services/info_obj")
 @doc.tag('loko-services')
-@doc.summary("...")
+@doc.summary("Get info from 'models', 'transformer' or 'predictor' - service compatible with loko;")
 @doc.consumes(doc.JsonBody({}), location="body")
 @extract_value_args(file=False)
 async def loko_info_service(value, args):
     logger.debug(f"infooo::: value: {value}  \n \n args: {args}")
     info_obj = args.get("info_obj", None)
     logger.debug(f"info obj {info_obj}")
-    obj_name = args.get("obj_name", None)
+    obj_name = args.get("info_obj_name", None)
     if info_obj is None:
         msg = "Object to get info on not specified! Please select one of the option..."
         logger.error(msg)
@@ -680,15 +682,14 @@ async def loko_info_service(value, args):
         msg = "Object name to get info on not specified! Please select one of them from the available list..."
         logger.error(msg)
         raise SanicException(msg, status_code=400)
-    obj_url = info_obj.lower() + "s/" + obj_name
-    logger.debug(f"debugging url {obj_url}")
-    # if info_obj.lower()=="predictor":
-    #
-    # elif info_obj.lower()=="transformer":
-    #
-    # elif info_obj.lower()=="model":
+    obj = info_obj.lower() + "s"
+    path = repo_path / obj / obj_name
 
-    return sanic.json(obj_url)
+    logger.debug(f"debugging url {path}")
+    infos = deserialize(path)
+    logger.debug(f"res:::::{infos}")
+
+    return sanic.json(infos)
 
 
 #
@@ -769,23 +770,76 @@ async def loko_info_service(value, args):
 #     return sanic.json(f"Predictor '{predictor_name}' deleted")
 #
 
-@bp.post("/loko-services/delete_predictors_objs")
+@bp.post("/loko-services/delete_objs")
 @doc.tag('loko-services')
 @doc.summary("Delete an object from 'models', 'transformer' and/or 'predictor' - service compatible with loko;")
 @extract_value_args(file=False)
-async def loko_delete_predictor_objs(value, args):
-    model_name = args.get("del_model", None)
-    if not model_name:
-        raise SanicException("Model name not specified...", status_code=400)
+async def loko_delete_objs(value, args):
+    logger.debug(f"args::::{args}\n\n value:::: {value}")
+    def del_obj(obj, obj_name):
+        if obj_name:
+            path = repo_path / obj / obj_name
+            if not path.exists():
+                raise SanicException(f"{obj.upper()} '{obj_name}' does not exist!", status_code=404)
+            logger.debug(f"deleting {obj_name} from {obj}...")
+            shutil.rmtree(path)
 
-    model_name = unquote(model_name)
+    delete_transformer = args.get("del_transformer", None)
+    del_obj("transformers", delete_transformer)
+    delete_predictor = args.get("del_predictor", None)
+    del_obj("predictors", delete_predictor)
+    delete_model = args.get("del_model", None)
+    del_obj("models", delete_model)
+    res = 'Obj/s correctly deleted'
+    logger.debug(res)
+    return sanic.json(res)
 
-    path = repo_path / 'models' / model_name
-    if not path.exists():
-        raise SanicException(f"Model '{model_name}' does not exist!", status_code=404)
-    shutil.rmtree(path)
-    return sanic.json(f'Model "{model_name}" deleted')
 
+@bp.post("/loko-services/create_predictor")
+@doc.tag('loko-services')
+@doc.summary("Create an object from 'models', 'transformer' and/or 'predictor' - service compatible with loko;")
+@extract_value_args(file=False)
+async def loko_create_objs(value, args):
+    logger.debug(f"args::::{args}\n\n value:::: {value}")
+    predictor_name = args.get("predictor_name", None)
+    if not predictor_name:
+        raise SanicException(f"Predictor name must be specified...", status_code=400)
+    predictor_path = repo_path / 'predictors' / predictor_name
+
+    if check_predictor_existence(predictor_path):
+        raise SanicException(f"Predictor '{name}' already exists!", status_code=409)
+    ### transformer ###
+    transformer_id = args.get('transformer_id', 'auto')
+    model_id = args.get('model_id', 'auto')
+    transformer = args.get("transformer_bp", None)
+    model = args.get("model_bp", None)
+
+    if not model:
+        mpath = repo_path / 'models' / model_id
+
+        if not check_existence(mpath):
+            raise SanicException(f"Transformer '{mpath.name}' doesn't exists!", status_code=404)
+        model = deserialize(mpath)
+    else:
+        model = json.loads(model)
+
+    if not transformer:
+        tpath = repo_path / 'transformers' / transformer_id
+        if not check_existence(tpath):
+            raise SanicException(f"Transformer '{tpath.name}' doesn't exists!", status_code=404)
+        transformer = deserialize(tpath)
+    else:
+        transformer = json.loads(transformer)
+    predictor_path.mkdir(exist_ok=True, parents=True)
+    predictor_blueprint = dict(id=name,
+                               description=args.get('description', ''),
+                               created_on=time.time() * 1000,
+                               # img=request.args.get('img', 'predictor_base'),
+                               steps=dict(transformer=transformer, model=model))
+    serialize(predictor_path, predictor_blueprint)
+    res = f'Predictors {predictor_name} correctly created'
+    logger.debug(res)
+    return sanic.json(res)
 
 @app.exception(Exception)
 async def manage_exception(request, exception):

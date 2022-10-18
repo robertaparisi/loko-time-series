@@ -230,20 +230,20 @@
    {
     "id": "create",
     "label": "create_predictor",
-    "service": "",
-    "to": "create_predictor"
+    "service": "loko-services/create_predictor",
+    "to": "create"
    },
    {
     "id": "delete",
     "label": "delete_predictor",
-    "service": "",
-    "to": "delete_predictor"
+    "service": "loko-services/delete_objs",
+    "to": "delete"
    },
    {
     "id": "info",
     "label": "info_predictor",
-    "service": "loko-services/info",
-    "to": "info_predictor"
+    "service": "loko-services/info_obj",
+    "to": "info"
    }
   ],
   "outputs": [
@@ -267,6 +267,26 @@
    },
    "args": [
     {
+     "name": "predictor_name",
+     "type": "text",
+     "label": "Predictor",
+     "helper": "Choose the name you want to use for your predictor",
+     "group": "Create Parameters",
+     "value": null,
+     "description": "",
+     "validation": null
+    },
+    {
+     "name": "description",
+     "type": "area",
+     "label": "Description",
+     "helper": "Add a description for your predictor, if you want",
+     "group": "Create Parameters",
+     "value": null,
+     "description": "",
+     "validation": null
+    },
+    {
      "name": "existing_transf",
      "type": "boolean",
      "label": "Use existing transformer",
@@ -277,7 +297,7 @@
      "validation": null
     },
     {
-     "name": "transformer_name",
+     "name": "transformer_id",
      "type": "dynamic",
      "label": "Transformer",
      "helper": "",
@@ -292,7 +312,7 @@
      "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
     },
     {
-     "name": "transformer_def",
+     "name": "transformer_bp",
      "type": "dynamic",
      "label": "Transformer",
      "helper": "",
@@ -317,7 +337,7 @@
      "validation": null
     },
     {
-     "name": "model_name",
+     "name": "model_id",
      "type": "dynamic",
      "label": "Model",
      "helper": "",
@@ -332,7 +352,7 @@
      "url": "http://localhost:9999/routes/ds4biz-time-series/models"
     },
     {
-     "name": "model_def",
+     "name": "model_bp",
      "type": "dynamic",
      "label": "Model",
      "helper": "",
@@ -395,7 +415,7 @@
      ]
     },
     {
-     "name": "obj_name",
+     "name": "info_obj_name",
      "type": "dynamic",
      "label": "Predictor",
      "helper": "",
@@ -410,7 +430,7 @@
      "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
     },
     {
-     "name": "obj_name",
+     "name": "info_obj_name",
      "type": "dynamic",
      "label": "Model",
      "helper": "",
@@ -425,7 +445,7 @@
      "url": "http://localhost:9999/routes/ds4biz-time-series/models"
     },
     {
-     "name": "obj_name",
+     "name": "info_obj_name",
      "type": "dynamic",
      "label": "Transformer",
      "helper": "",
