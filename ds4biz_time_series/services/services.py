@@ -776,6 +776,7 @@ async def loko_info_service(value, args):
 @extract_value_args(file=False)
 async def loko_delete_objs(value, args):
     logger.debug(f"args::::{args}\n\n value:::: {value}")
+
     def del_obj(obj, obj_name):
         if obj_name:
             path = repo_path / obj / obj_name
@@ -783,14 +784,21 @@ async def loko_delete_objs(value, args):
                 raise SanicException(f"{obj.upper()} '{obj_name}' does not exist!", status_code=404)
             logger.debug(f"deleting {obj_name} from {obj}...")
             shutil.rmtree(path)
+            msg = f"Deleted {obj_name} from {obj}... "
+            return msg
+        else:
+            return ""
 
     delete_transformer = args.get("del_transformer", None)
-    del_obj("transformers", delete_transformer)
+    t_msg= del_obj("transformers", delete_transformer)
     delete_predictor = args.get("del_predictor", None)
-    del_obj("predictors", delete_predictor)
+    p_msg = del_obj("predictors", delete_predictor)
     delete_model = args.get("del_model", None)
-    del_obj("models", delete_model)
-    res = 'Obj/s correctly deleted'
+    m_msg = del_obj("models", delete_model)
+    # res = 'Obj/s correctly deleted'
+    res = p_msg+m_msg+t_msg
+    if res=="":
+        res="No object to delete specified"
     logger.debug(res)
     return sanic.json(res)
 
@@ -807,7 +815,7 @@ async def loko_create_objs(value, args):
     predictor_path = repo_path / 'predictors' / predictor_name
 
     if check_predictor_existence(predictor_path):
-        raise SanicException(f"Predictor '{name}' already exists!", status_code=409)
+        raise SanicException(f"Predictor '{predictor_name}' already exists!", status_code=409)
     ### transformer ###
     transformer_id = args.get('transformer_id', 'auto')
     model_id = args.get('model_id', 'auto')

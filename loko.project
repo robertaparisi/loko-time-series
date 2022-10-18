@@ -3,7 +3,7 @@
   "id": "ds4biz-time-series",
   "description": "",
   "created_on": "14/09/2022, 12:18:07",
-  "last_modify": "18/10/2022, 23:08:15",
+  "last_modify": "18/10/2022, 23:23:38",
   "graphs": {
     "Manage TS": {
       "nodes": [
@@ -605,9 +605,9 @@
                 "model_bp": "{\"__klass__\": \"sktime.forecasting.arima.ARIMA\"}",
                 "del_transformer": "",
                 "transformer_id": "tf1",
+                "info_obj_name": "",
                 "del_model": "",
-                "del_predictor": "example",
-                "info_obj_name": "example"
+                "del_predictor": ""
               }
             },
             "locked": null
