@@ -3,7 +3,7 @@
   "id": "loko-time-series",
   "description": "",
   "created_on": "14/09/2022, 12:18:07",
-  "last_modify": "19/10/2022, 10:46:06",
+  "last_modify": "19/10/2022, 11:59:32",
   "graphs": {
     "Manage TS": {
       "nodes": [
@@ -603,11 +603,11 @@
                 "existing_model": false,
                 "info_obj": "Predictor",
                 "model_bp": "{\"__klass__\": \"sktime.forecasting.naive.NaiveForecaster\", \"strategy\": \"mean\"}",
-                "del_transformer": "",
-                "del_model": "",
+                "del_transformer": "prova1",
+                "del_model": "mm1",
                 "del_predictor": "example",
                 "transformer_id": "tf_power2",
-                "info_obj_name": ""
+                "info_obj_name": "example"
               }
             },
             "locked": null
@@ -1352,7 +1352,7 @@
                 "report": false,
                 "forecasting_horizon": "10",
                 "save_eval_report": false,
-                "predictor_name": "pred_day"
+                "predictor_name": "brandon"
               }
             },
             "locked": null
@@ -1689,8 +1689,8 @@
         {
           "id": "aa9e827b-bf42-4b1d-b4c8-f174ad676563",
           "position": {
-            "x": 776.2521385184837,
-            "y": 865.3913296296546
+            "x": 730.0253264530977,
+            "y": 871.7674416386733
           },
           "type": "custom",
           "dragHandle": "#nodeHandle",
@@ -1770,7 +1770,7 @@
                 "debug": true,
                 "propagate": true,
                 "notify_warnings": true,
-                "code": "res = dict(data=[], target=[])\nfor k,v in data[\"target\"].items():\n  res[\"data\"].append({\"po_ordered_on\":k})\n  res[\"target\"].append(float(v))\n\nreturn res"
+                "code": "res = dict(data=[], target=[])\nfor k,v in data[\"target\"].items():\n  res[\"data\"].append({\"po_ordered_on\":k})\n  res[\"target\"].append(v)\n\nreturn res"
               }
             },
             "locked": null
@@ -1778,8 +1778,8 @@
           "selectable": true,
           "draggable": true,
           "positionAbsolute": {
-            "x": 776.2521385184837,
-            "y": 865.3913296296546
+            "x": 730.0253264530977,
+            "y": 871.7674416386733
           },
           "__class__": "Node"
         },
@@ -1967,7 +1967,7 @@
               "icon": "RiFundsBoxFill",
               "values": {
                 "comment": "",
-                "alias": "",
+                "alias": "EVAL",
                 "debug": true,
                 "datetime_feature": "po_ordered_on",
                 "datetime_frequency": "d",
@@ -1976,7 +1976,7 @@
                 "forecasting_horizon": "10",
                 "save_eval_report": true,
                 "eval_fname": "brandon_simulation",
-                "predictor_name": "pred_day"
+                "predictor_name": "brandon"
               }
             },
             "locked": null
@@ -2181,7 +2181,7 @@
                 "report": false,
                 "forecasting_horizon": "10",
                 "save_eval_report": false,
-                "predictor_name": "pred_day"
+                "predictor_name": "brandon"
               }
             },
             "locked": null
@@ -3397,7 +3397,7 @@
                 "datetime_frequency": "7d",
                 "forecasting_horizon_fit": "",
                 "report": true,
-                "forecasting_horizon": "2",
+                "forecasting_horizon": "5",
                 "save_eval_report": true,
                 "test_size": "0.1",
                 "eval_fname": "tseval_covariates",
