@@ -3,7 +3,7 @@ ADD ./frontend/package.json /frontend/package.json
 WORKDIR /frontend
 RUN yarn install
 ADD ./frontend /frontend
-RUN yarn build --base="/routes/ds4biz-time-series/web/"
+RUN yarn build --base="/routes/loko-time-series/web/"
 
 FROM python:3.10-slim
 ARG user
