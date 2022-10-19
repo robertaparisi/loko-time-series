@@ -37,12 +37,10 @@ Specifically it's possible to **create** new TimeSeries predictor, either by usi
 It's then possible to delete one or more TimeSeries objects at the same time, by entering all the names of the ones you want to delete inside the field of the *"Delete Parameters"* tabs.
 
 
-####[image_to_insert]
+![image](https://user-images.githubusercontent.com/34518514/196620335-74858e13-58c8-49a2-856d-b74648a14ed1.png)
 
 
 Finally you can also have information about a TimeSeries object, choosing in the *"Info Parameters"* the object type and name you want to know more about. As output of the component, you will have the blueprint of the object.
-
-
 
 
 
@@ -66,7 +64,8 @@ The next figure show a flow that helps you to manage your TimeSeries objects dir
 As it's shown in the figure above, there are 3 *Trigger* component each of which is linked to a TimeSeries Manager input. While on for the deleting and get information tasks you just have to explicit the desired object, in order to create a predictor, as previously stated, you can either enter an existing object name for transformer and/or model or either choose to directly define a new transformer and/or model, using their blueprint.
 
 
-####[image_to_insert]
+![image](https://user-images.githubusercontent.com/34518514/196620239-35b3cfa2-44b6-43f3-81f1-528a4f57153b.png)
+
 As shown in the image above, in the example, we decided to define a new Model blueprint, which basically is a json object, with 
 
 - a fixed key "\_\_klass\_\_", that will have as value the sktime forecasting algorithm path chosen;
