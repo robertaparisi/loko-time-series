@@ -24,7 +24,6 @@ export function Model({ name, onDelete, ...rest }) {
         <IconButton
           size="sm"
           borderRadius={"full"}
-          bg='white'
           icon={<RiDeleteBin4Line />}
           onClick={(e) => {
             e.stopPropagation();

@@ -28,6 +28,7 @@ def training_task(pred_id: str, data: Dict, datetime_feature: str, datetime_freq
     logger.debug(f"dt freq {datetime_frequency}")
     target = data['target'] if task != 'classification' else [str(el) for el in data['target']]
     data = data.get("data", None)
+    logger.debug(f"data::: {data}")
     fitting_time = datetime.now()
     logger.debug(f"transforming data into pandas df")
     df = pd.DataFrame(data)
@@ -67,7 +68,7 @@ def training_task(pred_id: str, data: Dict, datetime_feature: str, datetime_freq
         # X_test = pd.DataFrame(X_test).fillna(np.nan)
         # print("XTRAIN:::", X_train)
         # print("XTest:::", X_test)
-    logger.debug("Training model")
+    logger.debug(f"Training model {X_train}")
 
     res = ts_pipeline.fit(y_train, X_train, horizon=forecasting_horizon, **fit_params)
 
@@ -91,6 +92,7 @@ def training_task(pred_id: str, data: Dict, datetime_feature: str, datetime_freq
         report_training=res_report_train,
         report_test=res_report_test,
         task=task, test_size=test_size)  # if report else None
+    logger.debug(f"predictor path::: {repo_path}")
     dao = JSONFSDAO(repo_path / "predictors" / pred_id / "history", history=True, date=fitting_time)
     dao.save(tsum, "train_summary.json")
     del dao

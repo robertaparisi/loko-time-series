@@ -56,7 +56,7 @@ class JSONFSDAO(FileSystemDAO):
         #     d.update(h.json())
         #     del h
         with open(self.path/name, "w") as file:
-            json.dump(d,file, indent=2)
+            json.dump(d, file, indent=2)
 
     def get_by_id(self, name):
         with open(name, "r") as file:

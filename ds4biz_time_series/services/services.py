@@ -597,6 +597,7 @@ async def loko_fit_service(value, args):
     predictor_name = args["predictor_name"]
     logger.debug(f"pred: {predictor_name}")
     fit_params = FitServiceArgs(**args)
+
     if not (fit_params.datetime_frequency and fit_params.datetime_feature):
         msg = f"Date-time frequency value is '{fit_params.datetime_frequency}', Date-Time feature value is '{fit_params.datetime_feature}'. Both values need to be specified..."
         logger.error(msg)

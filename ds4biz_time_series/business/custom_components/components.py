@@ -1,4 +1,4 @@
-from loko_extensions.model.components import Component, Input, Output, save_extensions, Select, Arg, Dynamic
+from loko_extensions.model.components import Component, Input, Output, save_extensions, Select, Arg, Dynamic, AsyncSelect
 
 predict_service = "loko-services/predictors/predict"
 fit_service = "loko-services/predictors/fit"
@@ -12,14 +12,16 @@ evaluate_service = "loko-services/predictors/evaluate"
 
 
 ################### TIME SERIES    ########################################
+predictor_list_service = "http://localhost:9999/routes/ds4biz-time-series/predictors"
 
-pred_name = Arg(name="predictor_name", label="Predictor Name", type="text",
+pred_name = AsyncSelect(name="predictor_name", label="Predictor Name", url=predictor_list_service,
                 helper="Digit the name of the predictor you want to use", required=True)
 #### FIT ARGS
 
 fit_group = "Fit Parameters"
 # task = Select(name="task", label="Task", options=["Forecasting","Classification"], group="fit")
-
+# target = Arg(name="target_name", label="Target Name", type="text",
+#                  helper="Name of the feature to use as target", group=fit_group, value="target")
 fh = Arg(name="forecasting_horizon_fit", label="Forecasting Horizon", type="number", group=fit_group)
 dt_feature = Arg(name="datetime_feature", label="Datetime Feature", type="text",
                  helper="Name of the feature to use as date-time reference", group=fit_group)
@@ -28,8 +30,8 @@ dt_frequency = Arg(name="datetime_frequency", label="Datetime Frequency", type="
 report = Arg(name="report", label="Compute metrics report", type="boolean", group=fit_group, value="false")
 test_size = Dynamic(name="test_size", label="Test Size", parent="report", condition="{parent}===true",
                     dynamicType="number", group=fit_group, value=30)
-
-fit_args = [dt_feature, dt_frequency, fh, report, test_size]
+#target
+fit_args = [ dt_feature, dt_frequency, fh, report, test_size]
 #### PREDICT ARGS
 
 pred_group = "Predict Parameters"

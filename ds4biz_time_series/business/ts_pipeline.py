@@ -48,10 +48,14 @@ class TSPipeline():
             if name == 'transformer':
                 logger.debug('TRANSFORMER: %s' % str(obj))
                 if isinstance(X, pd.DataFrame):
-                    obj.fit(X=y, y=X)
-                    y = obj.transform(X=y, y=X) #andiamo ad applicare la trasformazione su y, tenendo conto dei valori di X
+                    logger.debug("nell annaaaaaaaaaaaaaaaa")
+
+                    obj.fit(y)
+                    y = obj.transform(y) #andiamo ad applicare la trasformazione su y, tenendo conto dei valori di X
                 else:
+                    logger.debug(f"nell'elseeeeeeeeeee{y}")
                     y = obj.fit_transform(y)
+                logger.debug("qui arriviamo")
                 # y = y.astype(np.float)
                 # logger.debug('X transformed size: %s' % str(X.shape))
 
@@ -77,7 +81,7 @@ class TSPipeline():
     def predict(self, X=None, horizon: Union[int, list, pd.PeriodIndex] = None, h_is_relative: bool=True, **kwargs):
         logger.debug('PREDICT')
         logger.debug(f"XXXXXXXXXXXXXXXXX {X}")
-        logger.debug(f"X rows {len(X)}")
+        # logger.debug(f"X rows {len(X)}")
         # logger.debug('X size: %s' % str(X.shape))
         for name, obj in self.steps:
             if name == 'transformer':
@@ -90,7 +94,7 @@ class TSPipeline():
             if name == 'model':
 
                 logger.debug('MODEL: %s' % str(obj))
-                logger.debug(f"horrrrrrr {horizon}")
+                logger.debug(f"predict horizon::: {horizon}")
                 if not isinstance(horizon, NoneType):
                     if isinstance(horizon, int):
                         horizon = np.arange(1, horizon + 1)
@@ -117,7 +121,7 @@ class TSPipeline():
                 logger.debug(f"prediction: {preds.to_dict()}")
                 for name, obj in self.steps:
                     if name == "transformer":
-                        preds = obj.inverse_transform(X=preds, y=X)
+                        preds = obj.inverse_transform(preds)
                         break
                 preds = preds.to_dict()
                 logger.debug(f"prediction after transformation: {preds}")
