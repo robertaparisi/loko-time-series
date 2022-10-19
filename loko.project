@@ -3,7 +3,7 @@
   "id": "ds4biz-time-series",
   "description": "",
   "created_on": "14/09/2022, 12:18:07",
-  "last_modify": "19/10/2022, 06:20:39",
+  "last_modify": "19/10/2022, 06:54:29",
   "graphs": {
     "Manage TS": {
       "nodes": [
@@ -619,286 +619,6 @@
             "y": 268.5498206919062
           },
           "__class__": "Node"
-        },
-        {
-          "id": "6bc7aa81-edb4-43ed-9a08-f10b66085062",
-          "position": {
-            "x": 1484,
-            "y": 355
-          },
-          "type": "custom",
-          "dragHandle": "#nodeHandle",
-          "sourcePosition": "right",
-          "targetPosition": "left",
-          "width": 150,
-          "height": 56,
-          "selected": null,
-          "dragging": null,
-          "data": {
-            "name": "TimeSeries Manager",
-            "events": null,
-            "description": "Components that managaes Time Series Models",
-            "inputs": [
-              {
-                "id": "create",
-                "label": "create_predictor",
-                "service": "loko-services/create_predictor",
-                "to": "create"
-              },
-              {
-                "id": "delete",
-                "label": "delete_objects",
-                "service": "loko-services/delete_objs",
-                "to": "delete"
-              },
-              {
-                "id": "info",
-                "label": "info_object",
-                "service": "loko-services/info_obj",
-                "to": "info"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "create",
-                "label": "create_predictor"
-              },
-              {
-                "id": "delete",
-                "label": "delete_objects"
-              },
-              {
-                "id": "info",
-                "label": "info_object"
-              }
-            ],
-            "configured": true,
-            "options": {
-              "group": "Custom",
-              "args": [
-                {
-                  "name": "comment",
-                  "type": "area",
-                  "label": "Node comment",
-                  "helper": "Use it to explain the usage of this node"
-                },
-                {
-                  "name": "alias",
-                  "type": "text",
-                  "label": "Name",
-                  "helper": "Use this name as an alias"
-                },
-                {
-                  "name": "debug",
-                  "type": "boolean",
-                  "label": "Debug to Console",
-                  "divider": true
-                },
-                {
-                  "name": "predictor_name",
-                  "type": "text",
-                  "label": "Predictor",
-                  "helper": "Choose the name you want to use for your predictor",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null
-                },
-                {
-                  "name": "description",
-                  "type": "area",
-                  "label": "Description",
-                  "helper": "Add a description for your predictor, if you want",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null
-                },
-                {
-                  "name": "existing_transf",
-                  "type": "boolean",
-                  "label": "Use existing transformer",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": "true",
-                  "description": "",
-                  "validation": null
-                },
-                {
-                  "name": "transformer_id",
-                  "type": "dynamic",
-                  "label": "Transformer",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Express the name of the transformer you want to use",
-                  "validation": null,
-                  "parent": "existing_transf",
-                  "condition": "{parent}===true",
-                  "dynamicType": "asyncSelect",
-                  "options": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
-                },
-                {
-                  "name": "transformer_bp",
-                  "type": "dynamic",
-                  "label": "Transformer",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Define the structure of the transformer you want to use",
-                  "validation": null,
-                  "parent": "existing_transf",
-                  "condition": "{parent}===false",
-                  "dynamicType": "area",
-                  "options": null,
-                  "url": null
-                },
-                {
-                  "name": "existing_model",
-                  "type": "boolean",
-                  "label": "Use existing model",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": "false",
-                  "description": "",
-                  "validation": null
-                },
-                {
-                  "name": "model_id",
-                  "type": "dynamic",
-                  "label": "Model",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Express the name of the model you want to use",
-                  "validation": null,
-                  "parent": "existing_model",
-                  "condition": "{parent}===true",
-                  "dynamicType": "asyncSelect",
-                  "options": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
-                },
-                {
-                  "name": "model_bp",
-                  "type": "dynamic",
-                  "label": "Model",
-                  "helper": "",
-                  "group": "Create Parameters",
-                  "value": null,
-                  "description": "Define the structure of the model you want to use",
-                  "validation": null,
-                  "parent": "existing_model",
-                  "condition": "{parent}===false",
-                  "dynamicType": "area",
-                  "options": null,
-                  "url": null
-                },
-                {
-                  "name": "del_transformer",
-                  "type": "asyncSelect",
-                  "label": "Transformer",
-                  "helper": "",
-                  "group": "Delete Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
-                },
-                {
-                  "name": "del_model",
-                  "type": "asyncSelect",
-                  "label": "Model",
-                  "helper": "",
-                  "group": "Delete Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
-                },
-                {
-                  "name": "del_predictor",
-                  "type": "asyncSelect",
-                  "label": "Predictor",
-                  "helper": "",
-                  "group": "Delete Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
-                },
-                {
-                  "name": "info_obj",
-                  "type": "select",
-                  "label": "Object",
-                  "helper": "Select the object you want to have info on.",
-                  "group": "Info Parameters",
-                  "value": null,
-                  "description": "",
-                  "validation": null,
-                  "options": [
-                    "Predictor",
-                    "Transformer",
-                    "Model"
-                  ]
-                },
-                {
-                  "name": "info_obj_name",
-                  "type": "dynamic",
-                  "label": "Predictor",
-                  "helper": "",
-                  "group": "Info Parameters",
-                  "value": null,
-                  "description": "Select the name of the predictor you want to know about",
-                  "validation": null,
-                  "parent": "info_obj",
-                  "condition": "{parent}===\"Predictor\"",
-                  "dynamicType": "asyncSelect",
-                  "options": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
-                },
-                {
-                  "name": "info_obj_name",
-                  "type": "dynamic",
-                  "label": "Model",
-                  "helper": "",
-                  "group": "Info Parameters",
-                  "value": null,
-                  "description": "Select the name of the model you want to know about",
-                  "validation": null,
-                  "parent": "info_obj",
-                  "condition": "{parent}===\"Model\"",
-                  "dynamicType": "asyncSelect",
-                  "options": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
-                },
-                {
-                  "name": "info_obj_name",
-                  "type": "dynamic",
-                  "label": "Transformer",
-                  "helper": "",
-                  "group": "Info Parameters",
-                  "value": null,
-                  "description": "Select the name of the transformer you want to know about",
-                  "validation": null,
-                  "parent": "info_obj",
-                  "condition": "{parent}===\"Transformer\"",
-                  "dynamicType": "asyncSelect",
-                  "options": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
-                }
-              ],
-              "click": null,
-              "icon": "RiFileSettingsFill",
-              "values": {
-                "existing_transf": "true",
-                "existing_model": "false"
-              }
-            }
-          },
-          "selectable": true,
-          "draggable": true,
-          "__class__": "Node"
         }
       ],
       "edges": [
@@ -1427,7 +1147,7 @@
                 "debug": true,
                 "propagate": true,
                 "notify_warnings": true,
-                "code": "# res =  {\"data\":[d[\"po_ordered_on\"]] for d in data}\ntarget_name=\"poi_submitted_quantity\"\n# orderd_data = {k: v for k, v in sorted(data.items(), key=lambda item: item[1])}\nsorted_data = sorted(data, key=lambda d: d['po_ordered_on']) \n#we have to sort our data based on the date key\nres = dict(data=[], target=[])\nfor rows in sorted_data:\n  el = rows.copy()\n  target_value = el.pop(target_name)\n  res[\"data\"].append(el)\n  res[\"target\"].append(loat(target_value))\n\nreturn res\n  "
+                "code": "# res =  {\"data\":[d[\"po_ordered_on\"]] for d in data}\ntarget_name=\"poi_submitted_quantity\"\n# orderd_data = {k: v for k, v in sorted(data.items(), key=lambda item: item[1])}\nsorted_data = sorted(data, key=lambda d: d['po_ordered_on']) \n#we have to sort our data based on the date key\nres = dict(data=[], target=[])\nfor rows in sorted_data:\n  el = rows.copy()\n  target_value = el.pop(target_name)\n  res[\"data\"].append(el)\n  res[\"target\"].append(float(target_value))\n\nreturn res\n  "
               }
             },
             "locked": null
@@ -1709,7 +1429,7 @@
                 "comment": "",
                 "alias": "",
                 "debug": false,
-                "k": "100"
+                "k": "10"
               }
             },
             "locked": null
@@ -2256,7 +1976,7 @@
                 "forecasting_horizon": "10",
                 "save_eval_report": true,
                 "eval_fname": "brandon_simulation",
-                "predictor_name": "example"
+                "predictor_name": "brandon"
               }
             },
             "locked": null
@@ -2461,7 +2181,7 @@
                 "report": false,
                 "forecasting_horizon": "10",
                 "save_eval_report": false,
-                "predictor_name": "example"
+                "predictor_name": "brandon"
               }
             },
             "locked": null
@@ -2548,20 +2268,6 @@
           "__class__": "Edge"
         },
         {
-          "id": "reactflow__edge-f755c389-fe48-419a-9932-b2ff47f9f099output-43044f94-b95b-4110-9f21-09c94af42e52fit",
-          "source": "f755c389-fe48-419a-9932-b2ff47f9f099",
-          "sourceHandle": "output",
-          "target": "43044f94-b95b-4110-9f21-09c94af42e52",
-          "targetHandle": "fit",
-          "data": {
-            "startColor": "#D770AD",
-            "stopColor": "#888"
-          },
-          "selected": false,
-          "dragging": false,
-          "__class__": "Edge"
-        },
-        {
           "id": "reactflow__edge-b16ade74-d981-4e4a-a003-bc3c895215d6output-2ace0558-63ff-405a-b86f-45e5bd086e31input",
           "source": "b16ade74-d981-4e4a-a003-bc3c895215d6",
           "sourceHandle": "output",
@@ -2629,6 +2335,18 @@
           },
           "selected": false,
           "dragging": false,
+          "__class__": "Edge"
+        },
+        {
+          "id": "reactflow__edge-f755c389-fe48-419a-9932-b2ff47f9f099output-43044f94-b95b-4110-9f21-09c94af42e52fit",
+          "source": "f755c389-fe48-419a-9932-b2ff47f9f099",
+          "sourceHandle": "output",
+          "target": "43044f94-b95b-4110-9f21-09c94af42e52",
+          "targetHandle": "fit",
+          "data": {
+            "startColor": "#D770AD",
+            "stopColor": "#888"
+          },
           "__class__": "Edge"
         }
       ],

@@ -4,9 +4,9 @@
 This projects, developed in Python, create some [LoKo AI](https://github.com/loko-ai/loko/tree/development) extensions that helps with **Time Series Forecasting**. 
 
 
-## Component
+## Components
 
-### TimeSeries
+### :chart_with_upwards_trend:	 TimeSeries
 
 
 Thanks to the **TimeSeries** component you can train your model, make prediction and test evaluation, with the possibility to save the evaluation metrics in a file. This component works similarly to the Predictor component.
@@ -23,8 +23,30 @@ In order to **evaluate** new data instead it's not required to specify anything 
 
 ![image](https://user-images.githubusercontent.com/34518514/196524919-865e3456-003f-4cf6-b5ae-4d15533399d1.png)
 
+### TimeSeriesManager
 
-## Example Flow
+
+
+This component allows to manage your TimeSeries objects directly from a flow. 
+
+![image](https://user-images.githubusercontent.com/34518514/196581535-ad1a33a1-c322-4384-81f4-45581a01d8ed.png)
+
+Specifically it's possible to **create** new TimeSeries predictor, either by using existing transformer/model or by creating one on the moment, specifying their blueprint of the object. To know more on how to create a predictor, you can find more information in the **Example Flow** section. 
+
+
+It's then possible to delete one or more TimeSeries objects at the same time, by entering all the names of the ones you want to delete inside the field of the *"Delete Parameters"* tabs.
+
+
+####[image_to_insert]
+
+
+Finally you can also have information about a TimeSeries object, choosing in the *"Info Parameters"* the object type and name you want to know more about. As output of the component, you will have the blueprint of the object.
+
+
+
+
+
+## :cyclone:	 Example Flow
 
 
 Opening Loko AI, you can find the Tab **TimeSeriesForecasting**, where you can find two examples of forecasting, one that do not use covariates for the training and one that use them.
@@ -37,10 +59,22 @@ Down below is shown an example of how you can fill the component parameters
 
 ![image](https://user-images.githubusercontent.com/34518514/196522586-7da8cf09-69f7-42e2-9d3b-2f6205a163a2.png)
 
+The next figure show a flow that helps you to manage your TimeSeries objects directly from a flow:
+
+![image](https://user-images.githubusercontent.com/34518514/196581629-bfe72313-2086-49d4-bd2e-3e0dc1d4f09d.png)
+
+As it's shown in the figure above, there are 3 *Trigger* component each of which is linked to a TimeSeries Manager input. While on for the deleting and get information tasks you just have to explicit the desired object, in order to create a predictor, as previously stated, you can either enter an existing object name for transformer and/or model or either choose to directly define a new transformer and/or model, using their blueprint.
+
+
+####[image_to_insert]
+As shown in the image above, in the example, we decided to define a new Model blueprint, which basically is a json object, with 
+
+- a fixed key "\_\_klass\_\_", that will have as value the sktime forecasting algorithm path chosen;
+- other couple of key, value representing the hyper-parameter of that module, as the key *"strategy"* and the value *"mean"* for the NaiveForecaster algorithm. 
 
 
 
-## TimeSeries GUI
+## :writing_hand:	 TimeSeries GUI
 It's possible to use the **TimeSeries GUI** to *create* or *delete* your own **Transformer**, **Model** and **Predictors**. Once you have a TimeSeries predictor you can also choose to *export* it, obtaining a zip file, or eventually *import* a TimeSeries predictor that you previously created. 
 
 
@@ -53,3 +87,13 @@ Each TimeSeries predictor has a status, which can be *"Not Fitted"*, *"Fitted"*,
 Clicking on one of the Predictor/Model/Transformer object of the list, you can see a "blueprint" of the object, namely a json file cointaining the relative informations. The following image shows a predictor object:
 
 ![image](https://user-images.githubusercontent.com/34518514/196521263-1ec2ee69-3e56-4278-97cc-493a7740cfbf.png)
+
+
+
+
+## :computer: USE CASE
+
+It's finally available a small use case in the tab **BrandonTest**, which shows how to fit, predict, and evaluate the model using a small sample of real world data.
+
+![image](https://user-images.githubusercontent.com/34518514/196579422-94472817-bfe0-4f81-9034-e2fdf900bc2c.png)
+
