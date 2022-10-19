@@ -1,3 +1,7 @@
+![Logo_LOKO_Power_Point (1)](https://user-images.githubusercontent.com/34518514/196630302-e2475f5e-ef6e-41a2-b4f1-4b9f40829c14.png)
+
+
+
 # loko-time-series
 
 
