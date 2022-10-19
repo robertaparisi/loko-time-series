@@ -3,7 +3,7 @@
   "id": "ds4biz-time-series",
   "description": "",
   "created_on": "14/09/2022, 12:18:07",
-  "last_modify": "19/10/2022, 06:54:29",
+  "last_modify": "19/10/2022, 08:36:18",
   "graphs": {
     "Manage TS": {
       "nodes": [
@@ -961,7 +961,7 @@
               "values": {
                 "comment": "",
                 "alias": "",
-                "debug": true,
+                "debug": false,
                 "ignore_err": false,
                 "exclude": false,
                 "keys": [
@@ -1352,7 +1352,7 @@
                 "report": false,
                 "forecasting_horizon": "10",
                 "save_eval_report": false,
-                "predictor_name": "brandon"
+                "predictor_name": "pred_day"
               }
             },
             "locked": null
@@ -1429,7 +1429,7 @@
                 "comment": "",
                 "alias": "",
                 "debug": false,
-                "k": "10"
+                "k": "30"
               }
             },
             "locked": null
@@ -1470,8 +1470,8 @@
         {
           "id": "2147da7d-fd25-475d-8be8-be1a438fef43",
           "position": {
-            "x": 500.25213851848366,
-            "y": 543.3913296296547
+            "x": 428.55543198445474,
+            "y": 546.8887299483878
           },
           "type": "custom",
           "dragHandle": "#nodeHandle",
@@ -1555,8 +1555,8 @@
           "selectable": true,
           "draggable": true,
           "positionAbsolute": {
-            "x": 500.25213851848366,
-            "y": 543.3913296296547
+            "x": 428.55543198445474,
+            "y": 546.8887299483878
           },
           "__class__": "Node"
         },
@@ -1976,7 +1976,7 @@
                 "forecasting_horizon": "10",
                 "save_eval_report": true,
                 "eval_fname": "brandon_simulation",
-                "predictor_name": "brandon"
+                "predictor_name": "pred_day"
               }
             },
             "locked": null
@@ -2173,7 +2173,7 @@
               "icon": "RiFundsBoxFill",
               "values": {
                 "comment": "",
-                "alias": "",
+                "alias": "Prediction",
                 "debug": true,
                 "datetime_feature": "po_ordered_on",
                 "datetime_frequency": "d",
@@ -2181,7 +2181,7 @@
                 "report": false,
                 "forecasting_horizon": "10",
                 "save_eval_report": false,
-                "predictor_name": "brandon"
+                "predictor_name": "pred_day"
               }
             },
             "locked": null
@@ -2346,6 +2346,20 @@
           "data": {
             "startColor": "#D770AD",
             "stopColor": "#888"
+          },
+          "selected": false,
+          "dragging": false,
+          "__class__": "Edge"
+        },
+        {
+          "id": "reactflow__edge-cf856103-5048-4724-9527-fbe3f0b1269dpredict-aa9e827b-bf42-4b1d-b4c8-f174ad676563input",
+          "source": "cf856103-5048-4724-9527-fbe3f0b1269d",
+          "sourceHandle": "predict",
+          "target": "aa9e827b-bf42-4b1d-b4c8-f174ad676563",
+          "targetHandle": "input",
+          "data": {
+            "startColor": "#888",
+            "stopColor": "#D770AD"
           },
           "__class__": "Edge"
         }
