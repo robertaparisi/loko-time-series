@@ -9,9 +9,9 @@ info_predictor_service = "loko-services/info_obj"
 ################################# ARGS ##################################
 
 
-predictor_list_service = "http://localhost:9999/routes/ds4biz-time-series/predictors"
-transformer_list_service = "http://localhost:9999/routes/ds4biz-time-series/transformers"
-model_list_service = "http://localhost:9999/routes/ds4biz-time-series/models"
+predictor_list_service = "http://localhost:9999/routes/loko-time-series/predictors"
+transformer_list_service = "http://localhost:9999/routes/loko-time-series/transformers"
+model_list_service = "http://localhost:9999/routes/loko-time-series/models"
 ############################ create args #############################
 
 create_group = "Create Parameters"

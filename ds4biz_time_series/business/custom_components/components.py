@@ -12,7 +12,7 @@ evaluate_service = "loko-services/predictors/evaluate"
 
 
 ################### TIME SERIES    ########################################
-predictor_list_service = "http://localhost:9999/routes/ds4biz-time-series/predictors"
+predictor_list_service = "http://localhost:9999/routes/loko-time-series/predictors"
 
 pred_name = AsyncSelect(name="predictor_name", label="Predictor Name", url=predictor_list_service,
                 helper="Digit the name of the predictor you want to use", required=True)

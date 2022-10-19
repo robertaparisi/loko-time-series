@@ -1,9 +1,9 @@
 {
-  "name": "ds4biz-time-series",
-  "id": "ds4biz-time-series",
+  "name": "loko-time-series",
+  "id": "loko-time-series",
   "description": "",
   "created_on": "14/09/2022, 12:18:07",
-  "last_modify": "19/10/2022, 08:36:18",
+  "last_modify": "19/10/2022, 10:46:06",
   "graphs": {
     "Manage TS": {
       "nodes": [
@@ -309,13 +309,13 @@
           "sourcePosition": "right",
           "targetPosition": "left",
           "width": 932.3964958214938,
-          "height": 371.4366746260763,
+          "height": 381.4366746260763,
           "selected": false,
           "dragging": false,
           "data": {
             "comment": "Gestione TimeSeries",
             "fill": "#90BE6D",
-            "height": 371.4366746260763,
+            "height": 381.4366746260763,
             "width": 932.3964958214938
           },
           "zIndex": -1,
@@ -440,7 +440,7 @@
                   "condition": "{parent}===true",
                   "dynamicType": "asyncSelect",
                   "options": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
+                  "url": "http://localhost:9999/routes/loko-time-series/transformers"
                 },
                 {
                   "name": "transformer_bp",
@@ -480,7 +480,7 @@
                   "condition": "{parent}===true",
                   "dynamicType": "asyncSelect",
                   "options": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
+                  "url": "http://localhost:9999/routes/loko-time-series/models"
                 },
                 {
                   "name": "model_bp",
@@ -506,7 +506,7 @@
                   "value": null,
                   "description": "",
                   "validation": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
+                  "url": "http://localhost:9999/routes/loko-time-series/transformers"
                 },
                 {
                   "name": "del_model",
@@ -517,7 +517,7 @@
                   "value": null,
                   "description": "",
                   "validation": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
+                  "url": "http://localhost:9999/routes/loko-time-series/models"
                 },
                 {
                   "name": "del_predictor",
@@ -528,7 +528,7 @@
                   "value": null,
                   "description": "",
                   "validation": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
+                  "url": "http://localhost:9999/routes/loko-time-series/predictors"
                 },
                 {
                   "name": "info_obj",
@@ -558,7 +558,7 @@
                   "condition": "{parent}===\"Predictor\"",
                   "dynamicType": "asyncSelect",
                   "options": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
+                  "url": "http://localhost:9999/routes/loko-time-series/predictors"
                 },
                 {
                   "name": "info_obj_name",
@@ -573,7 +573,7 @@
                   "condition": "{parent}===\"Model\"",
                   "dynamicType": "asyncSelect",
                   "options": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/models"
+                  "url": "http://localhost:9999/routes/loko-time-series/models"
                 },
                 {
                   "name": "info_obj_name",
@@ -588,7 +588,7 @@
                   "condition": "{parent}===\"Transformer\"",
                   "dynamicType": "asyncSelect",
                   "options": null,
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/transformers"
+                  "url": "http://localhost:9999/routes/loko-time-series/transformers"
                 }
               ],
               "click": null,
@@ -605,8 +605,8 @@
                 "model_bp": "{\"__klass__\": \"sktime.forecasting.naive.NaiveForecaster\", \"strategy\": \"mean\"}",
                 "del_transformer": "",
                 "del_model": "",
-                "del_predictor": "",
-                "transformer_id": "",
+                "del_predictor": "example",
+                "transformer_id": "tf_power2",
                 "info_obj_name": ""
               }
             },
@@ -1247,7 +1247,7 @@
                   "validation": {
                     "required": "Required field"
                   },
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
+                  "url": "http://localhost:9999/routes/loko-time-series/predictors"
                 },
                 {
                   "name": "datetime_feature",
@@ -1870,7 +1870,7 @@
                   "validation": {
                     "required": "Required field"
                   },
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
+                  "url": "http://localhost:9999/routes/loko-time-series/predictors"
                 },
                 {
                   "name": "datetime_feature",
@@ -2076,7 +2076,7 @@
                   "validation": {
                     "required": "Required field"
                   },
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
+                  "url": "http://localhost:9999/routes/loko-time-series/predictors"
                 },
                 {
                   "name": "datetime_feature",
@@ -3089,7 +3089,7 @@
                   "validation": {
                     "required": "Required field"
                   },
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
+                  "url": "http://localhost:9999/routes/loko-time-series/predictors"
                 },
                 {
                   "name": "datetime_feature",
@@ -3294,7 +3294,7 @@
                   "validation": {
                     "required": "Required field"
                   },
-                  "url": "http://localhost:9999/routes/ds4biz-time-series/predictors"
+                  "url": "http://localhost:9999/routes/loko-time-series/predictors"
                 },
                 {
                   "name": "datetime_feature",
