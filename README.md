@@ -5,7 +5,7 @@
 # loko-time-series
 
 
-This projects, developed in Python, create some [LoKo AI](https://github.com/loko-ai/loko/tree/development) extensions that helps with **Time Series Forecasting**. 
+This projects, developed in Python, create some [LOKO AI](https://github.com/loko-ai/loko/tree/development) extensions that helps with **Time Series Forecasting**. 
 
 
 ## Components
@@ -27,7 +27,7 @@ In order to **evaluate** new data instead it's not required to specify anything 
 
 ![image](https://user-images.githubusercontent.com/34518514/196524919-865e3456-003f-4cf6-b5ae-4d15533399d1.png)
 
-### TimeSeriesManager
+### 🔧 TimeSeriesManager
 
 
 
@@ -51,7 +51,7 @@ Finally you can also have information about a TimeSeries object, choosing in the
 ## :cyclone:	 Example Flow
 
 
-Opening Loko AI, you can find the Tab **TimeSeriesForecasting**, where you can find two examples of forecasting, one that do not use covariates for the training and one that use them.
+Opening LOKO AI, you can find the Tab **TimeSeriesForecasting**, where you can find two examples of forecasting, one that do not use covariates for the training and one that use them.
 
 
 ![image](https://user-images.githubusercontent.com/34518514/196522275-ffcfb7f2-9776-4747-a02e-9916b3e58fef.png)
@@ -61,16 +61,16 @@ Down below is shown an example of how you can fill the component parameters
 
 ![image](https://user-images.githubusercontent.com/34518514/196522586-7da8cf09-69f7-42e2-9d3b-2f6205a163a2.png)
 
-The next figure show a flow that helps you to manage your TimeSeries objects directly from a flow:
+The next figure shows a flow that helps you to manage your TimeSeries objects directly from a flow:
 
 ![image](https://user-images.githubusercontent.com/34518514/196581629-bfe72313-2086-49d4-bd2e-3e0dc1d4f09d.png)
 
-As it's shown in the figure above, there are 3 *Trigger* component each of which is linked to a TimeSeries Manager input. While on for the deleting and get information tasks you just have to explicit the desired object, in order to create a predictor, as previously stated, you can either enter an existing object name for transformer and/or model or either choose to directly define a new transformer and/or model, using their blueprint.
+As it's shown in the figure above, there are 3 *Trigger* components each of which is linked to a TimeSeries Manager input. While for the deleting and get information tasks you just have to explicit the desired object, in order to create a predictor, as previously stated, you can either enter an existing object name for transformer and/or model, either choose to directly define a new transformer and/or model, using their blueprint.
 
 
 ![image](https://user-images.githubusercontent.com/34518514/196620239-35b3cfa2-44b6-43f3-81f1-528a4f57153b.png)
 
-As shown in the image above, in the example, we decided to define a new Model blueprint, which basically is a json object, with 
+As shown in the image above, in the example, we decided to define a new Model blueprint, which basically is a json object, with: 
 
 - a fixed key "\_\_klass\_\_", that will have as value the sktime forecasting algorithm path chosen;
 - other couple of key, value representing the hyper-parameter of that module, as the key *"strategy"* and the value *"mean"* for the NaiveForecaster algorithm. 
