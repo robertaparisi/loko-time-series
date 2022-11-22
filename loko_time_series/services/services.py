@@ -4,39 +4,29 @@ import re
 import shutil
 import time
 import traceback
-
-import requests
-from sanic import Sanic, Blueprint
-from sanic_openapi import swagger_blueprint
-from sanic_openapi.openapi2 import doc
-from sanic_cors import CORS
-from urllib.parse import unquote
 from pathlib import Path
-from sanic.response import raw
-
-# app = Sanic("res")
-# swagger_blueprint.url_prefix = "/api"
-# app.blueprint(swagger_blueprint)
-from ds4biz_time_series.business.form_model import get_form
-from ds4biz_time_series.config.AppConfig import REPO_PATH
-from ds4biz_time_series.dao.fs_dao import JSONFSDAO
-from ds4biz_time_series.model.services_model import FitServiceArgs, PredictServiceArgs, EvaluateServiceArgs
-from ds4biz_time_series.utils.core_utils import load_pipeline
-from ds4biz_time_series.utils.data_utils import preprocessing_data
-from ds4biz_time_series.utils.factory_utils import get_factory
-from ds4biz_time_series.utils.logger_utils import logger
-from ds4biz_time_series.utils.ppom_utils import get_pom_major_minor
-from sanic.exceptions import SanicException, NotFound
+from urllib.parse import unquote
 
 import sanic
-
-from ds4biz_time_series.utils.service_utils import check_predictor_existence, load_params, check_existence, train_model, \
-    get_prediction, get_model_evaluation
-from ds4biz_time_series.utils.serialization_utils import serialize, deserialize
-from ds4biz_time_series.utils.service_utils import get_all
-from ds4biz_time_series.utils.zip_utils import make_zipfile, import_zipfile
-
 from loko_extensions.business.decorators import extract_value_args
+from sanic import Sanic, Blueprint
+from sanic.exceptions import SanicException, NotFound
+from sanic.response import raw
+from sanic_cors import CORS
+from sanic_openapi import swagger_blueprint
+from sanic_openapi.openapi2 import doc
+
+from loko_time_series.config.AppConfig import REPO_PATH
+from loko_time_series.dao.fs_dao import JSONFSDAO
+from loko_time_series.model.services_model import FitServiceArgs, PredictServiceArgs, EvaluateServiceArgs
+from loko_time_series.utils.factory_utils import get_factory
+from loko_time_series.utils.logger_utils import logger
+from loko_time_series.utils.ppom_utils import get_pom_major_minor
+from loko_time_series.utils.serialization_utils import serialize, deserialize
+from loko_time_series.utils.service_utils import check_predictor_existence, load_params, check_existence, train_model, \
+    get_prediction, get_model_evaluation
+from loko_time_series.utils.service_utils import get_all
+from loko_time_series.utils.zip_utils import make_zipfile, import_zipfile
 
 repo_path = Path(REPO_PATH)
 
@@ -58,61 +48,6 @@ app.config["API_TITLE"] = name
 CORS(app)
 app.static("/web", "/frontend/dist")
 
-
-# @bp.post("/")
-# def test(request):
-#     print("ciao")
-#     args = request.json.get('args')
-#     print("ARGS",args)
-#     json = request.json.get("value")
-#     print("JSON",json)
-#     return sanic.json(dict(msg="Hello extensions!"))
-#
-#
-# @bp.post("/files")
-# def test2(request):
-#     file = request.files['file']
-#     fname = file.filename
-#     print("You have uploaded a file called:",fname)
-#     return sanic.json(dict(msg=f"Hello extensions, you have uploaded the file: {fname}!"))
-
-
-### UTILS ###
-# @app.post("/utils/forms")
-# @doc.tag('utils')
-# @doc.consumes(doc.JsonBody({}), location="body")
-# async def forms(request):
-#     res = get_form(request.json)
-#     res = FormsEncoder().encode(res)
-#     logger.debug(f'form: {res}')
-#     return sanic.json(json.loads(res))
-
-
-#
-# @bp.get("/utils/algorithms")
-# @doc.tag('utils')
-# @doc.summary('Get available forms')
-# @doc.consumes(doc.Boolean(name="predict_proba"), location="query")
-# @doc.consumes(doc.Boolean(name="partial"), location="query")
-# @doc.consumes(doc.String(name="framework", choices=list(IMGS_MAPPING.keys())), location="query")
-# @doc.consumes(doc.String(name="task", choices=sorted(tasks)), location="query")
-# async def algorithms(request):
-#     dparams = dict(task=None, framework=None, partial=False, predict_proba=False)
-#     params = {**dparams, **load_params(request.args)}
-#     framework = [params['framework']] if params['framework'] else IMGS_MAPPING.keys()
-#     del params['framework']
-#     res = []
-#     for img_name in framework:
-#         try:
-#             resp = base_request(img_name, 'utils/algorithms', 'GET', **params)
-#             res += resp.json()
-#             for r in resp.json():
-#                 base_request(img_name, 'utils/forms', 'POST', body=json.dumps(r))
-#         except:
-#             logger.debug('TracebackERROR: \n' + traceback.format_exc() + '\n\n')
-#         kill_base(img_name)
-#     return sanic.json(res)
-### TRANSFORMERS ###
 
 @bp.get("/transformers")
 @doc.tag('transformers')
@@ -647,7 +582,6 @@ async def loko_predict_service(value, args):
 async def loko_evaluate_service(value, args):
     logger.debug(f"evaluate::: value: {value}  \n \n args: {args}")
 
-
     branch = "development"
     # params = {**load_params(request.args)}
     predictor_name = unquote(args["predictor_name"])
@@ -661,8 +595,6 @@ async def loko_evaluate_service(value, args):
         logger.error(f"Evaluate LOG err: {e}")
         raise SanicException(f"Evaluate LOG Error... {e}")
     return sanic.json(eval_res)
-
-
 
 
 @bp.post("/loko-services/info_obj")
@@ -791,15 +723,15 @@ async def loko_delete_objs(value, args):
             return ""
 
     delete_transformer = args.get("del_transformer", None)
-    t_msg= del_obj("transformers", delete_transformer)
+    t_msg = del_obj("transformers", delete_transformer)
     delete_predictor = args.get("del_predictor", None)
     p_msg = del_obj("predictors", delete_predictor)
     delete_model = args.get("del_model", None)
     m_msg = del_obj("models", delete_model)
     # res = 'Obj/s correctly deleted'
-    res = p_msg+m_msg+t_msg
-    if res=="":
-        res="No object to delete specified"
+    res = p_msg + m_msg + t_msg
+    if res == "":
+        res = "No object to delete specified"
     logger.debug(res)
     return sanic.json(res)
 
@@ -849,6 +781,7 @@ async def loko_create_objs(value, args):
     res = f'Predictors {predictor_name} correctly created'
     logger.debug(res)
     return sanic.json(res)
+
 
 @app.exception(Exception)
 async def manage_exception(request, exception):

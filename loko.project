@@ -3,7 +3,7 @@
   "id": "loko-time-series",
   "description": "",
   "created_on": "14/09/2022, 12:18:07",
-  "last_modify": "19/10/2022, 11:59:32",
+  "last_modify": "22/11/2022, 09:39:30",
   "graphs": {
     "Manage TS": {
       "nodes": [
@@ -602,12 +602,7 @@
                 "existing_transf": true,
                 "existing_model": false,
                 "info_obj": "Predictor",
-                "model_bp": "{\"__klass__\": \"sktime.forecasting.naive.NaiveForecaster\", \"strategy\": \"mean\"}",
-                "del_transformer": "prova1",
-                "del_model": "mm1",
-                "del_predictor": "example",
-                "transformer_id": "tf_power2",
-                "info_obj_name": "example"
+                "model_bp": "{\"__klass__\": \"sktime.forecasting.naive.NaiveForecaster\", \"strategy\": \"mean\"}"
               }
             },
             "locked": null
